@@ -1,0 +1,19 @@
+.vercel
+.env
+node_modules
+artifacts
+cache
+.claude/
+.agents/
+skills-lock.json
+.DS_Store
+
+# Security: never commit orchestration scripts or wallets
+sweep-agents.js
+check-balances.js
+*.bak
+zorrito-agents/
+.env.preview
+.env.local
+*.key
+*-mnemonic.txt

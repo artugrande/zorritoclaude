@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>No-Loss Lottery on Celo | Zorrito</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- PostHog analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: true,
+    });
+  </script>
+
+  <!-- Domain verification -->
+  <meta name="talentapp:project_verification" content="8627629ea9dfadd21fb74d7deca880f926b3673412844325d29d87d3e17bccaebd1009951c22f775be86416fc4e3ff11ce75f3cc8c70abb05299afe3347c6637">
+
+  <!-- Primary SEO -->
+  <meta name="description" content="Deposit USDT, earn Aave yield on Celo, and win the annual January 1st prize. Your principal is always safe. Free to play — start saving today →" />
+  <meta name="keywords" content="no-loss lottery, Celo blockchain, USDT savings, Aave yield prize, DeFi lottery, Zorrito, MiniPay DeFi" />
+  <meta name="author" content="Zorrito Finance" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
+  <meta property="article:published_time" content="2025-01-01T00:00:00Z" />
+  <meta property="article:modified_time" content="2026-04-14T00:00:00Z" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Zorrito Finance" />
+  <meta property="og:title" content="No-Loss Lottery on Celo | Zorrito" />
+  <meta property="og:description" content="Deposit USDT, earn Aave V3 yield, and win the annual prize every January 1st. Your principal is always safe. Feed your fox daily to boost your odds." />
+  <meta property="og:image" content="https://www.zorrito.app/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://www.zorrito.app" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@zorritoapp" />
+  <meta name="twitter:title" content="No-Loss Lottery on Celo | Zorrito" />
+  <meta name="twitter:description" content="Deposit USDT, earn Aave V3 yield, and win the annual prize every January 1st. Your principal is always safe." />
+  <meta name="twitter:image" content="https://www.zorrito.app/assets/og-image.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.zorrito.app" />
+
+  <!-- Structured Data: Organization + WebApplication + FAQPage -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Zorrito Finance",
+      "url": "https://www.zorrito.app",
+      "logo": "https://www.zorrito.app/assets/zorritofinallogo.png",
+      "sameAs": [
+        "https://twitter.com/zorritoapp"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Zorrito — No-Loss Lottery on Celo",
+      "url": "https://www.zorrito.app",
+      "description": "A no-loss lottery on the Celo blockchain. Deposit USDT, earn Aave V3 yield, and win the annual prize every January 1st. Your principal is always safe.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free to use — no fees on deposits or withdrawals"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a no-loss lottery?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A no-loss lottery pools everyone's USDT deposits into Aave V3 to earn yield. Every January 1st, one random player wins 90% of all the accumulated yield. No one ever loses their principal deposit — it can be withdrawn at any time."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Zorrito work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Deposit any amount of USDT (minimum 1 USDT = 1 ticket). Your funds are supplied to Aave V3 on Celo and earn yield. Feed your fox daily to stay active in the draw and build a streak multiplier. On January 1st, a verifiably random winner is picked and receives 90% of the pooled yield."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my deposit safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Your USDT is always safe in Aave V3. You can withdraw your full deposit at any time, regardless of whether you win or lose. The only funds at risk as a prize are the yield — not the principal."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the fox feeding mechanic?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Feed your fox 1 USDT every day to stay eligible for the annual draw and earn a streak multiplier that increases your effective lottery tickets. Miss a day and your fox dies, removing you from the draw until you revive it. Your deposited USDT is always safe in Aave regardless."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Zorrito available on MiniPay and Lemon Cash?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Zorrito is fully compatible with MiniPay and Lemon Cash mini-apps. Simply search for Zorrito inside either app to start playing."
+          }
+        }
+      ]
+    }
+  ]
+  </script>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ONBOARDING SLIDER
+       Shows on first visit only (localStorage: zorrito-onboarded)
+       ══════════════════════════════════════════════════════════ -->
+  <style>
+    .onb-overlay {
+      position: fixed; inset: 0; z-index: 99998;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.70);
+      backdrop-filter: blur(4px);
+    }
+    .onb-card {
+      background: rgba(255,255,255,0.97);
+      border: 2.5px solid var(--border);
+      border-radius: 28px;
+      padding: 36px 28px 24px;
+      max-width: 380px; width: 100%;
+      text-align: center;
+      box-shadow: 4px 5px 0px rgba(200,86,0,0.22), 0 24px 70px rgba(0,0,0,0.2);
+      cursor: pointer; user-select: none;
+    }
+    .onb-img-wrap {
+      width: 220px; height: 210px;
+      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .onb-img-wrap img {
+      max-width: 100%; max-height: 100%; object-fit: contain;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .onb-img-wrap img.onb-fade { opacity: 0; transform: scale(0.96); }
+    .onb-title {
+      font-size: 1.75rem; font-weight: 800;
+      color: var(--text); margin-bottom: 10px;
+      font-family: var(--font); line-height: 1.2;
+      transition: opacity 0.25s ease;
+    }
+    .onb-sub {
+      font-size: 0.9rem; color: var(--muted); line-height: 1.65;
+      margin-bottom: 22px; font-family: var(--font);
+      transition: opacity 0.25s ease;
+    }
+    .onb-title.onb-fade, .onb-sub.onb-fade { opacity: 0; }
+    .onb-dots {
+      display: flex; justify-content: center;
+      gap: 8px; margin-bottom: 18px;
+    }
+    .onb-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ddd; transition: all 0.25s ease; flex-shrink: 0;
+    }
+    .onb-dot.active {
+      background: var(--orange); width: 24px; border-radius: 4px;
+    }
+    .onb-btn {
+      width: 100%;
+      background: linear-gradient(160deg, #FF9A2F 0%, #FD840E 55%, #E06800 100%);
+      color: #fff; border: none; border-radius: 16px;
+      padding: 16px 28px; font-weight: 800; font-size: 1rem;
+      cursor: pointer; font-family: var(--font);
+      box-shadow: 0 5px 0px rgba(170,65,0,0.42), inset 0 1px 0 rgba(255,255,255,0.22);
+      transition: transform 0.12s, box-shadow 0.12s;
+      margin-bottom: 12px;
+    }
+    .onb-btn:active { transform: translateY(4px); box-shadow: 0 1px 0px rgba(170,65,0,0.42); }
+    .onb-tap-hint {
+      font-size: 0.72rem; color: var(--muted);
+      font-family: var(--font); opacity: 0.7;
+    }
+    /* Deposit warning boxes */
+    .deposit-warn {
+      background: #fff8e6; border: 1.5px solid #f5a623;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 0.8rem; color: #7a4a00; line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .deposit-warn.critical {
+      background: #fff1f0; border-color: #dc3545; color: #7a0000;
+    }
+  </style>
+
+  <div id="onboarding" class="onb-overlay">
+    <div class="onb-card" id="onb-card">
+      <div class="onb-img-wrap">
+        <img id="onb-img" src="assets/zorritofinallogo.png" alt="Zorrito" />
+      </div>
+      <div id="onb-title" class="onb-title"></div>
+      <div id="onb-sub" class="onb-sub"></div>
+      <div class="onb-dots" id="onb-dots">
+        <span class="onb-dot active"></span>
+        <span class="onb-dot"></span>
+        <span class="onb-dot"></span>
+        <span class="onb-dot"></span>
+      </div>
+      <button class="onb-btn" id="onb-launch">🚀 Launch App</button>
+      <p class="onb-tap-hint" id="onb-tap-hint">tap to continue →</p>
+    </div>
+  </div>
+
+  <!-- Background Music -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="assets/musicadefondo.mp3" type="audio/mpeg" />
+  </audio>
+  <!-- SVG icons for music button -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="icon-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    </symbol>
+    <symbol id="icon-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <line x1="23" y1="9" x2="17" y2="15"/>
+      <line x1="17" y1="9" x2="23" y2="15"/>
+    </symbol>
+  </svg>
+  <!-- Music toggle button — fixed top-right -->
+  <button id="music-btn" onclick="toggleMusic()" title="Toggle music" style="
+    position:fixed;top:14px;right:14px;z-index:9999;
+    background:rgba(30,30,30,0.85);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.12);color:#fff;
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;padding:0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.35);transition:opacity 0.2s;
+  ">
+    <svg width="16" height="16"><use id="music-icon" href="#icon-sound-off"/></svg>
+  </button>
+  <script>
+    (function() {
+      const audio = document.getElementById('bg-music');
+      const icon  = document.getElementById('music-icon');
+      let playing = false;
+      function setIcon(on) { icon.setAttribute('href', on ? '#icon-sound-on' : '#icon-sound-off'); }
+      // Try autoplay; most browsers require a user gesture first
+      function startMusic() {
+        audio.volume = 0.35;
+        audio.play().then(() => { playing = true; setIcon(true); })
+             .catch(() => { playing = false; setIcon(false); });
+      }
+      window.toggleMusic = function() {
+        if (playing) { audio.pause(); playing = false; setIcon(false); }
+        else         { audio.volume = 0.35; audio.play(); playing = true; setIcon(true); }
+      };
+      // Attempt autoplay immediately, then on first user interaction
+      startMusic();
+      document.addEventListener('click', function tryStart() {
+        if (!playing) startMusic();
+        document.removeEventListener('click', tryStart);
+      }, { once: true });
+    })();
+  </script>
+
+  <!-- Hero Logo (above navbar) -->
+  <div class="hero-brand">
+    <img src="assets/zorritofinallogo.png" alt="Zorrito Finance" class="hero-logo" />
+  </div>
+
+  <header>
+    <div class="logo">
+      <span>Zorr<span>ito</span></span>
+    </div>
+    <p class="header-tagline" data-i18n="hero-tagline">No-loss lottery on Celo. Save, play, and win.</p>
+    <div style="display:flex;align-items:center;gap:8px;min-width:0;overflow:visible;">
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span id="lang-label">🌐 EN</span>
+          <svg class="lang-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+          <button onclick="pickLang('en')">🌐 EN</button>
+          <button onclick="pickLang('es')">🌐 ES</button>
+          <button onclick="pickLang('pt')">🌐 PT</button>
+        </div>
+      </div>
+      <!-- MiniPay badge — hidden by default, shown via JS when isMiniPay() -->
+      <span id="minipay-badge" style="display:none;align-items:center;gap:5px;flex-shrink:1;min-width:0;max-width:160px;overflow:hidden;background:#ffffff;border:1px solid rgba(53,208,127,0.3);border-radius:8px;padding:6px 10px;">
+        <svg style="flex-shrink:0;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span style="flex-shrink:0;font-size:0.75rem;font-weight:700;color:var(--green);">MiniPay</span>
+        <span class="minipay-addr" style="font-size:0.75rem;color:var(--muted);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;"></span>
+      </span>
+      <!-- Lemon badge — hidden by default, shown via JS when isLemon() -->
+      <span id="lemon-badge" style="display:none;align-items:center;gap:5px;flex-shrink:1;min-width:0;max-width:160px;overflow:hidden;background:rgba(253,204,13,0.12);border:1px solid rgba(253,204,13,0.35);border-radius:8px;padding:6px 10px;">
+        <svg style="flex-shrink:0;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f5c800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <span style="flex-shrink:0;font-size:0.75rem;font-weight:700;color:#f5c800;">Lemon</span>
+        <span class="lemon-addr" style="font-size:0.75rem;color:var(--muted);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;"></span>
+      </span>
+      <button id="btn-connect" style="flex-shrink:0;">
+        <svg id="btn-connect-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="3"/>
+          <path d="M16 12h.01"/>
+          <path d="M2 10h20"/>
+        </svg>
+        <span data-i18n="connect-wallet">Connect Wallet</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SEO headings (visually hidden, read by crawlers) -->
+    <h1 class="seo-h1">Zorrito — No-Loss Lottery on Celo: Save USDT & Win the Annual Prize</h1>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Desktop layout: 3 columns.
+         display:contents on mobile → cards stack normally.
+         CSS grid on desktop ≥860px → 3 side-by-side columns.
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="desktop-layout">
+
+    <!-- ── COL 1: Fox · Deposit · Withdraw ── -->
+    <div class="desktop-col-left">
+
+    <!-- ── Fox Status ── -->
+    <div class="card fox-card">
+      <div class="card-title" data-i18n="your-fox">Your Fox</div>
+
+      <!-- Top row: image + info -->
+      <div class="fox-columns">
+
+        <!-- Left: fox image -->
+        <div class="fox-img-col">
+          <img id="fox-image" src="assets/cofre.png" alt="Your fox" class="fox-float" />
+          <div class="fox-bubble" id="fox-bubble"></div>
+        </div>
+
+        <!-- Right: fox info (no buttons) -->
+        <div class="fox-info-col">
+          <div class="fox-status-line">
+            <span id="fox-status-text" style="color:var(--muted)">Connect wallet</span>
+          </div>
+          <div id="fox-dead-timer" class="fox-timer"></div>
+          <div class="fox-meta">
+            <span id="fox-streak">—</span>
+          </div>
+          <div class="fox-meta">
+            <span id="fox-best-streak" style="color:var(--muted);font-size:0.78rem;"></span>
+          </div>
+          <div class="fox-meta">
+            <span id="fox-fish-count" style="font-weight:600;">🐟 0 fish</span>
+          </div>
+          <div id="fox-eff-tickets" style="font-size:0.78rem;margin-top:2px;font-weight:600;"></div>
+          <div id="streak-window-hint" style="font-size:0.75rem;margin-top:6px;line-height:1.4;"></div>
+        </div>
+
+      </div>
+
+      <!-- Bottom: full-width action buttons -->
+      <div class="fox-actions">
+        <button id="btn-feed" class="btn-action btn-feed">Connect Wallet</button>
+        <a id="btn-tweet" class="btn-tweet" href="#" target="_blank" rel="noopener" style="display:none;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.633L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span data-i18n="tweet-btn">Share streak on X</span>
+        </a>
+      </div>
+
+      <p class="fox-desc-text" data-i18n="fox-desc">
+        Feed your fox daily with 1 USDT to stay in the annual draw. Miss a day and your fox is out, but your funds stay safe in Aave.
+      </p>
+    </div>
+
+    <!-- ── Popups ── -->
+    <div id="popup-overlay" onclick="closePopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.70);backdrop-filter:blur(4px);z-index:10000;align-items:center;justify-content:center;"></div>
+    <div id="popup-box" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10001;background:var(--surface);border:2px solid var(--border);border-radius:22px;padding:32px 28px;max-width:340px;width:calc(100% - 40px);text-align:center;box-shadow:4px 5px 0px rgba(200,86,0,0.22),0 20px 60px rgba(0,0,0,0.3);font-family:var(--font);">
+      <div id="popup-img" style="font-size:3.5rem;margin-bottom:16px;line-height:1;"></div>
+      <div id="popup-title" style="font-size:1.4rem;font-weight:800;margin-bottom:10px;font-family:var(--font);"></div>
+      <div id="popup-body" style="font-size:0.9rem;color:var(--muted);line-height:1.6;margin-bottom:22px;font-family:var(--font);"></div>
+      <button onclick="closePopup()" style="background:linear-gradient(160deg,#FF9A2F 0%,#FD840E 55%,#E06800 100%);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-weight:800;font-size:1rem;cursor:pointer;width:100%;font-family:var(--font);box-shadow:0 5px 0px rgba(170,65,0,0.42),inset 0 1px 0 rgba(255,255,255,0.22);transition:transform 0.12s ease,box-shadow 0.12s ease;" onmousedown="this.style.transform='translateY(4px)';this.style.boxShadow='0 1px 0px rgba(170,65,0,0.42)'" onmouseup="this.style.transform='';this.style.boxShadow='0 5px 0px rgba(170,65,0,0.42),inset 0 1px 0 rgba(255,255,255,0.22)'" ontouchstart="this.style.transform='translateY(4px)';this.style.boxShadow='0 1px 0px rgba(170,65,0,0.42)'" ontouchend="this.style.transform='';this.style.boxShadow='0 5px 0px rgba(170,65,0,0.42),inset 0 1px 0 rgba(255,255,255,0.22)'">Entendido</button>
+    </div>
+    <script>
+      function showPopup(img, title, body) {
+        document.getElementById("popup-img").innerHTML   = img;
+        document.getElementById("popup-title").textContent = title;
+        document.getElementById("popup-body").innerHTML   = body;
+        document.getElementById("popup-overlay").style.display = "flex";
+        document.getElementById("popup-box").style.display     = "block";
+      }
+      function closePopup() {
+        document.getElementById("popup-overlay").style.display = "none";
+        document.getElementById("popup-box").style.display     = "none";
+      }
+    </script>
+
+    <!-- ── Deposit ── -->
+    <h2 class="seo-h1">Deposit USDT and Buy Lottery Tickets on Celo</h2>
+    <div class="card">
+      <div class="card-title"><img src="assets/usdt-logo.png" alt="USDT" /><span data-i18n="buy-fish">Buy Fish 🐟 · Deposit USDT</span></div>
+      <!-- Supply cap warning — shown by JS only when headroom is low -->
+      <div class="deposit-warn critical" id="deposit-warn-cap" style="display:none;"></div>
+      <div class="fish-presets">
+        <button class="fish-preset" data-amount="1">1 🐟</button>
+        <button class="fish-preset" data-amount="5">5 🐟</button>
+        <button class="fish-preset" data-amount="10">10 🐟</button>
+        <button class="fish-preset" data-amount="50">50 🐟</button>
+        <button class="fish-preset" data-amount="100">100 🐟</button>
+      </div>
+      <div class="input-col" style="margin-top:10px;">
+        <input id="input-deposit" type="number" min="1" step="1" placeholder="Custom amount (USDT)" data-i18n-placeholder="deposit-ph" />
+        <div class="input-row">
+          <button id="btn-max-deposit" class="btn-action btn-max" data-i18n="max-btn">Max</button>
+          <button id="btn-deposit" class="btn-action btn-deposit" data-i18n="deposit-btn">Deposit</button>
+        </div>
+      </div>
+      <div class="deposit-preview" id="deposit-preview" style="display:none;">
+        <span id="deposit-fish-preview"></span>
+      </div>
+      <p class="user-balance">
+        <span data-i18n="wallet-label">Wallet:</span> <span id="usdt-wallet-bal" style="color:var(--green);font-weight:600;">—</span> USDT &nbsp;·&nbsp;
+        <span data-i18n="in-pool">In pool:</span> <span id="user-balance-val">0.00</span> USDT &nbsp;·&nbsp; 1 USDT = 1 🐟
+      </p>
+    </div>
+
+    <!-- ── Withdraw ── -->
+    <div class="card">
+      <div class="card-title" data-i18n="withdraw-title">Withdraw USDT</div>
+      <div class="input-col">
+        <input id="input-withdraw" type="number" min="0" step="0.000001" placeholder="Amount" data-i18n-placeholder="withdraw-ph" />
+        <div class="input-row">
+          <button id="btn-max-withdraw" class="btn-action btn-max" data-i18n="max-btn">Max</button>
+          <button id="btn-withdraw" class="btn-action btn-withdraw" data-i18n="withdraw-btn">Withdraw</button>
+        </div>
+      </div>
+      <p class="user-balance"><span data-i18n="withdrawable-label">Withdrawable:</span> <span id="withdrawable-val">—</span> USDT</p>
+    </div>
+
+    </div><!-- /desktop-col-left -->
+
+    <!-- ── COL 2: Pool Stats · Streak · Countdown ── -->
+    <div class="desktop-col-mid">
+
+    <!-- ── Pool Stats ── -->
+    <h2 class="seo-h1">Live Pool Stats — Total USDT Saved and Aave Yield Earned</h2>
+    <div class="card">
+      <div class="card-title" data-i18n="pool-stats">Pool Stats</div>
+      <div class="stats-grid">
+        <div class="stat" style="grid-column: span 2;">
+          <div class="stat-label" data-i18n="total-pool">Total Pool</div>
+          <div class="stat-value green" id="stat-pool">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="yield-ready">Yield Ready</div>
+          <div class="stat-value gold" id="stat-yield">—</div>
+        </div>
+        <div class="stat" style="grid-column: span 3;">
+          <div class="stat-label"><img src="assets/aave-logo.png" alt="Aave" /><img src="assets/usdt-logo.png" alt="USDT" /><span data-i18n="apy-label">Aave V3 USDT Supply APY · live</span></div>
+          <div class="stat-value green" style="font-size:1rem;display:flex;align-items:center;gap:8px;">
+            <span class="live-apy" id="stat-apy">fetching...</span>
+            <span style="width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="players">Players</div>
+          <div class="stat-value" id="stat-players">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="my-deposit">My Deposit</div>
+          <div class="stat-value" id="stat-mydeposit">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">🗓️ <span data-i18n="my-streak-label">My Streak</span></div>
+          <div class="stat-value" id="stat-mystreak" style="color:var(--orange);">—</div>
+        </div>
+        <div class="stat" style="grid-column: span 3;">
+          <div class="stat-label">🎫 <span data-i18n="my-eff-tickets-label">My Effective Tickets</span></div>
+          <div class="stat-value" id="stat-myefftix" style="color:var(--orange);">—</div>
+        </div>
+        <div class="stat" style="grid-column: span 3;">
+          <div class="stat-label" data-i18n="winning-chance">My Winning Chance</div>
+          <div id="stat-odds" class="odds-display">
+            <span class="odds-pct">—</span>
+            <span class="odds-detail" id="odds-detail" data-i18n="odds-hint">Connect wallet to see your odds</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Streak Multiplier Info ── -->
+    <h2 class="seo-h1">How the Daily Streak Multiplier Increases Your Winning Odds</h2>
+    <div class="card">
+      <div class="card-title" data-i18n="streak-mult-title">🔥 Streak Multiplier — Save Daily, Win More</div>
+      <p style="font-size:0.8rem;color:#444;line-height:1.6;margin-bottom:12px;" data-i18n="streak-mult-desc">
+        The more consecutive days you feed your fox, the more effective tickets you get — up to 5× your fish count. Bigger deposits still matter, but daily savers earn a multiplier on top.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.78rem;">
+        <div style="background:rgba(253,132,14,0.06);border:1px solid rgba(253,132,14,0.2);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#666;" data-i18n="tier-1-label">&lt; 7 days</span>
+          <span style="font-weight:800;color:#444;">1×</span>
+        </div>
+        <div style="background:rgba(253,132,14,0.06);border:1px solid rgba(253,132,14,0.2);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#666;" data-i18n="tier-2-label">7–29 days</span>
+          <span style="font-weight:800;color:var(--orange);">1.5×</span>
+        </div>
+        <div style="background:rgba(253,132,14,0.09);border:1px solid rgba(253,132,14,0.25);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#666;" data-i18n="tier-3-label">30–89 days</span>
+          <span style="font-weight:800;color:var(--orange);">2×</span>
+        </div>
+        <div style="background:rgba(253,132,14,0.09);border:1px solid rgba(253,132,14,0.25);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#666;" data-i18n="tier-4-label">90–179 days</span>
+          <span style="font-weight:800;color:var(--orange);">3×</span>
+        </div>
+        <div style="background:rgba(253,132,14,0.13);border:1px solid rgba(253,132,14,0.3);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#666;" data-i18n="tier-5-label">180–364 days</span>
+          <span style="font-weight:800;color:var(--orange);">4×</span>
+        </div>
+        <div style="background:rgba(253,132,14,0.16);border:1px solid rgba(253,132,14,0.4);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#666;" data-i18n="tier-6-label">365+ days 🏆</span>
+          <span style="font-weight:800;color:var(--orange);font-size:0.9rem;">5×</span>
+        </div>
+      </div>
+      <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;line-height:1.5;" data-i18n="streak-mult-note">
+        Effective tickets = fish × multiplier. Security unchanged — multipliers are deterministic and public, they don't affect the randomness of the draw.
+      </p>
+    </div>
+
+    <!-- ── Draw Countdown ── -->
+    <div class="card">
+      <div class="card-title" data-i18n="next-draw">Next Annual Draw · Jan 1st</div>
+      <div class="countdown-wrap">
+        <div class="countdown-label" data-i18n="time-remaining">Time Remaining</div>
+        <div class="countdown-timer" id="countdown">--:--:--</div>
+      </div>
+      <div id="yield-progress" class="yield-progress">
+        <span class="yp-hint" data-i18n="yp-hint">Connect wallet to see yield progress.</span>
+      </div>
+      <button id="btn-draw" disabled style="margin-top:12px;display:none;">Trigger Draw</button>
+    </div>
+
+    </div><!-- /desktop-col-mid -->
+
+    <!-- ── COL 3: Leaderboard · Winners · Agent ── -->
+    <div class="desktop-col-right">
+
+    <!-- ── Streak Leaderboard ── -->
+    <h2 class="seo-h1">Annual Prize Draw — January 1st Verifiable Random Winner</h2>
+    <div class="card">
+      <div class="card-title" data-i18n="leaderboard-title">🏆 Top Players</div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;" data-i18n="leaderboard-sub">Sorted by winning chance · 🎟️ = effective tickets (deposit × streak multiplier)</div>
+      <div id="leaderboard-list">
+        <p class="empty-state" data-i18n="leaderboard-empty">Connect wallet to load leaderboard</p>
+      </div>
+    </div>
+
+    <!-- ── Winners ── -->
+    <div class="card">
+      <div class="card-title" data-i18n="winners-title">Recent Winners</div>
+      <div class="winner-list" id="winner-list">
+        <p class="empty-state" data-i18n="winners-empty">Connect wallet to load winners</p>
+      </div>
+    </div>
+
+    <!-- ── Agent Access ── -->
+    <div class="card" style="padding-bottom:0;">
+      <button
+        id="agent-toggle"
+        onclick="(function(){const b=document.getElementById('agent-body');const a=document.getElementById('agent-arrow');const open=b.style.display!=='none';b.style.display=open?'none':'block';a.style.transform=open?'rotate(0deg)':'rotate(180deg)';})()"
+        style="width:100%;background:none;border:none;padding:0 0 18px 0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--text);"
+      >
+        <span class="card-title" style="margin:0;" data-i18n="agent-card-title">🤖 Agent Access · x402</span>
+        <svg id="agent-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;transition:transform 0.2s;color:var(--muted);">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div id="agent-body" style="display:none;padding-bottom:18px;">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;line-height:1.5;" data-i18n="agent-card-desc">
+          AI agents can autonomously deposit USDT and feed foxes using the HTTP 402 payment protocol — no wallet UI needed. The agent sends USDT on Celo and gets a lottery entry in return.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+          <div class="addr-box" style="margin-bottom:0;">
+            <span class="addr-label" data-i18n="deposit-ep-label">Deposit endpoint</span>
+            POST /api/agent?action=deposit&amp;beneficiary=0x...&amp;amount=10
+          </div>
+          <div class="addr-box" style="margin-bottom:0;">
+            <span class="addr-label" data-i18n="feed-ep-label">Feed endpoint (daily)</span>
+            POST /api/agent?action=feed&amp;beneficiary=0x...
+          </div>
+          <div class="addr-box" style="margin-bottom:0;">
+            <span class="addr-label" data-i18n="status-ep-label">Status endpoint (free)</span>
+            GET /api/agent?action=status&amp;address=0x...
+          </div>
+        </div>
+        <a href="docs.html#agent" style="font-size:0.8rem;color:var(--green);font-weight:600;" data-i18n="agent-docs-link">How to integrate →</a>
+      </div>
+    </div><!-- /agent card -->
+
+    </div><!-- /desktop-col-right -->
+
+    </div><!-- /desktop-layout -->
+
+  </main>
+
+  <footer>
+    <span data-i18n="footer-tagline">Lotería sin pérdidas en Celo. Ahorrá, jugá y ganá.</span>
+    &nbsp;·&nbsp; <a href="docs.html" style="color:var(--green);text-decoration:none;" data-i18n="footer-docs-link">How it works</a>
+    &nbsp;·&nbsp; <a href="stats.html" style="color:var(--green);text-decoration:none;" data-i18n="footer-stats-link">📊 Stats</a>
+    &nbsp;·&nbsp; <a href="agent.html" style="color:var(--green);text-decoration:none;">🤖 Agent</a>
+    &nbsp;·&nbsp; <a href="terms.html" style="color:var(--green);text-decoration:none;">Terms</a>
+    &nbsp;·&nbsp; <a href="privacy.html" style="color:var(--green);text-decoration:none;">Privacy</a>
+    &nbsp;·&nbsp; <span class="network-badge" style="display:inline-flex;vertical-align:middle;"><img src="assets/celo-logo.png" alt="Celo" />Celo</span>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="lang.js"></script>
+  <script>
+  /* ── Onboarding Slider ─────────────────────────────────────────── */
+  (function () {
+    const onb = document.getElementById('onboarding');
+    if (!onb) return;
+
+    // Show only on first visit
+    if (localStorage.getItem('zorrito-onboarded') === '1') {
+      onb.style.display = 'none';
+      return;
+    }
+
+    // Pick language (saved preference or default es)
+    const lang = localStorage.getItem('zorrito-lang') || 'es';
+    const T = (window.ZORRITO_T || {})[lang] || (window.ZORRITO_T || {})['es'] || {};
+    const t = k => T[k] || '';
+
+    const slides = [
+      {
+        img:   'assets/zorritofinallogo.png',
+        title: t('onb-slide1-title') || 'Lotería sin pérdidas',
+        sub:   t('onb-slide1-sub')   || 'Tu dinero genera rendimiento y podés retirarlo cuando quieras.',
+      },
+      {
+        img:   'assets/onboarding-daily.png',
+        title: t('onb-slide2-title') || '1 USDT por día',
+        sub:   t('onb-slide2-sub')   || 'Depositás cada día en Celo. Si no lo hacés, tu zorro muere.',
+      },
+      {
+        img:   'assets/onboarding-streak.png',
+        title: t('onb-slide3-title') || 'Sumá racha, sumá tickets',
+        sub:   t('onb-slide3-sub')   || 'Cuantos más días seguidos, más tickets y más chances de ganar.',
+      },
+      {
+        img:   'assets/onboarding-winner.png',
+        title: t('onb-slide4-title') || 'Un premio cada año',
+        sub:   t('onb-slide4-sub')   || 'El 1 de enero se sortean las ganancias entre todos los zorros vivos. ¿Listo para jugar?',
+      },
+    ];
+
+    const imgEl    = document.getElementById('onb-img');
+    const titleEl  = document.getElementById('onb-title');
+    const subEl    = document.getElementById('onb-sub');
+    const dotsEl   = document.getElementById('onb-dots');
+    const dots     = dotsEl.querySelectorAll('.onb-dot');
+    const launchEl = document.getElementById('onb-launch');
+    const hintEl   = document.getElementById('onb-tap-hint');
+    let current    = 0;
+
+    launchEl.textContent = t('onb-launch') || '🚀 Launch App';
+    hintEl.textContent   = t('onb-tap-hint') || 'tap to continue →';
+
+    function renderSlide(i, dir) {
+      current = i;
+      const s = slides[i];
+
+      // Fade out
+      [imgEl, titleEl, subEl].forEach(el => el.classList.add('onb-fade'));
+
+      setTimeout(() => {
+        imgEl.src          = s.img;
+        titleEl.textContent = s.title;
+        subEl.textContent  = s.sub;
+
+        // On last slide, hide tap hint
+        hintEl.style.opacity = (i === slides.length - 1) ? '0' : '0.7';
+
+        // Fade in
+        [imgEl, titleEl, subEl].forEach(el => el.classList.remove('onb-fade'));
+      }, 220);
+
+      // Update dots
+      dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+    }
+
+    function next() {
+      if (current < slides.length - 1) renderSlide(current + 1);
+      else launch();
+    }
+
+    function launch() {
+      localStorage.setItem('zorrito-onboarded', '1');
+      onb.style.transition = 'opacity 0.35s ease';
+      onb.style.opacity    = '0';
+      setTimeout(() => { onb.style.display = 'none'; }, 360);
+    }
+
+    renderSlide(0);
+
+    // Tap card to advance (not on the button)
+    document.getElementById('onb-card').addEventListener('click', function (e) {
+      if (!e.target.closest('#onb-launch')) next();
+    });
+    launchEl.addEventListener('click', function (e) { e.stopPropagation(); launch(); });
+
+    // Swipe support
+    let tx = 0;
+    const card = document.getElementById('onb-card');
+    card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    card.addEventListener('touchend', e => {
+      const dx = tx - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 50) {
+        if (dx > 0) next();
+        else if (current > 0) renderSlide(current - 1);
+      }
+    }, { passive: true });
+  })();
+  </script>
+
+  <script type="module" src="app.js"></script>
+  <script>
+    function toggleLangMenu(e) {
+      e.stopPropagation();
+      document.getElementById('lang-menu').classList.toggle('open');
+    }
+    function pickLang(lang) {
+      document.getElementById('lang-menu').classList.remove('open');
+      zorritoSetLang(lang);
+    }
+    document.addEventListener('click', function() {
+      document.getElementById('lang-menu')?.classList.remove('open');
+    });
+  </script>
+</body>
+</html>

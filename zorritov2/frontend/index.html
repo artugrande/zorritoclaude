@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="home-page-title">Zorrito V2 — Ahorrá USDT en Celo y ganá un premio extra semanal</title>
+
+  <!-- ── SEO ─────────────────────────────────────────────────────────────── -->
+  <meta name="description" content="Ahorrá USDT en Celo todos los días, ganá rendimiento de Aave y sumá chances al premio extra semanal. Tus fondos siempre seguros — retirá cuando quieras. Disponible en MiniPay.">
+  <meta name="keywords" content="zorrito, celo, minipay, ahorro usdt, no-loss savings, aave celo, premio semanal, lottery sin perdidas, defi celo, savings dapp, prize savings, self.xyz">
+  <meta name="author" content="Zorrito">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <link rel="canonical" href="https://www.zorrito.app/">
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+
+  <!-- ── Open Graph (Facebook / LinkedIn / Telegram / WhatsApp) ─────────── -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Zorrito V2">
+  <meta property="og:title" content="Zorrito V2 — Ahorrá USDT en Celo, ganá un premio extra semanal">
+  <meta property="og:description" content="Plataforma de ahorro en USDT sobre Celo + Aave. Cada lunes se sortea el rendimiento entre los depositores. Disponible en MiniPay.">
+  <meta property="og:url" content="https://www.zorrito.app/">
+  <meta property="og:image" content="https://www.zorrito.app/assets/zorritoimage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="646">
+  <meta property="og:image:alt" content="Zorrito V2 — Plataforma de ahorro en Celo">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+
+  <!-- ── Twitter / X ───────────────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ZorritoApp">
+  <meta name="twitter:creator" content="@ZorritoApp">
+  <meta name="twitter:title" content="Zorrito V2 — Ahorrá USDT en Celo, ganá un premio extra semanal">
+  <meta name="twitter:description" content="Plataforma de ahorro en USDT sobre Celo + Aave. Cada lunes se sortea el rendimiento entre los depositores. Disponible en MiniPay.">
+  <meta name="twitter:image" content="https://www.zorrito.app/assets/zorritoimage.png">
+  <meta name="twitter:image:alt" content="Zorrito V2 — Plataforma de ahorro en Celo">
+
+  <!-- ── JSON-LD: Organization + WebSite + FAQPage (AEO/GEO) ─────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.zorrito.app/#org",
+        "name": "Zorrito",
+        "url": "https://www.zorrito.app/",
+        "logo": "https://www.zorrito.app/assets/zorritofinallogo.png",
+        "description": "Plataforma de ahorro en USDT sobre Celo con premio extra semanal financiado por el rendimiento de Aave.",
+        "sameAs": [
+          "https://twitter.com/ZorritoApp",
+          "https://celo.org"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.zorrito.app/#website",
+        "url": "https://www.zorrito.app/",
+        "name": "Zorrito V2",
+        "description": "Ahorrá USDT en Celo, ganá rendimiento de Aave y sumá chances al premio extra semanal.",
+        "publisher": { "@id": "https://www.zorrito.app/#org" },
+        "inLanguage": ["es", "en", "pt"]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Qué es Zorrito?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Zorrito es una plataforma de ahorro en USDT sobre Celo. Depositás USDT, tu dinero genera rendimiento en Aave V3, y cada lunes ese rendimiento se sortea como premio extra entre todos los depositores. Podés retirar tu USDT en cualquier momento sin pérdida."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo gano más chances en el premio extra semanal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Tus chances se calculan como depósito × streakDay × (10 + referidos) / 10 × bonus de Self. Ahorrá todos los días para multiplicar tu streak (1× a 7×), invitá amigos para sumar +10% por cada referido activo, y verificá tu pasaporte con Self.xyz para un +25% permanente."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Es seguro? ¿Puedo perder mi USDT?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No podés perder tu USDT. Tu depósito original siempre está disponible para retiro. Solo se sortea el rendimiento generado por Aave. El contrato es open-source y verificado en Celoscan."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Funciona con MiniPay?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sí. Zorrito V2 está optimizado para MiniPay en Celo. Abrí www.zorrito.app directo desde el browser de MiniPay y conectás automáticamente."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuándo se hace el sorteo?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El premio extra se sortea cada lunes a las 10:05 UTC. El ganador recibe el yield acumulado de Aave de toda la plataforma durante la semana."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── V2 extras ── */
+
+    /* ─ New streak track: 7 numbered circles connected by lines ─ */
+    .streak-track {
+      position:relative;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 4px 22px; margin:14px 0 6px;
+    }
+    /* The connector line behind the circles (gray base) */
+    .streak-track::before {
+      content:""; position:absolute; left:22px; right:22px; top:50%;
+      height:4px; transform:translateY(-50%);
+      background:#ececec; border-radius:99px; z-index:0;
+    }
+    /* The progress overlay (orange, width set inline via JS) */
+    .streak-progress {
+      position:absolute; left:22px; top:50%; transform:translateY(-50%);
+      height:4px; width:0; border-radius:99px; z-index:0;
+      background:linear-gradient(90deg,#FF9A2F 0%,#FD840E 60%,#E06800 100%);
+      transition:width .35s ease;
+    }
+    .streak-node {
+      position:relative; z-index:1;
+      width:36px; height:36px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.92rem; font-weight:800;
+      background:#f0f0f0; color:#a0a0a0;
+      border:2.5px solid transparent;
+      transition:all .25s ease;
+    }
+    .streak-node.done {
+      background:#fff3e0; color:var(--orange); border-color:rgba(253,132,14,0.3);
+    }
+    .streak-node.current {
+      background:#fff; color:var(--orange);
+      border-color:var(--orange);
+      box-shadow:0 0 0 4px rgba(253,132,14,0.18);
+      transform:scale(1.08);
+    }
+    .streak-node.day7 { font-size:1rem; }
+    .streak-node.day7.done, .streak-node.day7.current {
+      background:linear-gradient(160deg,#FFD580 0%,#FF9A2F 60%,#FD840E 100%);
+      color:#fff; border-color:#E06800;
+    }
+    /* Sparkle decoration for day 7 — pure CSS dots */
+    .streak-node.day7::before, .streak-node.day7::after {
+      content:""; position:absolute; width:6px; height:6px; border-radius:50%;
+      opacity:0; transition:opacity .3s ease;
+    }
+    .streak-node.day7::before { top:-3px;  right:-6px; background:#FFD700; box-shadow:0 0 8px #FFD700; }
+    .streak-node.day7::after  { bottom:-3px; left:-6px;  background:#00D4B4; box-shadow:0 0 8px #00D4B4; }
+    .streak-node.day7.done::before, .streak-node.day7.done::after,
+    .streak-node.day7.current::before, .streak-node.day7.current::after { opacity:1; }
+    .streak-node.day7.done .sparkle-extra {
+      position:absolute; width:5px; height:5px; border-radius:50%;
+      background:#E63946; box-shadow:0 0 8px #E63946; top:50%; left:-9px;
+    }
+    .streak-multiplier-big {
+      text-align:center; font-size:1.6rem; font-weight:800; color:var(--orange);
+      letter-spacing:-0.02em; margin-top:6px;
+    }
+    .streak-multiplier-big span.lbl { font-size:0.75rem; color:var(--muted); font-weight:600; margin-left:6px; letter-spacing:0; }
+
+    /* ─ Stats grid resilience: prevent column from getting stuck wide when
+       parent area shrinks (e.g. when Reown wallet sidebar opens) ─ */
+    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .stat { min-width: 0; }
+    .stat .stat-label { line-height: 1.25; overflow-wrap: anywhere; }
+    .stat .stat-value { overflow-wrap: anywhere; }
+    /* When viewport is mid-narrow (desktop with sidebar open), compact the stats */
+    @media (max-width: 1100px) and (min-width: 769px) {
+      .stats-grid { gap: 8px; }
+      .stat       { padding: 10px 10px; }
+      .stat .stat-label { font-size: 0.62rem; letter-spacing: 0.04em; }
+      .stat .stat-value { font-size: 1.05rem; }
+    }
+
+    /* Legacy streak-dot classes preserved for backward compat (not used by new track) */
+    .streak-row { display:flex; gap:6px; justify-content:center; margin:12px 0 8px; }
+    .streak-dot { width:34px; height:34px; border-radius:50%;
+      background:#f0f0f0; display:flex; align-items:center; justify-content:center;
+      font-size:0.72rem; font-weight:700; color:#999; border:2px solid transparent; }
+    .streak-dot.active  { background:#fff3e0; color:var(--orange); border-color:var(--orange); }
+    .streak-dot.current { background:var(--orange); color:#fff; border-color:var(--orange); }
+
+    /* ─ Hero copy under header ─ */
+    .hero-copy {
+      max-width:620px; margin:8px auto 18px;
+      padding:0 18px;
+      font-size:0.92rem; line-height:1.55; color:var(--text);
+      text-align:center;
+    }
+    .hero-copy strong { color:var(--orange); }
+
+    /* ─ Generic modal (used by Customizer + Onboarding) ─ */
+    .zmodal-backdrop {
+      position:fixed; inset:0; z-index:99997;
+      background:rgba(0,0,0,0.55); backdrop-filter:blur(3px);
+      display:none; align-items:flex-start; justify-content:center;
+      padding:24px 16px; overflow-y:auto;
+    }
+    .zmodal-backdrop.open { display:flex; }
+    .zmodal-panel {
+      background:#fff; border:2px solid var(--border);
+      border-radius:22px; max-width:460px; width:100%;
+      padding:20px 20px 22px;
+      box-shadow:0 18px 60px rgba(0,0,0,.28);
+      position:relative;
+      margin:auto 0;
+    }
+    .zmodal-close {
+      position:absolute; top:10px; right:10px;
+      width:32px; height:32px; border-radius:50%;
+      border:none; background:#f5f5f5; color:#555;
+      font-size:1.1rem; font-weight:700; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--font);
+    }
+    .zmodal-close:hover { background:#ececec; color:#000; }
+    .zmodal-title { font-size:1.1rem; font-weight:800; color:var(--text); margin-bottom:14px; padding-right:32px; }
+
+    /* ─ Onboarding overlay (4 slides) ─ */
+    .onb-overlay {
+      position:fixed; inset:0; z-index:99998;
+      display:none; align-items:center; justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,0.72);
+      backdrop-filter:blur(4px);
+    }
+    .onb-overlay.open { display:flex; }
+    .onb-card {
+      background:rgba(255,255,255,0.97);
+      border:2.5px solid var(--border); border-radius:26px;
+      padding:34px 26px 22px; max-width:380px; width:100%;
+      text-align:center; cursor:pointer; user-select:none;
+      box-shadow:4px 5px 0 rgba(200,86,0,0.22), 0 24px 70px rgba(0,0,0,.22);
+    }
+    .onb-emoji-wrap {
+      width:120px; height:120px; margin:0 auto 16px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:5rem;
+      transition:opacity .25s ease, transform .25s ease;
+    }
+    .onb-emoji-wrap.fade { opacity:0; transform:scale(0.92); }
+    .onb-title { font-size:1.6rem; font-weight:800; color:var(--text);
+      margin-bottom:10px; font-family:var(--font); line-height:1.2;
+      transition:opacity .25s ease; }
+    .onb-sub { font-size:0.92rem; color:var(--muted); line-height:1.6;
+      margin-bottom:20px; font-family:var(--font);
+      transition:opacity .25s ease; }
+    .onb-title.fade, .onb-sub.fade { opacity:0; }
+    .onb-dots { display:flex; justify-content:center; gap:7px; margin-bottom:16px; }
+    .onb-dot { width:8px; height:8px; border-radius:50%; background:#ddd; transition:all .25s ease; }
+    .onb-dot.active { background:var(--orange); width:22px; border-radius:4px; }
+    .onb-btn {
+      width:100%; padding:14px 24px;
+      background:linear-gradient(160deg,#FF9A2F 0%,#FD840E 55%,#E06800 100%);
+      color:#fff; border:none; border-radius:14px;
+      font-weight:800; font-size:1rem; cursor:pointer; font-family:var(--font);
+      box-shadow:0 5px 0 rgba(170,65,0,0.42), inset 0 1px 0 rgba(255,255,255,0.22);
+      margin-bottom:10px;
+    }
+    .onb-btn:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(170,65,0,0.42); }
+    .onb-tap-hint { font-size:0.72rem; color:var(--muted); opacity:0.75; font-family:var(--font); }
+
+    /* ─ Compact "Personalizar IA" button below fox ─ */
+    .fox-customizer-btn {
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      width:100%; margin-top:10px; padding:9px 12px;
+      background:#fff; border:1.5px solid rgba(253,132,14,0.35);
+      border-radius:11px; color:var(--orange);
+      font-size:0.82rem; font-weight:700; cursor:pointer;
+      font-family:var(--font);
+      transition:background .15s, border-color .15s;
+    }
+    .fox-customizer-btn:hover { background:#fff8ef; border-color:var(--orange); }
+
+    /* ─ Share-on-X button ─ */
+    .btn-share-x {
+      display:none; align-items:center; justify-content:center; gap:8px;
+      width:100%; margin-top:8px; padding:10px 14px;
+      background:#000; color:#fff; border:none; border-radius:11px;
+      font-size:0.85rem; font-weight:700; cursor:pointer;
+      font-family:var(--font); text-decoration:none;
+      transition:opacity .15s;
+    }
+    .btn-share-x:hover { opacity:0.85; }
+    .btn-share-x.visible { display:flex; }
+
+    .trait-group { margin-bottom:12px; }
+    .trait-label { font-size:0.7rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.06em; color:var(--muted); margin-bottom:8px; }
+    .trait-pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .trait-pill { padding:6px 12px; border-radius:99px; border:1.5px solid #e0e0e0;
+      background:#fff; font-size:0.82rem; font-weight:600; cursor:pointer;
+      font-family:var(--font); color:var(--muted); transition:all .15s; }
+    .trait-pill:hover  { border-color:var(--orange); color:var(--orange); }
+    .trait-pill.active { border-color:var(--orange); background:#fff3e0; color:var(--orange); }
+
+    .fox-preview { width:100%; aspect-ratio:1; border-radius:16px; object-fit:cover;
+      border:2px solid var(--border); background:#f5f5f5; display:block; }
+    .fox-placeholder { width:100%; aspect-ratio:1; border-radius:16px; border:2px dashed #e0e0e0;
+      display:flex; align-items:center; justify-content:center;
+      flex-direction:column; gap:8px; background:#fafafa; }
+
+    .btn-save-action {
+      background: linear-gradient(160deg, #FF9A2F 0%, #FD840E 55%, #E06800 100%);
+      color:#fff; padding:14px 16px; font-size:1rem; font-weight:800;
+      width:100%; border-radius:14px; border:none; font-family:var(--font);
+      cursor:pointer; box-shadow:0 5px 0px rgba(170,65,0,0.42), inset 0 1px 0 rgba(255,255,255,0.22);
+      transition:transform .12s, box-shadow .12s;
+    }
+    .btn-save-action:not(:disabled):hover  { transform:translateY(-1px); box-shadow:0 6px 0px rgba(170,65,0,0.42), inset 0 1px 0 rgba(255,255,255,0.22); }
+    .btn-save-action:not(:disabled):active { transform:translateY(4px);  box-shadow:0 1px 0px rgba(170,65,0,0.42); }
+    .btn-save-action:disabled { background:#ddd; color:#aaa; cursor:not-allowed; box-shadow:0 3px 0px rgba(0,0,0,.1); }
+
+    .bonus-progress { font-size:.82rem; color:var(--orange); margin-top:8px;
+      padding:8px 12px; background:#fff3e0; border-radius:8px; }
+    .bonus-claimed  { font-size:.82rem; color:var(--green); margin-top:8px;
+      padding:8px 12px; background:#e8f5e9; border-radius:8px; }
+
+    .referral-box { display:flex; gap:8px; margin-top:10px; }
+    .referral-box input { flex:1; padding:10px; border:1.5px solid #e0e0e0;
+      border-radius:10px; font-size:0.85rem; color:var(--muted); background:#fafafa;
+      font-family:var(--font); }
+
+    .minipay-badge-inline {
+      display:none; align-items:center; gap:6px; flex-shrink:0;
+      background:#fff; border:1px solid rgba(53,208,127,0.3); border-radius:8px;
+      padding:6px 10px; white-space:nowrap;
+    }
+    .minipay-badge-inline #minipay-addr {
+      overflow:visible; text-overflow:clip;
+    }
+
+    /* USDT preset buttons (like V1 fish-presets) */
+    .usdt-presets { display:flex; gap:6px; flex-wrap:nowrap; margin-bottom:10px; }
+    .usdt-preset {
+      flex:1; min-width:0;
+      background:#fff; border:2px solid #e0e0e0; color:var(--text);
+      padding:7px 4px; border-radius:12px; font-size:0.82rem; font-weight:700;
+      cursor:pointer; text-align:center; white-space:nowrap;
+      font-family:var(--font);
+      box-shadow:0 2px 0px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,1);
+      transition:transform .12s, border-color .12s, color .12s, box-shadow .12s;
+    }
+    .usdt-preset:hover    { border-color:var(--orange); color:var(--orange); transform:translateY(-1px); box-shadow:0 3px 0px rgba(253,132,14,0.18); }
+    .usdt-preset:active   { transform:translateY(2px); box-shadow:none; }
+    .usdt-preset.selected { border-color:var(--orange); background:linear-gradient(145deg,rgba(253,132,14,0.12) 0%,rgba(253,132,14,0.06) 100%); color:var(--orange); }
+  </style>
+  <!-- PostHog analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: true,
+    });
+  </script>
+</head>
+<body>
+
+  <!-- ── Hero Logo ── -->
+  <div class="hero-brand">
+    <img src="assets/zorritofinallogo.png" alt="Zorrito V2" class="hero-logo" />
+  </div>
+
+  <!-- ── Header (mounted by nav-shared.js) ── -->
+  <div id="zv2-header"></div>
+
+  <main>
+  <div class="desktop-layout">
+
+  <!-- ══════════════════ COL LEFT: Fox · Deposit · Withdraw ══════════════════ -->
+  <div class="desktop-col-left">
+
+    <!-- Fox card -->
+    <div class="card fox-card">
+      <div class="card-title" data-i18n="home-fox-title">🦊 Tu Zorro</div>
+      <div class="fox-columns">
+        <div class="fox-img-col">
+          <img id="fox-image" src="assets/cofre.png" alt="Tu zorro" class="fox-float" />
+          <div class="fox-bubble" id="fox-bubble"></div>
+        </div>
+        <div class="fox-info-col">
+          <div class="fox-status-line">
+            <span id="fox-status-text" style="color:var(--muted)">Conectá tu wallet</span>
+          </div>
+          <div id="fox-dead-timer" class="fox-timer"></div>
+          <div class="fox-meta" id="fox-streak-line" style="display:none;">
+            <span>🔥</span><span id="fox-streak-val" style="color:var(--orange);font-weight:800;"></span>
+          </div>
+          <div class="fox-meta" id="fox-chances-line" style="display:none;">
+            <span>🎯</span><span id="fox-chances-val" style="font-weight:700;color:var(--orange);"></span>
+            <span style="color:var(--muted);font-size:0.75rem;" data-i18n="home-fox-chances-suffix">de ganar</span>
+          </div>
+          <div class="fox-meta" id="fox-deposit-line" style="display:none;">
+            <span>💰</span><span id="fox-deposit-val" style="font-weight:700;color:var(--green);"></span>
+          </div>
+          <div class="fox-meta" id="fox-savings-line" style="display:none;">
+            <span>🏦</span><span id="fox-savings-val" style="font-weight:700;color:var(--green);"></span>
+            <span style="font-size:0.75rem;color:var(--muted);" data-i18n="home-fox-savings-suffix">savings</span>
+          </div>
+        </div>
+      </div>
+      <div class="fox-actions">
+        <button id="btn-save" class="btn-save-action" disabled>Conectá tu wallet</button>
+        <button id="btn-claim-savings" class="btn-action btn-max" style="display:none;width:100%;" data-i18n="home-claim-savings-btn">
+          Reclamar Savings
+        </button>
+        <button class="fox-customizer-btn" id="btn-open-customizer" type="button" data-i18n="home-customize-fox-btn">
+          🎨 Personalizá tu zorro con IA →
+        </button>
+        <a id="btn-share-x" class="btn-share-x" href="#" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          <span data-i18n="home-share-streak-x">Compartir streak en X</span>
+        </a>
+      </div>
+      <p class="fox-desc-text" data-i18n-html="home-fox-desc">
+        Ahorrá todos los días para multiplicar tus chances. El rendimiento de Aave se reparte — y uno gana el <strong>premio extra semanal</strong>.
+      </p>
+    </div>
+
+    <!-- Deposit card -->
+    <div class="card">
+      <div class="card-title"><img src="assets/usdt-logo.png" alt="USDT"><span data-i18n="home-deposit-title">Depositar USDT</span></div>
+      <div class="usdt-presets">
+        <button class="usdt-preset" data-amount="0.25">0.25</button>
+        <button class="usdt-preset" data-amount="0.5">0.50</button>
+        <button class="usdt-preset" data-amount="1">1</button>
+        <button class="usdt-preset" data-amount="5">5</button>
+        <button class="usdt-preset" data-amount="10">10</button>
+        <button class="usdt-preset" data-amount="50">50</button>
+      </div>
+      <div class="input-col">
+        <input id="input-deposit" type="number" min="0.25" step="0.25" placeholder="Monto (USDT)" data-i18n-placeholder="home-deposit-input-ph">
+        <div class="input-row">
+          <button id="btn-max-deposit" class="btn-action btn-max" disabled data-i18n="home-max-btn">Max</button>
+          <button id="btn-deposit" class="btn-action btn-deposit" disabled data-i18n="home-deposit-btn">Depositar</button>
+        </div>
+      </div>
+      <p class="user-balance">
+        <span data-i18n="home-wallet-label">Wallet</span>: <span id="usdt-wallet-bal" style="color:var(--green);font-weight:600;">—</span> USDT
+        &nbsp;·&nbsp; <span data-i18n="home-in-pool-label">En pool</span>: <span id="user-balance-val">0.00</span> USDT
+      </p>
+      <p class="user-balance" style="margin-top:2px;" data-i18n="home-deposit-min">Mínimo: 0.25 USDT · Retirable en cualquier momento</p>
+    </div>
+
+    <!-- Withdraw card -->
+    <div class="card">
+      <div class="card-title" data-i18n="home-withdraw-title">💸 Retirar USDT</div>
+      <div class="input-col">
+        <input id="input-withdraw" type="number" min="0" step="0.000001" placeholder="Monto (vacío = todo)" data-i18n-placeholder="home-withdraw-input-ph">
+        <div class="input-row">
+          <button id="btn-max-withdraw" class="btn-action btn-max" disabled data-i18n="home-max-btn">Max</button>
+          <button id="btn-withdraw" class="btn-action btn-withdraw" disabled data-i18n="home-withdraw-btn">Retirar</button>
+        </div>
+      </div>
+      <p class="user-balance"><span data-i18n="home-withdrawable-label">Retirable</span>: <span id="withdrawable-val">—</span> USDT</p>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- ══════════════════ COL MID: Streak · Stats · Countdown ══════════════════ -->
+  <div class="desktop-col-mid">
+
+    <!-- Streak card (shown after first deposit + save) -->
+    <div class="card" id="card-streak" style="display:none;">
+      <div class="card-title" data-i18n="home-streak-title">📅 Streak Semanal · Multiplicador de chances</div>
+      <div class="streak-track" id="streak-track">
+        <div class="streak-progress" id="streak-progress-bar"></div>
+        <div class="streak-node"      id="streak-node-1">1</div>
+        <div class="streak-node"      id="streak-node-2">2</div>
+        <div class="streak-node"      id="streak-node-3">3</div>
+        <div class="streak-node"      id="streak-node-4">4</div>
+        <div class="streak-node"      id="streak-node-5">5</div>
+        <div class="streak-node"      id="streak-node-6">6</div>
+        <div class="streak-node day7" id="streak-node-7">7</div>
+      </div>
+      <div class="streak-multiplier-big" id="streak-multiplier">1× <span class="lbl">chances</span></div>
+      <div id="welcome-bonus-progress" style="display:none;"></div>
+      <p style="font-size:0.72rem;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5;" data-i18n="home-streak-desc">
+        El streak arranca con tu primer ahorro del día. Ahorrá 7 días seguidos para el multiplicador máximo. Se resetea cada lunes.
+      </p>
+    </div>
+
+    <!-- Pool Stats -->
+    <div class="card">
+      <div class="card-title" data-i18n="home-pool-stats-title">📊 Stats del Pool</div>
+      <div class="stats-grid">
+        <div class="stat" style="grid-column:span 2;">
+          <div class="stat-label" data-i18n="home-stat-total-deposited">Total Depositado</div>
+          <div class="stat-value green" id="stat-pool">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="home-stat-weekly-prize">Premio Semanal</div>
+          <div class="stat-value gold" id="stat-prize-pool">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="home-stat-depositors">🦊 Depositores</div>
+          <div class="stat-value" id="stat-depositors">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="home-stat-my-deposit">Mi Depósito</div>
+          <div class="stat-value" id="stat-mydeposit">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" data-i18n="home-stat-my-streak">🔥 Mi Streak</div>
+          <div class="stat-value" id="stat-mystreak" style="color:var(--orange);">—</div>
+        </div>
+        <div class="stat" style="grid-column:span 3;">
+          <div class="stat-label" data-i18n="home-stat-odds-label">🎯 Probabilidad de ganar</div>
+          <div class="odds-display">
+            <span class="odds-pct" id="stat-odds-pct">—</span>
+            <span class="odds-detail" id="stat-odds-detail" data-i18n="home-stat-odds-detail-default">Conectá tu wallet para ver tu probabilidad</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cómo ganar más chances -->
+    <div class="card" style="background:linear-gradient(145deg,#fff9f2 0%,#fff 100%);border-color:rgba(253,132,14,.2);">
+      <div class="card-title" data-i18n="home-chances-title">🎫 Cómo sumar más chances</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #f0e0d0;border-radius:10px;">
+          <span style="font-size:1.4rem;line-height:1;flex-shrink:0;">💰</span>
+          <div>
+            <div style="font-weight:700;font-size:0.85rem;" data-i18n="home-chances-deposit-title">Depositá más USDT</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;" data-i18n="home-chances-deposit-desc">Más depósito = más chances base. Cada USDT cuenta.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #f0e0d0;border-radius:10px;">
+          <span style="font-size:1.4rem;line-height:1;flex-shrink:0;">🔥</span>
+          <div>
+            <div style="font-weight:700;font-size:0.85rem;" data-i18n="home-chances-streak-title">Mantené el streak diario</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;" data-i18n="home-chances-streak-desc">Ahorrá 1 vez por día. El multiplicador crece día a día hasta ×7 el domingo.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #f0e0d0;border-radius:10px;">
+          <span style="font-size:1.4rem;line-height:1;flex-shrink:0;">🔗</span>
+          <div>
+            <div style="font-weight:700;font-size:0.85rem;" data-i18n="home-chances-refs-title">Traé referidos</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;" data-i18n="home-chances-refs-desc">Cada amigo que depositá con tu código suma +1× a tus chances permanentemente.</div>
+          </div>
+        </div>
+        <!-- Self.xyz row — content swapped by updateSelfVerificationUI() -->
+        <div id="self-verify-card" style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #f0e0d0;border-radius:10px;">
+          <img src="assets/selflogo.png" alt="Self" style="width:22px;height:22px;border-radius:5px;flex-shrink:0;margin-top:1px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.85rem;" data-i18n-html="home-chances-self-title">Verificate con Self <span style="font-size:0.72rem;background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.25);padding:1px 6px;border-radius:5px;font-weight:700;vertical-align:middle;">+25%</span></div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;" data-i18n="home-chances-self-desc">Verificá tu pasaporte con ZK proof · una sola vez · permanente</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px 12px;background:rgba(253,132,14,.07);border-radius:8px;font-size:0.75rem;color:var(--muted);text-align:center;" data-i18n-html="home-chances-formula-hint">
+        Chances = depósito × streak × (1 + referidos) × Self bonus &nbsp;·&nbsp; <a href="docs.html" style="color:var(--orange);">Ver fórmula completa</a>
+      </div>
+    </div>
+
+  </div><!-- /col-mid -->
+
+  <!-- ══════════════════ COL RIGHT: Countdown · Referral · Yield · Winners ══════════════════ -->
+  <div class="desktop-col-right">
+
+    <!-- Countdown (moved from col-mid — high-engagement card on top) -->
+    <div class="card">
+      <div class="card-title" data-i18n="home-countdown-title">⏳ Próximo Premio Extra</div>
+      <div class="countdown-wrap">
+        <div class="countdown-label" data-i18n="home-countdown-label">Tiempo Restante</div>
+        <div class="countdown-timer" id="countdown">—</div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);text-align:center;" data-i18n="home-countdown-desc">
+        Cada lunes · El rendimiento de Aave va al ganador
+      </div>
+    </div>
+
+    <!-- Referral card (shown after deposit) -->
+    <div class="card" id="card-referral" style="display:none;">
+      <div class="card-title" data-i18n="home-referral-title">🔗 Tu Código de Referido</div>
+      <div style="font-size:1.4rem;font-weight:800;letter-spacing:.1em;color:var(--orange);margin-bottom:8px;" id="stat-referral-code">—</div>
+      <div class="user-balance"><span data-i18n="home-active-refs-label">Referidos activos</span>: <strong id="stat-active-refs">0</strong></div>
+      <div class="referral-box">
+        <input type="text" id="referral-link" readonly placeholder="Conectá wallet para ver tu link" data-i18n-placeholder="home-referral-input-ph">
+        <button class="btn-action btn-max" style="white-space:nowrap;" id="btn-copy-referral" data-i18n="home-copy-btn">Copiar</button>
+      </div>
+    </div>
+
+    <!-- Yield Breakdown (moved from col-mid) -->
+    <div class="card">
+      <div class="card-title" data-i18n="home-yield-title">💰 Tu Rendimiento</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Aave APY row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(26,153,96,.06);border:1.5px solid rgba(26,153,96,.18);border-radius:10px;padding:10px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <img src="assets/aave-logo.png" alt="Aave" style="width:20px;height:20px;border-radius:50%;">
+            <div>
+              <div style="font-weight:700;font-size:0.85rem;color:var(--text);" data-i18n="home-yield-aave-title">Premio extra semanal</div>
+              <div style="font-size:0.72rem;color:var(--muted);" data-i18n="home-yield-aave-desc">El yield de Aave V3 financia el premio</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span id="stat-apy" style="font-weight:800;font-size:1rem;color:var(--green);">—</span>
+            <span style="width:7px;height:7px;background:var(--green);border-radius:50%;flex-shrink:0;animation:pulse 2s infinite;"></span>
+          </div>
+        </div>
+
+        <!-- Merit APR row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(253,132,14,.06);border:1.5px solid rgba(253,132,14,.25);border-radius:10px;padding:10px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:20px;line-height:1;">🎖️</span>
+            <div>
+              <div style="font-weight:700;font-size:0.85rem;color:var(--text);" data-i18n-html="home-yield-merit-title">Merit Rewards <span style="font-size:0.68rem;background:rgba(253,132,14,.15);color:var(--orange);border:1px solid rgba(253,132,14,.3);padding:1px 6px;border-radius:5px;font-weight:700;vertical-align:middle;">ACI</span></div>
+              <div style="font-size:0.72rem;color:var(--muted);" data-i18n="home-yield-merit-desc">Se acumula en el contrato · lo reclamás cuando querés</div>
+            </div>
+          </div>
+          <div>
+            <span id="stat-merit-apr" style="font-weight:800;font-size:1rem;color:var(--orange);">—</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Fox Customizer (moved to modal below — see #fox-customizer-modal) -->
+
+    <!-- Winners -->
+    <div class="card">
+      <div class="card-title" data-i18n="home-winners-title">🏆 Últimos Premios</div>
+      <div class="winner-list" id="winner-list">
+        <p class="empty-state" data-i18n="home-winners-empty">Aún no hay premios registrados</p>
+      </div>
+    </div>
+
+  </div><!-- /col-right -->
+
+  </div><!-- /desktop-layout -->
+  </main>
+
+  <footer>
+    <span data-i18n="home-footer-tagline">Zorrito V2 · Ahorrá USDT y ganá un premio extra semanal</span>
+    &nbsp;·&nbsp; <a href="docs.html" data-i18n="home-footer-docs">Cómo funciona</a>
+    &nbsp;·&nbsp; <a href="stats.html" data-i18n="home-footer-stats">📊 Stats</a>
+    &nbsp;·&nbsp; <a href="agent.html" data-i18n="home-footer-agent">🤖 Agent</a>
+    &nbsp;·&nbsp; <a href="build.html" data-i18n="home-footer-build">🛠 Build</a>
+    &nbsp;·&nbsp; <a href="fox-gallery.html" data-i18n="home-footer-gallery">🖼️ Galería</a>
+    &nbsp;·&nbsp; <a href="terms.html" data-i18n="home-footer-terms">Términos</a>
+    &nbsp;·&nbsp; <a href="privacy.html" data-i18n="home-footer-privacy">Privacy</a>
+    &nbsp;·&nbsp; <span class="network-badge"><img src="assets/celo-logo.png" alt="Celo">Celo</span>
+  </footer>
+
+  <div id="toast"></div>
+
+  <!-- Referral code modal — shown once on first wallet connect (no prior deposit) -->
+  <div id="ref-modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:18px;max-width:380px;width:100%;padding:22px;box-shadow:0 12px 40px rgba(0,0,0,.3);font-family:var(--font);">
+      <div style="font-size:1.05rem;font-weight:800;margin-bottom:6px;" data-i18n="home-ref-modal-title">¿Tenés un código de referido?</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;line-height:1.4;" data-i18n="home-ref-modal-desc">
+        Si te invitó alguien, ingresá su código de 8 caracteres. Ambos ganan +10% de chances cuando hagas tu primer depósito.
+      </div>
+      <input id="ref-modal-input" type="text" maxlength="8" placeholder="ej: a3f2b1c4" data-i18n-placeholder="home-ref-modal-input-ph"
+        style="width:100%;padding:11px 13px;border:2px solid #e5e5e5;border-radius:10px;font-size:0.95rem;font-family:monospace;text-transform:lowercase;box-sizing:border-box;letter-spacing:1px;outline:none;">
+      <div id="ref-modal-status" style="font-size:0.78rem;margin-top:8px;min-height:18px;"></div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button id="ref-modal-skip" data-i18n="home-ref-modal-skip" style="flex:1;padding:11px;background:#f5f5f5;color:#666;border:none;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:var(--font);">
+          Saltar
+        </button>
+        <button id="ref-modal-apply" data-i18n="home-ref-modal-apply" style="flex:2;padding:11px;background:linear-gradient(160deg,#FF9A2F 0%,#FD840E 55%,#E06800 100%);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;font-family:var(--font);">
+          Aplicar código
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Onboarding overlay (first visit only) ── -->
+  <div id="onboarding" class="onb-overlay">
+    <div class="onb-card" id="onb-card">
+      <div class="onb-emoji-wrap" id="onb-emoji">🦊</div>
+      <div id="onb-title" class="onb-title"></div>
+      <div id="onb-sub" class="onb-sub"></div>
+      <div class="onb-dots" id="onb-dots">
+        <span class="onb-dot active"></span>
+        <span class="onb-dot"></span>
+        <span class="onb-dot"></span>
+        <span class="onb-dot"></span>
+      </div>
+      <button class="onb-btn" id="onb-launch" type="button" data-i18n="home-onb-launch">🚀 Empezar a ahorrar</button>
+      <p class="onb-tap-hint" id="onb-tap-hint" data-i18n="home-onb-tap-hint">tocá para continuar →</p>
+    </div>
+  </div>
+
+  <!-- ── Fox Customizer modal ── -->
+  <div id="fox-customizer-modal" class="zmodal-backdrop">
+    <div class="zmodal-panel" id="card-fox">
+      <button class="zmodal-close" id="btn-close-customizer" type="button" aria-label="Cerrar">×</button>
+      <div class="zmodal-title" data-i18n="home-customizer-title">🎨 Personalizá tu Zorro IA · 0.25 USDT</div>
+      <div id="fox-lock-banner" data-i18n="home-customizer-lock" style="display:none;background:rgba(253,132,14,.07);border:1.5px dashed rgba(253,132,14,.4);border-radius:10px;padding:10px 14px;font-size:0.82rem;color:var(--muted);text-align:center;margin-bottom:12px;">
+        🔒 Depositá para desbloquear tu zorro personalizado
+      </div>
+      <div id="fox-preview-wrap" class="fox-placeholder">
+        <span style="font-size:2.5rem;">🦊</span>
+        <span style="font-size:0.8rem;color:var(--muted);" data-i18n="home-customizer-preview-hint">Tu zorro IA aparecerá acá</span>
+      </div>
+      <a id="btn-download-fox" download="mi-zorrito.png" target="_blank" data-i18n="home-customizer-download"
+         style="display:none;width:100%;margin-top:10px;padding:10px;border:1.5px solid var(--border);
+                border-radius:10px;background:#fff;color:var(--muted);font-size:0.85rem;font-weight:600;
+                text-align:center;cursor:pointer;text-decoration:none;box-sizing:border-box;">
+        ⬇️ Descargar mi Zorro
+      </a>
+      <div style="margin-top:14px;">
+        <div class="trait-group">
+          <div class="trait-label" data-i18n="home-trait-fur">Pelaje</div>
+          <div class="trait-pills">
+            <button class="trait-pill active" data-trait="fur" data-value="orange">🟠 Naranja</button>
+            <button class="trait-pill" data-trait="fur" data-value="red">🔴 Rojo</button>
+            <button class="trait-pill" data-trait="fur" data-value="white">⬜ Blanco</button>
+            <button class="trait-pill" data-trait="fur" data-value="brown">🟤 Marrón</button>
+            <button class="trait-pill" data-trait="fur" data-value="black">🖤 Negro</button>
+          </div>
+        </div>
+        <div class="trait-group">
+          <div class="trait-label" data-i18n="home-trait-accessory">Accesorio</div>
+          <div class="trait-pills">
+            <button class="trait-pill active" data-trait="accessory" data-value="sunglasses">🕶️ Lentes</button>
+            <button class="trait-pill" data-trait="accessory" data-value="cowboy">🤠 Sombrero</button>
+            <button class="trait-pill" data-trait="accessory" data-value="scarf">🧣 Bufanda</button>
+            <button class="trait-pill" data-trait="accessory" data-value="chain">🔗 Collar</button>
+            <button class="trait-pill" data-trait="accessory" data-value="mate">🧉 Mate</button>
+            <button class="trait-pill" data-trait="accessory" data-value="worldcup">🏆 Copa del Mundo</button>
+            <button class="trait-pill" data-trait="accessory" data-value="none">✨ Ninguno</button>
+          </div>
+        </div>
+        <div class="trait-group">
+          <div class="trait-label" data-i18n="home-trait-bg">Fondo</div>
+          <div class="trait-pills">
+            <button class="trait-pill active" data-trait="background" data-value="jungle">🌿 Selva</button>
+            <button class="trait-pill" data-trait="background" data-value="city">🏙️ Ciudad</button>
+            <button class="trait-pill" data-trait="background" data-value="beach">🏖️ Playa</button>
+            <button class="trait-pill" data-trait="background" data-value="space">🌌 Espacio</button>
+            <button class="trait-pill" data-trait="background" data-value="patagonia">🏔️ Patagonia</button>
+            <button class="trait-pill" data-trait="background" data-value="desert">🌵 Desierto</button>
+            <button class="trait-pill" data-trait="background" data-value="stadium">🏟️ Estadio</button>
+          </div>
+        </div>
+        <div class="trait-group">
+          <div class="trait-label" data-i18n="home-trait-jersey">Camiseta de Fútbol</div>
+          <select id="jersey-select" data-trait="jersey"
+            style="width:100%;padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:10px;
+                   font-size:0.88rem;font-family:var(--font);background:#fff;color:var(--text);
+                   cursor:pointer;appearance:auto;">
+            <option value="none">⚽ Sin camiseta</option>
+            <option value="argentina">🇦🇷 Argentina</option>
+            <option value="brazil">🇧🇷 Brasil</option>
+            <option value="uruguay">🇺🇾 Uruguay</option>
+            <option value="colombia">🇨🇴 Colombia</option>
+            <option value="chile">🇨🇱 Chile</option>
+            <option value="mexico">🇲🇽 México</option>
+            <option value="france">🇫🇷 Francia</option>
+            <option value="spain">🇪🇸 España</option>
+            <option value="germany">🇩🇪 Alemania</option>
+            <option value="england">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</option>
+            <option value="italy">🇮🇹 Italia</option>
+            <option value="portugal">🇵🇹 Portugal</option>
+            <option value="netherlands">🇳🇱 Países Bajos</option>
+            <option value="usa">🇺🇸 Estados Unidos</option>
+            <option value="japan">🇯🇵 Japón</option>
+            <option value="australia">🇦🇺 Australia</option>
+            <option value="senegal">🇸🇳 Senegal</option>
+            <option value="morocco">🇲🇦 Marruecos</option>
+            <option value="nigeria">🇳🇬 Nigeria</option>
+            <option value="south-korea">🇰🇷 Corea del Sur</option>
+          </select>
+        </div>
+        <div class="trait-group">
+          <div class="trait-label" data-i18n="home-trait-expression">Expresión</div>
+          <div class="trait-pills">
+            <button class="trait-pill active" data-trait="expression" data-value="cool">😎 Cool</button>
+            <button class="trait-pill" data-trait="expression" data-value="happy">😊 Feliz</button>
+            <button class="trait-pill" data-trait="expression" data-value="powerful">💪 Poderoso</button>
+            <button class="trait-pill" data-trait="expression" data-value="mysterious">🔮 Misterioso</button>
+          </div>
+        </div>
+        <div class="trait-group">
+          <div class="trait-label" data-i18n="home-trait-desc">Descripción extra (opcional)</div>
+          <input type="text" id="fox-description" maxlength="200"
+            placeholder="ej: con una laptop, en la luna, con pizza..." data-i18n-placeholder="home-fox-desc-input-ph"
+            style="width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:10px;
+                   font-size:0.88rem;font-family:var(--font);box-sizing:border-box;">
+        </div>
+      </div>
+      <button class="btn-action btn-deposit" id="btn-generate-fox" data-i18n="home-generate-fox-btn" style="width:100%;margin-top:12px;font-size:0.95rem;">
+        🎨 Generar mi Zorro — 0.25 USDT
+      </button>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;text-align:center;" data-i18n-html="home-gallery-link">
+        La imagen se guarda en la galería pública ·
+        <a href="fox-gallery.html" style="color:var(--orange);">Ver galería</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Socket.io for Self.xyz WebSocket relay -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script type="module" src="app.js?v=20260521r"></script>
+  <script src="lang.js?v=20260521r"></script>
+  <script src="nav-shared.js?v=20260521r"></script>
+</body>
+</html>

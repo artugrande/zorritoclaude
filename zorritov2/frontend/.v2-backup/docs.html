@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómo funciona — Zorrito V2</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* body.docs-page is defined in style.css:
+       white background, bg.png at 0.08 opacity, flex column centered */
+
+    /* ── Docs wrapper ── */
+    .docs-wrap { width:100%; max-width:620px; padding:0 20px; box-sizing:border-box; }
+    .docs-wrap h1 { font-size:2rem; font-weight:800; margin-bottom:8px; line-height:1.2; }
+    .docs-wrap h1 span { color:var(--green); }
+    .docs-wrap .tagline { color:var(--muted); font-size:1rem; margin-bottom:40px; }
+    .docs-wrap h2 { font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+      color:var(--muted); margin-bottom:14px; margin-top:36px; }
+    .docs-wrap p { color:#444; line-height:1.7; margin-bottom:14px; font-size:0.95rem; }
+    .docs-wrap strong { color:var(--text); }
+
+    /* ── Steps ── */
+    .step-list { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
+    .step { display:flex; gap:16px; align-items:flex-start; background:var(--surface);
+      border:1px solid var(--border); border-radius:10px; padding:16px; }
+    .step-num { background:var(--orange); color:#fff; font-weight:800; font-size:0.9rem;
+      width:28px; height:28px; border-radius:50%; display:flex; align-items:center;
+      justify-content:center; flex-shrink:0; }
+    .step-body strong { display:block; margin-bottom:4px; font-size:0.95rem; }
+    .step-body p { margin:0; font-size:0.875rem; color:var(--muted); line-height:1.5; }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-q { font-weight:600; color:var(--text); margin-bottom:8px; font-size:0.95rem; }
+    .faq-a { color:var(--muted); font-size:0.875rem; line-height:1.6; margin:0; }
+
+    /* ── Highlight & code boxes ── */
+    .highlight-box { background:rgba(253,132,14,.07); border:1px solid rgba(253,132,14,.25);
+      border-radius:10px; padding:18px 20px; margin-bottom:14px; }
+    .highlight-box p { margin:0; color:var(--text); }
+    .code-box { background:#1a1a1a; border-radius:10px; padding:14px 16px;
+      font-family:monospace; font-size:0.8rem; color:#e5e7eb; overflow-x:auto;
+      white-space:pre; margin-bottom:14px; }
+    .formula { background:#f5f5f5; border:1px solid var(--border); border-radius:8px;
+      padding:12px 16px; font-family:monospace; font-size:0.88rem; margin-bottom:14px; }
+
+    /* ── Streak table ── */
+    .streak-table { width:100%; border-collapse:collapse; font-size:0.875rem; margin-bottom:14px; }
+    .streak-table th { text-align:left; padding:8px 12px; font-size:0.72rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+      border-bottom:2px solid var(--border); }
+    .streak-table td { padding:10px 12px; border-bottom:1px solid var(--border); color:#444; }
+    .streak-table tr:last-child td { border-bottom:none; }
+    .streak-table td:nth-child(2) { font-weight:800; color:var(--orange); }
+
+    /* ── Contract addresses ── */
+    .addr-box { background:var(--bg); border:1px solid var(--border); border-radius:8px;
+      padding:12px 16px; font-family:monospace; font-size:0.8rem; color:var(--muted);
+      word-break:break-all; margin-bottom:10px; }
+    .addr-label { color:var(--green); font-weight:600; display:block; margin-bottom:2px;
+      font-family:var(--font); font-size:0.75rem; }
+    .addr-link { color:var(--orange); text-decoration:none; font-size:0.75rem; font-family:var(--font); }
+    .addr-link:hover { text-decoration:underline; }
+
+    /* ── Risk tags ── */
+    .risk-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7rem;
+      font-weight:700; margin-right:6px; vertical-align:middle; }
+    .risk-low  { background:rgba(26,153,96,.12);  color:var(--green);  border:1px solid rgba(26,153,96,.25); }
+    .risk-med  { background:rgba(253,132,14,.12); color:var(--orange); border:1px solid rgba(253,132,14,.3); }
+    .risk-info { background:rgba(59,130,246,.12); color:#3b82f6;       border:1px solid rgba(59,130,246,.3); }
+    .security-item { display:flex; align-items:flex-start; gap:10px;
+      padding:14px 0; border-bottom:1px solid var(--border); }
+    .security-item:last-child { border-bottom:none; }
+    .security-text strong { display:block; font-size:0.9rem; margin-bottom:3px; }
+    .security-text p { margin:0; font-size:0.82rem; color:var(--muted); line-height:1.5; }
+
+    /* ── Comparison table ── */
+    .cmp-table { width:100%; border-collapse:collapse; font-size:0.82rem; margin-bottom:14px; }
+    .cmp-table th { padding:8px 10px; font-size:0.72rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--border); text-align:left; }
+    .cmp-table td { padding:9px 10px; border-bottom:1px solid var(--border); color:#444; }
+    .cmp-table tr:last-child td { border-bottom:none; }
+    .cmp-table td.good { color:var(--green); font-weight:700; }
+
+    hr { border:none; border-top:1px solid #f0f0f0; margin:32px 0 0; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span> <span style="font-size:0.65em;opacity:0.8;">V2</span></span>
+    </div>
+    <p class="header-tagline">Ahorrá USDT. Ganá un premio semanal.</p>
+    <div class="nav-links">
+      <a href="stats.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📊 Stats</a>
+      <a href="agent.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🤖 Agent</a>
+      <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+    </div>
+  </header>
+
+  <div style="display:flex; justify-content:center; width:100%;">
+  <div class="docs-wrap">
+
+    <h1>Cómo funciona<br><span>Zorrito V2</span></h1>
+    <p class="tagline">Ahorro en USDT sin pérdidas — tu principal siempre está seguro.</p>
+
+    <div class="highlight-box">
+      <p>💡 La idea es simple: depositás USDT, el pool genera rendimiento en Aave V3, y cada semana ese rendimiento va a un ahorrador activo elegido al azar. Además, los incentivos Merit de ACI se distribuyen directamente a todos los depositantes. Nunca perdés tu capital — nunca.</p>
+    </div>
+
+    <!-- ── Cómo funciona ── -->
+    <h2>Cómo funciona</h2>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Depositás USDT</strong>
+          <p>Mínimo 0.25 USDT. Tu depósito va directo a Aave V3 en Celo y empieza a generar rendimiento al instante. Cada USDT = más chances en el sorteo semanal.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Ahorrás cada día</strong>
+          <p>Presionás "Ahorrar hoy" una vez por día UTC. Cada día suma +1 al streak (racha) de la semana. El streak multiplica tus chances — a mayor streak, mayor probabilidad de ganar.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Acumulás Merit Rewards</strong>
+          <p>El programa Merit de ACI distribuye incentivos en USDT directamente a todos los depositantes, proporcional a tu depósito. Se acumulan en el contrato y los reclamás cuando querés — sin acción diaria requerida.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Sorteo cada lunes</strong>
+          <p>Cada lunes a las 10:05 UTC, el rendimiento base de Aave se sortea entre todos los ahorradores activos. El ganador recibe el 90% del prize pool directamente en su wallet — sin claim, sin demoras.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Retirás cuando querés</strong>
+          <p>Tu principal nunca está bloqueado. Retirás todo o parte en cualquier momento, sin penalidades ni lock-up. Los Merit rewards los reclamás por separado.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Streak ── -->
+    <h2>🔥 Streak semanal</h2>
+    <p>Cada semana (lunes a domingo UTC) tenés 7 días para ahorrar. Cada día que presionás "Ahorrar hoy" suma +1 al streak. El streak multiplica tus chances en el sorteo de esa semana.</p>
+
+    <div class="highlight-box">
+      <p>💡 Dos usuarios con 100 USDT cada uno: el que ahorra todos los días tiene streak 7 (700 chances). El que no ahorra ninguno tiene streak 1 mínimo (100 chances). Misma inversión, 7× más probabilidad de ganar.</p>
+    </div>
+
+    <table class="streak-table">
+      <tr><th>Días ahorrados esta semana</th><th>Multiplicador</th><th>Ejemplo (100 USDT)</th></tr>
+      <tr><td>0 días (nunca ahorraste)</td><td>1×</td><td>100 chances</td></tr>
+      <tr><td>1 día</td><td>1×</td><td>100 chances</td></tr>
+      <tr><td>2 días</td><td>2×</td><td>200 chances</td></tr>
+      <tr><td>3 días</td><td>3×</td><td>300 chances</td></tr>
+      <tr><td>4 días</td><td>4×</td><td>400 chances</td></tr>
+      <tr><td>5 días</td><td>5×</td><td>500 chances</td></tr>
+      <tr><td>6 días</td><td>6×</td><td>600 chances</td></tr>
+      <tr><td>7 días 🏆</td><td>7×</td><td>700 chances</td></tr>
+    </table>
+
+    <p style="font-size:0.82rem;color:var(--muted);">El streak resetea automáticamente cada lunes a las 00:00 UTC. Si no ahorrás ningún día de la semana, tu multiplicador es 1× (el mínimo garantizado para usuarios con depósito).</p>
+
+    <hr>
+
+    <!-- ── Chances ── -->
+    <h2>🎫 Cómo sumar más chances</h2>
+
+    <p>Hay cuatro maneras de aumentar tu probabilidad de ganar el sorteo semanal:</p>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">💰</span>
+        <div><strong>Depositá más USDT</strong> — más depósito = más chances base. Cada USDT cuenta directamente en la fórmula.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔥</span>
+        <div><strong>Mantené el streak diario</strong> — cada día que ahorrás sube el multiplicador. Máximo 7× el domingo de la semana.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔗</span>
+        <div><strong>Traé referidos</strong> — cada amigo que deposita con tu código suma +10% a tus chances de forma permanente.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(59,130,246,.04);border:1px solid rgba(59,130,246,.2);border-radius:10px;">
+        <img src="assets/selflogo.png" alt="Self" style="width:22px;height:22px;border-radius:5px;flex-shrink:0;margin-top:1px;">
+        <div><strong>Verificate con Self</strong> <span style="font-size:0.72rem;background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.25);padding:1px 6px;border-radius:5px;font-weight:700;vertical-align:middle;">+25%</span> — verificás tu pasaporte con ZK proof, una sola vez, sin revelar datos personales. El bonus es permanente.</div>
+      </div>
+    </div>
+
+    <p><strong>Fórmula completa:</strong></p>
+    <div class="formula">chances = depósito × streakDay × (10 + referidos) / 10 × Self bonus</div>
+    <p style="font-size:0.82rem;color:var(--muted);">El Self bonus es 1.25× para wallets verificadas con Self, 1× para el resto.</p>
+    <p>Tu probabilidad de ganar el sorteo es proporcional a tus chances efectivas sobre el total del pool:</p>
+    <div class="formula">P(ganar) = tus chances efectivas ÷ total de chances del pool</div>
+    <p>Ejemplo: tenés 50 USDT, streak 7, 2 referidos, verificado con Self → <strong>50 × 7 × 12/10 × 1.25 = 525 chances</strong>. Sin Self serían 420. Si el pool tiene 4.000 chances totales, tu probabilidad pasa de 10.5% a 13.1%.</p>
+
+    <hr>
+
+    <!-- ── Prize Pool ── -->
+    <h2>🏆 El sorteo semanal</h2>
+    <p>El prize pool es el rendimiento que acumula el pool completo en Aave V3 durante la semana. Crece con el monto total depositado y el APY de Aave.</p>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li><strong>Cuándo:</strong> todos los lunes a las 10:05 UTC</li>
+      <li><strong>Fee de plataforma:</strong> 10% del prize pool — el ganador recibe el 90%</li>
+      <li><strong>Entrega:</strong> el USDT llega directo a la wallet del ganador desde Aave, sin claim</li>
+      <li><strong>Si el pool es pequeño:</strong> el prize puede ser $0 en las primeras semanas. Se acumula a medida que crece el TVL</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── Merit Rewards ── -->
+    <h2>🎖️ Merit Rewards (ACI)</h2>
+    <p>Zorrito participa en el programa Merit de ACI (Aave Chan Initiative). ACI distribuye USDT adicional a los proveedores de liquidez de USDT en Aave V3 en Celo.</p>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li><strong>Fuente:</strong> incentivos externos de ACI — independientes del rendimiento base de Aave</li>
+      <li><strong>Distribución:</strong> el keeper reclama las recompensas de Merkl y las envía al contrato. El contrato las distribuye proporcionalmente a todos los depositantes</li>
+      <li><strong>Fee:</strong> 15% de plataforma sobre los Merit rewards distribuidos</li>
+      <li><strong>Claim:</strong> reclamás cuando querés desde el home — no hay deadline</li>
+    </ul>
+    <div class="highlight-box">
+      <p>📌 Los Merit Rewards son <strong>independientes del sorteo</strong>. Ganar o perder el sorteo no afecta tus Merit rewards. Todo depositante los recibe proporcionalmente — siempre.</p>
+    </div>
+
+    <hr>
+
+    <!-- ── Referidos ── -->
+    <h2>🤝 Referidos</h2>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li>Al depositar por primera vez, el contrato genera tu código de referido automáticamente</li>
+      <li>Cada referido activo te suma <strong>+10% de chances</strong> adicionales en el sorteo</li>
+      <li>Para que cuente: tu referido debe tener depósito &gt; 0 y vos debés tener ≥ 1 USDT</li>
+      <li>Si tu referido retira todo su depósito, el bono desaparece automáticamente del Fenwick tree</li>
+      <li>No hay límite de referidos — más referidos = más chances</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── Welcome Bonus ── -->
+    <h2>🎁 Bonus de bienvenida</h2>
+    <p>La primera vez que completás <strong>5 días consecutivos</strong> ahorrando, recibís <strong>0.5 USDT</strong> directamente en tu wallet. El bonus está financiado por la wallet de incentivos del proyecto y se entrega automáticamente al completar el quinto día.</p>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li>Una sola vez por dirección</li>
+      <li>Solo disponible mientras la wallet de incentivos tenga fondos</li>
+      <li>Limitado a los primeros 1.000 usuarios</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── Randomness ── -->
+    <h2>🎲 Cómo funciona el azar</h2>
+    <p>Elegir un ganador on-chain es difícil — el blockchain es determinístico y público. Zorrito usa un acumulador de entropía estilo RANDAO, el mismo principio que usa la capa de consenso de Ethereum.</p>
+
+    <p><strong>Fase 1 — Acumulación (durante la semana)</strong></p>
+    <p style="font-size:0.85rem;color:var(--muted);">Cada vez que cualquier usuario llama a <code>deposit()</code>, <code>save()</code> o <code>withdraw()</code>, el contrato mezcla el prevrandao del bloque + la dirección del caller + el timestamp en un acumulador:</p>
+    <div class="code-box">entropyAccumulator = keccak256(
+  entropyAccumulator,   // valor previo acumulado
+  block.prevrandao,     // beacon del bloque actual (EIP-4399)
+  block.timestamp,
+  msg.sender,           // quién está transaccionando
+  totalPrincipal
+)</div>
+
+    <p><strong>Fase 2 — Sorteo (cada lunes)</strong></p>
+    <p style="font-size:0.85rem;color:var(--muted);">El keeper hace commit del estado de entropía en el bloque 0 y ejecuta el sorteo 10 bloques después, usando el blockhash del bloque intermedio:</p>
+    <div class="code-box">finalSeed = keccak256(
+  committedEntropy,     // acumulado de toda la semana
+  blockhash(commit + 5) // hash del bloque intermedio
+) % totalEffectiveChances</div>
+
+    <table class="cmp-table">
+      <tr><th>Enfoque</th><th>Influencia del validador</th><th>Costo de ataque</th></tr>
+      <tr><td>Solo blockhash</td><td>Alta — control total</td><td>1 propuesta de bloque</td></tr>
+      <tr><td>Solo beacon Celo</td><td>Baja — saltear 1 turno</td><td>1 bit de influencia</td></tr>
+      <tr><td class="good">Zorrito accumulator ✓</td><td class="good">Negligible</td><td class="good">Controlar todas las txs de la semana</td></tr>
+    </table>
+
+    <hr>
+
+    <!-- ── Contratos ── -->
+    <h2>📋 Contratos inteligentes</h2>
+
+    <div class="addr-box">
+      <span class="addr-label">Zorrito V2 (Celo Mainnet)</span>
+      0x0D18f6e8f8A22ED9D1259205a5eB236c62df8Fe6
+      <br><a class="addr-link" href="https://celoscan.io/address/0x0D18f6e8f8A22ED9D1259205a5eB236c62df8Fe6" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label">USDT en Celo (LayerZero)</span>
+      0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e
+      <br><a class="addr-link" href="https://celoscan.io/address/0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label">Aave V3 Pool (Celo)</span>
+      0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402
+      <br><a class="addr-link" href="https://celoscan.io/address/0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label">aUSDT (Aave Celo)</span>
+      0xDeE98402A302e4D707fB9bf2bac66fAEEc31e8Df
+    </div>
+
+    <hr>
+
+    <!-- ── Seguridad ── -->
+    <h2>🛡️ Seguridad</h2>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong>Acumulador de entropía RANDAO-style</strong>
+          <p>Cada transacción de la semana mezcla prevrandao + caller + timestamp en el acumulador. Para sesgar el resultado, un atacante necesitaría controlar el proposer L1 en cada transacción de todos los usuarios durante 7 días — un ataque de coordinación prácticamente imposible.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong>Sin admin keys peligrosas</strong>
+          <p>El owner puede ajustar parámetros (fees, bonus) pero con un límite hardcodeado del 20%. No puede pausar el contrato, cambiar la lógica de sorteo, ni acceder a los fondos. La lógica core es inmutable.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong>Dependencia de Aave V3</strong>
+          <p>Los fondos están depositados directamente en Aave V3 en Celo. El riesgo es equivalente al riesgo del protocolo Aave. Aave V3 ha sido auditado y tiene más de $10B en TVL en todos sus deployments.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong>Emergency return</strong>
+          <p>En caso de migración o bug crítico, el owner puede activar el modo emergencia. <code>emergencyReturn()</code> devuelve el principal a todos los usuarios automáticamente — sin que tengan que hacer nada.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-info">INFO</span>
+        <div class="security-text">
+          <strong>MVP — usá con precaución</strong>
+          <p>Zorrito V2 es un MVP experimental. No depositás fondos que no puedas permitirte perder. Se recomienda una auditoría formal antes de escalar el TVL.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Self.xyz ── -->
+    <h2><img src="assets/selflogo.png" alt="Self" style="width:22px;height:22px;border-radius:5px;vertical-align:middle;margin-right:6px;">Verificación de identidad con Self · +25% chances</h2>
+
+    <div class="highlight-box" style="background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.25);">
+      <p>🛂 <strong>Verificate con tu pasaporte y sumá +25% de chances permanentes.</strong> Sin revelar datos personales — solo probás que sos un humano real.</p>
+    </div>
+
+    <p><strong>¿Qué es Self?</strong> Self es un protocolo de verificación de identidad con ZK proofs (pruebas de cero conocimiento) construido sobre Celo. Escaneás tu pasaporte con la app Self, se genera una prueba criptográfica de que el documento es válido, y esa prueba se verifica on-chain — sin que nadie vea tus datos.</p>
+
+    <p><strong>¿Cómo funciona el bonus?</strong> Una vez verificada tu wallet, el contrato de Zorrito V2 registra esa verificación permanentemente. Tu fórmula de chances se multiplica × 1.25 desde ese momento:</p>
+
+    <div class="formula">Chances = depósito × streakDay × (10 + referidos) / 10 × <strong>1.25 (Self bonus)</strong></div>
+
+    <p><strong>Flujo de verificación (una sola vez):</strong></p>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Instalá la app Self</strong>
+          <p>Disponible en iOS y Android. Necesitás tu pasaporte o documento biométrico.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Tocá "Verificar con Self" en el home de Zorrito</strong>
+          <p>Se abre la app Self automáticamente. No uses el botón de volver — Self te redirige de vuelta cuando termina.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Escaneá tu pasaporte en Self</strong>
+          <p>Self genera un ZK proof que prueba que el pasaporte es válido y no está vencido, sin revelar nombre, número ni fecha de nacimiento.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Volvé a la app de Zorrito</strong>
+          <p>La verificación se registra on-chain automáticamente. Ves el badge ✅ y el +25% ya está activo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>🔒 <strong>Privacidad:</strong> Zorrito nunca ve tu nombre, número de pasaporte ni ningún dato personal. El ZK proof solo prueba que "este pasaporte existe, es válido, y pertenece al holder" — nada más. La verificación es <strong>permanente</strong>: solo necesitás hacerla una vez.</p>
+    </div>
+
+    <div class="faq-item" style="border:none;padding:0;margin-top:8px;">
+      <div class="faq-q">¿Qué pasa si no me verifico?</div>
+      <p class="faq-a">Nada — seguís participando normalmente. La verificación con Self es opcional y solo suma un bonus. No afecta la mecánica base del protocolo.</p>
+    </div>
+
+    <hr>
+
+    <!-- ── FAQ ── -->
+    <h2>FAQ</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Puedo perder mi USDT?</div>
+      <p class="faq-a">No. Tu USDT está siempre en Aave V3. El único "en juego" es el yield generado, que financia el premio semanal. Tu principal nunca está en riesgo — en el peor caso, el owner activa el emergency mode y te devuelve todo.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Qué pasa si no ahorro ningún día de la semana?</div>
+      <p class="faq-a">Tu streak queda en 0 y tu multiplicador es 1× (el mínimo). Seguís participando en el sorteo con tus chances base (depósito × 1). Tu depósito sigue generando Merit rewards de todas formas.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Cómo sé que el sorteo es justo?</div>
+      <p class="faq-a">El sorteo usa un acumulador de entropía que mezcla datos de cada transacción durante la semana. El número ganador se commitea el lunes 10:00 UTC y se ejecuta 10 bloques después usando el blockhash intermedio. Todo es verificable on-chain en CeloScan — el código fuente está verificado.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Puedo retirar cuando quiero?</div>
+      <p class="faq-a">Sí, en cualquier momento, sin penalidades. Si retirás antes del lunes, perdés tus chances de esa semana. Los Merit rewards acumulados los reclamás por separado desde el home.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Qué son los Merit Rewards y cómo llegan?</div>
+      <p class="faq-a">ACI (Aave Chan Initiative) paga incentivos adicionales en USDT a los proveedores de liquidez de USDT en Aave V3 en Celo. El keeper del protocolo reclama esas recompensas de Merkl periódicamente y las deposita en el contrato. El contrato las distribuye automáticamente de forma proporcional. Vos solo tenés que hacer "Reclamar savings" cuando quieras cobrarlas.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿El streak resetea si no gané el sorteo?</div>
+      <p class="faq-a">No. El streak no depende de ganar o perder el sorteo. Solo resetea si no presionás "Ahorrar hoy" en la semana actual. Un nuevo lunes = nuevo streak que empieza desde 0 (o desde donde venías si seguís ahorrando).</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Cuánto es el mínimo para depositar?</div>
+      <p class="faq-a">0.25 USDT. No hay máximo.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿Funciona en MiniPay?</div>
+      <p class="faq-a">Sí. Zorrito V2 es compatible con MiniPay (Opera Mini wallet) — usa transacciones tipo 0 (legacy) que MiniPay soporta. Conectá tu wallet y usá el app normalmente.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿La verificación con Self funciona dentro de MiniPay?</div>
+      <p class="faq-a">Sí. Tocás el botón de verificación, MiniPay abre la app Self, generás el ZK proof, y cuando volvés a Zorrito la verificación se detecta automáticamente (sin necesidad de recargar). El sistema usa polling en background compatible con el WebView de MiniPay — iOS puede pausar el tab mientras estás en Self, pero la verificación se registra igual cuando volvés.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">¿El bonus de Self se aplica de inmediato?</div>
+      <p class="faq-a">Sí. En cuanto el contrato registra la verificación (≈5 segundos — un bloque de Celo), el árbol de Fenwick se actualiza y tus chances efectivas ya incluyen el +25%. Aplica para el próximo sorteo semanal.</p>
+    </div>
+
+  </div>
+  </div>
+</body>
+</html>

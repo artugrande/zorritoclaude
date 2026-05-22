@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zorrito × Self — Test completo</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 20px;
+    }
+    h1 { font-size: 22px; text-align: center; line-height: 1.4; }
+    p  { font-size: 14px; color: #aaa; text-align: center; line-height: 1.6; max-width: 340px; }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .btn {
+      display: block; width: 100%;
+      padding: 16px; border-radius: 12px;
+      font-size: 16px; font-weight: 600;
+      text-align: center; cursor: pointer;
+      border: none; text-decoration: none;
+    }
+    .btn-primary   { background: #f97316; color: #fff; }
+    .btn-disabled  { background: #2a2a2a; color: #555; cursor: not-allowed; }
+    .status {
+      font-size: 13px; padding: 14px; border-radius: 10px;
+      text-align: center; line-height: 1.6;
+    }
+    .status-idle    { background: #1a1a1a; color: #666; border: 1px solid #2a2a2a; }
+    .status-pending { background: #1a1208; color: #fbbf24; border: 1px solid #78350f; }
+    .status-polling { background: #0a1628; color: #60a5fa; border: 1px solid #1e3a5f; }
+    .status-ok      { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+    .status-err     { background: #2d0a0a; color: #f87171; border: 1px solid #7f1d1d; }
+    .step {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: #888;
+    }
+    .step-icon { font-size: 18px; width: 24px; text-align: center; }
+    .step.done  { color: #4ade80; }
+    .step.active { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <h1>🦊 Zorrito × Self<br>Flujo completo</h1>
+  <p>Test de verificación de identidad desde MiniPay.<br>Necesitás tener la app de <strong>Self</strong> instalada y tu pasaporte.</p>
+
+  <div class="card">
+    <!-- Steps -->
+    <div class="step" id="step1">
+      <span class="step-icon">1️⃣</span>
+      <span>Iniciá la verificación</span>
+    </div>
+    <div class="step" id="step2">
+      <span class="step-icon">2️⃣</span>
+      <span>Escaneá tu pasaporte en Self</span>
+    </div>
+    <div class="step" id="step3">
+      <span class="step-icon">3️⃣</span>
+      <span>Volvé a esta página</span>
+    </div>
+    <div class="step" id="step4">
+      <span class="step-icon">4️⃣</span>
+      <span>Verificación confirmada ✓</span>
+    </div>
+
+    <hr style="border-color: #2a2a2a; margin: 4px 0;">
+
+    <button class="btn btn-primary" id="btnVerify" onclick="startVerification()">
+      🛂 Verificar identidad con Self
+    </button>
+
+    <div class="status status-idle" id="statusBox">
+      Esperando para iniciar...
+    </div>
+  </div>
+
+  <p style="font-size: 12px; color: #444;">
+    Session ID: <span id="sessionDisplay" style="color:#555">—</span>
+  </p>
+
+  <script>
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+    }
+
+    function setStatus(msg, cls) {
+      const box = document.getElementById('statusBox');
+      box.textContent = msg;
+      box.className = 'status ' + cls;
+    }
+
+    function setStep(n, done) {
+      const el = document.getElementById('step' + n);
+      el.className = 'step ' + (done ? 'done' : 'active');
+      if (done) el.querySelector('.step-icon').textContent = '✅';
+    }
+
+    // ── Check if returning from Self (deeplinkCallback) ───────────────────
+    const params = new URLSearchParams(window.location.search);
+    const returnSession = params.get('session');
+
+    if (returnSession) {
+      // User returned from Self app — start polling
+      document.getElementById('sessionDisplay').textContent = returnSession;
+      setStep(1, true);
+      setStep(2, true);
+      setStatus('Volviste de Self ✓ Verificando proof on-chain...', 'status-polling');
+      document.getElementById('btnVerify').className = 'btn btn-disabled';
+      document.getElementById('btnVerify').textContent = '⏳ Verificando...';
+      pollVerification(returnSession);
+    }
+
+    // ── Visibilitychange: re-poll when user returns to MiniPay ────────────
+    let activeSessionId = null;
+    let alreadyVerified = false;
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && activeSessionId && !alreadyVerified) {
+        console.log('[visibility] page visible — retrying poll for', activeSessionId);
+        pollVerification(activeSessionId);
+      }
+    });
+
+    // ── WebSocket relay ───────────────────────────────────────────────────
+    let wsSocket = null;
+
+    function connectRelay(sessionId, selfApp) {
+      if (wsSocket) wsSocket.disconnect();
+
+      wsSocket = io('https://websocket.self.xyz/websocket', {
+        path: '/',
+        query: { sessionId, clientType: 'web' },
+        transports: ['websocket']
+      });
+
+      wsSocket.on('connect', () => {
+        console.log('[relay] connected, id:', wsSocket.id);
+        setStatus('Relay conectado — abrí Self y verificá', 'status-polling');
+      });
+
+      wsSocket.on('connect_error', (err) => {
+        console.error('[relay] error:', err.message);
+        setStatus('Error de conexión al relay: ' + err.message, 'status-err');
+      });
+
+      wsSocket.on('mobile_status', (data) => {
+        console.log('[relay] mobile_status:', data.status);
+        switch (data.status) {
+          case 'mobile_connected':
+            setStep(2, false);
+            setStatus('Self conectado ✓ Generando proof...', 'status-polling');
+            wsSocket.emit('self_app', { ...selfApp, sessionId });
+            // Arranca polling inmediatamente — si el WebSocket se pierde
+            // mientras MiniPay está en background, el polling detecta igual
+            setTimeout(() => pollVerification(sessionId), 8000);
+            break;
+          case 'proof_generation_started':
+            setStatus('Generando proof ZK...', 'status-polling');
+            break;
+          case 'proof_generated':
+            setStatus('Proof generado, verificando...', 'status-polling');
+            break;
+          case 'proof_generation_failed':
+            setStatus('❌ Proof falló en Self', 'status-err');
+            break;
+        }
+      });
+
+      wsSocket.on('proof_verified', (data) => {
+        console.log('[relay] proof_verified:', data);
+        setStep(3, true); setStep(4, true);
+        setStatus('✅ Identidad verificada — Self funciona en MiniPay 🎉', 'status-ok');
+        document.getElementById('btnVerify').style.display = 'none';
+        wsSocket.disconnect();
+      });
+    }
+
+    // ── Start verification flow ───────────────────────────────────────────
+    function startVerification() {
+      const sessionId = uuidv4();
+      document.getElementById('sessionDisplay').textContent = sessionId;
+
+      activeSessionId = sessionId;
+      setStep(1, true);
+      setStatus('Conectando al relay...', 'status-pending');
+      document.getElementById('btnVerify').className = 'btn btn-disabled';
+      document.getElementById('btnVerify').style.display = 'none';
+
+      // Build Self deep link (v2 format + sessionId for relay)
+      const selfApp = {
+        appName: 'Zorrito',
+        scope: 'zorrito-self-test',
+        endpoint: 'https://www.zorrito.app/api/self-verify',
+        userId: sessionId,
+        sessionId: sessionId,
+        endpointType: 'https',
+        userIdType: 'uuid',
+        devMode: false,
+        header: '',
+        logoBase64: '',
+        userDefinedData: '',
+        deeplinkCallback: '',
+        disclosures: { excludedCountries: [], ofac: false, nationality: true },
+        version: 2,
+        chainID: 42220,
+      };
+
+      // Connect to Self relay FIRST, then show button
+      connectRelay(sessionId, selfApp);
+
+      const universalLink = 'https://redirect.self.xyz?selfApp=' + encodeURIComponent(JSON.stringify(selfApp));
+
+      const tapBtn = document.createElement('a');
+      tapBtn.href = universalLink;
+      tapBtn.className = 'btn btn-primary';
+      tapBtn.textContent = '👆 Tocá aquí para abrir Self';
+      tapBtn.style.marginTop = '8px';
+      tapBtn.style.display = 'block';
+
+      document.getElementById('btnVerify').parentNode.insertBefore(
+        tapBtn, document.getElementById('btnVerify')
+      );
+    }
+
+    // ── Poll backend until verified ───────────────────────────────────────
+    async function pollVerification(sessionId, attempts = 0) {
+      if (attempts > 30) { // 30 × 3s = 90s max
+        setStatus('⏱ Timeout — no se recibió el proof. Intentá de nuevo.', 'status-err');
+        resetBtn();
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/self-status?userId=${sessionId}`);
+        const data = await res.json();
+
+        if (data.verified) {
+          alreadyVerified = true;
+          setStep(3, true);
+          setStep(4, true);
+          const flag = data.nationality ? ` 🌍 ${data.nationality}` : '';
+          setStatus(`✅ Identidad verificada${flag}\n\nSelf funciona en MiniPay 🎉`, 'status-ok');
+          document.getElementById('btnVerify').style.display = 'none';
+          if (wsSocket) wsSocket.disconnect();
+          return;
+        }
+
+        // Not verified yet — keep polling
+        setStatus(`⏳ Esperando confirmación... (${attempts + 1}/30)`, 'status-polling');
+        setTimeout(() => pollVerification(sessionId, attempts + 1), 3000);
+
+      } catch (err) {
+        setStatus('❌ Error al consultar estado: ' + err.message, 'status-err');
+        setTimeout(() => pollVerification(sessionId, attempts + 1), 3000);
+      }
+    }
+
+    function resetBtn() {
+      const btn = document.getElementById('btnVerify');
+      btn.className = 'btn btn-primary';
+      btn.textContent = '🛂 Verificar identidad con Self';
+    }
+  </script>
+
+</body>
+</html>

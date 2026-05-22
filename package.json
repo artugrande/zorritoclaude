@@ -1,0 +1,25 @@
+{
+  "name": "zorrito",
+  "version": "1.0.0",
+  "description": "No-loss lottery on Celo powered by Aave yield",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy:alfajores": "hardhat run scripts/deploy.js --network alfajores",
+    "deploy:celo": "hardhat run scripts/deploy.js --network celo"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.69",
+    "@openzeppelin/contracts": "^5.6.1",
+    "@selfxyz/core": "^1.2.0-beta.1",
+    "@vercel/kv": "^3.0.0",
+    "ai": "^6.0.160",
+    "dotenv": "^16.4.0",
+    "ethers": "^6.16.0",
+    "mcp-handler": "^1.1.0",
+    "zod": "^4.3.6"
+  }
+}

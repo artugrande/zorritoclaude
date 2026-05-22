@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de Privacidad — Zorrito V2</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: var(--font); background: var(--bg); color: var(--text); max-width: 680px; margin: 0 auto; padding: 0 0 60px; }
+    .nav { display:flex; justify-content:center; gap:16px; padding:12px 16px; border-bottom:1px solid #f0f0f0; }
+    .nav a { color:var(--muted); text-decoration:none; font-size:0.85rem; font-weight:600; padding:6px 10px; border-radius:8px; }
+    .nav a:hover, .nav a.active { color:var(--orange); background:#fff3e0; }
+    .legal-wrap { padding:32px 20px 0; }
+    .legal-wrap h1 { font-size:1.8rem; font-weight:800; margin-bottom:6px; }
+    .effective { color:var(--muted); font-size:0.85rem; margin-bottom:32px; }
+    .legal-wrap h2 { font-size:0.85rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--muted); margin-top:32px; margin-bottom:10px; }
+    .legal-wrap p { color:#444; line-height:1.75; margin-bottom:14px; font-size:0.93rem; }
+    .legal-wrap ul { color:#444; line-height:1.75; font-size:0.93rem; padding-left:20px; margin-bottom:14px; }
+    .legal-wrap ul li { margin-bottom:6px; }
+    .legal-wrap strong { color:var(--text); }
+    .legal-wrap table { width:100%; border-collapse:collapse; font-size:0.88rem; margin-bottom:20px; }
+    .legal-wrap table th { text-align:left; padding:8px 12px; background:var(--surface);
+      border:1px solid var(--border); font-weight:700; }
+    .legal-wrap table td { padding:8px 12px; border:1px solid var(--border); color:#444; vertical-align:top; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html">App</a>
+    <a href="docs.html">Cómo funciona</a>
+    <a href="stats.html">Stats</a>
+    <a href="terms.html">Términos</a>
+  </nav>
+
+  <div class="legal-wrap">
+    <h1>🔒 Política de Privacidad</h1>
+    <p class="effective">Efectivo: Mayo 2026 · Zorrito V2</p>
+
+    <h2>1. Información que recopilamos</h2>
+    <p>Zorrito V2 es un protocolo descentralizado. <strong>No recopilamos ni almacenamos información personal identificable.</strong> Las únicas "credenciales" que usa el protocolo son direcciones de wallet públicas en Celo.</p>
+    <p>Las interacciones con el contrato inteligente (depósitos, retiros, saves) son transacciones públicas en la blockchain de Celo y están disponibles para cualquier persona en CeloScan.</p>
+
+    <h2>2. Datos on-chain</h2>
+    <p>Los siguientes datos son almacenados on-chain (en el contrato de Zorrito V2) y son públicos por naturaleza de la blockchain:</p>
+    <ul>
+      <li>Dirección de wallet</li>
+      <li>Monto depositado</li>
+      <li>Streak y last save day</li>
+      <li>Código de referido y referidos activos</li>
+      <li>Savings pendientes</li>
+    </ul>
+
+    <h2>3. Datos del frontend</h2>
+    <p>El frontend de Zorrito V2 es una página estática. No tiene backend propio, no usa cookies de tracking, y no almacena datos en servidores de Zorrito.</p>
+    <p>El frontend usa:</p>
+    <ul>
+      <li><strong>Fonts de Google</strong> (Baloo 2) — puede registrar el IP de la solicitud en los servidores de Google.</li>
+      <li><strong>Reown AppKit / WalletConnect</strong> — para la conexión de wallets. Sus políticas de privacidad aplican.</li>
+      <li><strong>forno.celo.org</strong> — RPC público de Celo para lecturas de blockchain. Puede registrar IPs.</li>
+    </ul>
+
+    <h2>4. Keepers (crons)</h2>
+    <p>Los keepers de Zorrito V2 son funciones serverless en Vercel que ejecutan transacciones automáticas (sorteo semanal, distribución de savings). Estos no recopilan ni procesan datos de usuarios.</p>
+
+    <h2>5. MiniPay</h2>
+    <p>Si accedés a Zorrito V2 desde MiniPay (Opera Mini / app standalone), las políticas de privacidad de MiniPay/Opera aplican para la conexión de wallet. Zorrito V2 solo recibe la dirección de wallet pública.</p>
+
+    <h2>6. Cambios a esta política</h2>
+    <p>Podemos actualizar esta política. Los cambios se publicarán en esta página con la fecha de vigencia actualizada.</p>
+
+    <h2>7. Contacto</h2>
+    <p>Para consultas de privacidad: <a href="mailto:hola@zorrito.app" style="color:var(--orange);">hola@zorrito.app</a></p>
+  </div>
+</body>
+</html>

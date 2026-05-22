@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats — Zorrito V2</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .stats-hero { text-align:center; padding:28px 20px 12px; }
+    .stats-hero h1 { font-size:1.4rem; font-weight:800; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 16px; margin-top:20px; }
+    .stat-card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:18px 16px; }
+    .stat-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:8px; }
+    .stat-value { font-size:1.5rem; font-weight:800; color:var(--text); }
+    .stat-sub   { font-size:0.75rem; color:var(--muted); margin-top:4px; }
+    .skel { animation:skeleton 1.4s ease-in-out infinite; }
+    @keyframes skeleton { 0%,100%{opacity:.4} 50%{opacity:1} }
+    .section-title { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
+      color:var(--muted); padding:0 16px; margin:24px 0 10px; }
+    .history-list { padding:0 16px; display:flex; flex-direction:column; gap:8px; }
+    .history-item { background:var(--surface); border:1.5px solid var(--border); border-radius:12px;
+      padding:12px 14px; display:flex; justify-content:space-between; align-items:center; }
+    .history-winner { font-family:monospace; font-size:0.8rem; color:var(--text); }
+    .history-amount { font-weight:800; color:var(--orange); }
+    .history-date { font-size:0.72rem; color:var(--muted); margin-top:2px; }
+    .empty-state { text-align:center; color:var(--muted); font-size:0.88rem; padding:24px 0; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span> <span style="font-size:0.65em;opacity:0.8;">V2</span></span>
+    </div>
+    <p class="header-tagline">Ahorrá USDT. Ganá un premio semanal.</p>
+    <div class="nav-links">
+      <a href="docs.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📖 Docs</a>
+      <a href="agent.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🤖 Agent</a>
+      <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+    </div>
+  </header>
+
+  <div style="display:flex;justify-content:center;width:100%;">
+  <div style="width:100%;max-width:620px;padding:0 20px;box-sizing:border-box;">
+
+  <div class="stats-hero">
+    <div style="font-size:40px;margin-bottom:6px;">📊</div>
+    <h1>Protocol Stats</h1>
+    <p style="color:var(--muted);font-size:0.88rem;margin-top:4px;">Datos en tiempo real de Zorrito V2 en Celo</p>
+  </div>
+
+  <div class="grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Depositado</div>
+      <div class="stat-value skel" id="s-principal">——</div>
+      <div class="stat-sub">en Aave V3</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ahorradores</div>
+      <div class="stat-value skel" id="s-depositors">——</div>
+      <div class="stat-sub">activos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Premio Semanal</div>
+      <div class="stat-value skel" id="s-prize">——</div>
+      <div class="stat-sub">próximo lunes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Savings</div>
+      <div class="stat-value skel" id="s-savings">——</div>
+      <div class="stat-sub">distribuidos</div>
+    </div>
+    <div class="stat-card" style="grid-column:span 2;">
+      <div class="stat-label">Contrato</div>
+      <div style="font-family:monospace;font-size:0.72rem;word-break:break-all;margin-top:4px;" id="s-contract">——</div>
+      <div class="stat-sub" id="s-contract-link"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Últimos Premios</div>
+  <div class="history-list" id="history-list">
+    <div class="empty-state">Aún no hay premios registrados</div>
+  </div>
+
+  <script type="module">
+    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.min.js";
+
+    const CONTRACT_ADDRESS = "0x0D18f6e8f8A22ED9D1259205a5eB236c62df8Fe6";
+    const CONTRACT_DEPLOYED = CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000";
+
+    const ABI = [
+      "function totalPrincipal() view returns (uint256)",
+      "function depositorCount() view returns (uint256)",
+      "function currentPrizePool() view returns (uint256)",
+      "function totalSavings() view returns (uint256)",
+      "event RaffleExecuted(address indexed winner, uint256 prize, uint256 fee)",
+    ];
+
+    const fmt6 = (v) => (Number(v) / 1e6).toFixed(2);
+    const fmtAddr = (a) => a ? `${a.slice(0,8)}...${a.slice(-6)}` : "—";
+    const el = (id) => document.getElementById(id);
+
+    if (!CONTRACT_DEPLOYED) {
+      ["s-principal","s-depositors","s-prize","s-savings"].forEach(id => {
+        el(id).textContent = "—";
+        el(id).classList.remove("skel");
+      });
+      el("s-contract").textContent = "Pendiente de deploy";
+    } else {
+      el("s-contract").textContent = CONTRACT_ADDRESS;
+      el("s-contract-link").innerHTML =
+        `<a href="https://celoscan.io/address/${CONTRACT_ADDRESS}" target="_blank" rel="noopener"
+           style="color:var(--orange);text-decoration:none;font-size:0.72rem;">Ver en CeloScan ↗</a>`;
+
+      const provider = new ethers.JsonRpcProvider("https://forno.celo.org");
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+      async function loadStats() {
+        const [principal, depositors, prize, savings] = await Promise.all([
+          contract.totalPrincipal(),
+          contract.depositorCount(),
+          contract.currentPrizePool(),
+          contract.totalSavings(),
+        ]);
+        el("s-principal").textContent  = "$" + fmt6(principal) + " USDT";
+        el("s-depositors").textContent = depositors.toString();
+        el("s-prize").textContent      = "$" + fmt6(prize) + " USDT";
+        el("s-savings").textContent    = "$" + fmt6(savings) + " USDT";
+        ["s-principal","s-depositors","s-prize","s-savings"].forEach(id =>
+          el(id).classList.remove("skel")
+        );
+      }
+
+      async function loadHistory() {
+        const filter = contract.filters.RaffleExecuted();
+        const events = await contract.queryFilter(filter, -50000);
+        if (events.length === 0) return;
+        const listEl = el("history-list");
+        listEl.innerHTML = "";
+        for (const ev of events.reverse().slice(0, 10)) {
+          const block = await provider.getBlock(ev.blockNumber);
+          const date  = block ? new Date(block.timestamp * 1000).toLocaleDateString("es-AR") : "—";
+          const item  = document.createElement("div");
+          item.className = "history-item";
+          item.innerHTML = `
+            <div>
+              <div class="history-winner">
+                <a href="https://celoscan.io/address/${ev.args.winner}" target="_blank" rel="noopener"
+                   style="color:var(--text);text-decoration:none;">${fmtAddr(ev.args.winner)}</a>
+              </div>
+              <div class="history-date">${date}</div>
+            </div>
+            <div class="history-amount">+$${fmt6(ev.args.prize)} USDT</div>`;
+          listEl.appendChild(item);
+        }
+      }
+
+      loadStats().catch(console.error);
+      loadHistory().catch(console.error);
+    }
+  </script>
+
+  </div>
+  </div>
+
+</body>
+</html>

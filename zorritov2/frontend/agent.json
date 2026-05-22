@@ -1,0 +1,34 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Zorrito Demo Agent",
+  "description": "Autonomous AI-powered demo agent for Zorrito V2 — a no-loss savings platform on Celo. Once funded, the agent deposits 0.25 USDT every UTC day to grow its streak (max 7) and earns Aave yield on deposited funds. Each daily deposit extends the streak; missing a day kills the fox and the streak resets to 1 on the next deposit. The agent also claims Merit rewards as plain USDT and interacts with the protocol via scheduled on-chain transactions with zero human intervention. Exposes its mechanics via MCP so any LLM (Claude, Cursor, etc.) can read pool state, deposit, or claim savings through natural language.",
+  "image": "https://www.zorrito.app/assets/zorritoimage.png",
+  "active": true,
+  "x402Support": false,
+  "services": [
+    {
+      "name": "web",
+      "endpoint": "https://www.zorrito.app/agent.html"
+    },
+    {
+      "name": "MCP",
+      "endpoint": "https://www.zorrito.app/api/mcp",
+      "version": "2025-06-18"
+    },
+    {
+      "name": "agentWallet",
+      "endpoint": "eip155:42220:0x5472efFEAB3b049Be313D2Ee885Ff9711EA17E10"
+    },
+    {
+      "name": "protocolContract",
+      "endpoint": "eip155:42220:0x8f4E627d4C4Af5dfE11908Bd8B929588d9Ee58c9"
+    }
+  ],
+  "registrations": [
+    {
+      "agentId": 9110,
+      "agentRegistry": "eip155:42220:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"
+    }
+  ],
+  "supportedTrust": ["reputation"]
+}

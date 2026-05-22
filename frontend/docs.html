@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zorrito — How It Works</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- PostHog analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: true,
+    });
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .docs-wrap {
+      width: 100%;
+      max-width: 620px;
+    }
+    .docs-wrap h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .docs-wrap h1 span { color: var(--green); }
+    .docs-wrap .tagline {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 40px;
+    }
+    .docs-wrap h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      margin-top: 36px;
+    }
+    .docs-wrap p {
+      color: #444444;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+    .docs-wrap strong { color: var(--text); }
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .step-num {
+      background: var(--orange);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.9rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-body strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .step-body p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    .faq-a {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .highlight-box {
+      background: rgba(253,132,14,0.07);
+      border: 1px solid rgba(253,132,14,0.25);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+    .highlight-box p { margin: 0; color: var(--text); }
+    .addr-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      word-break: break-all;
+      margin-bottom: 10px;
+    }
+    .addr-label { color: var(--green); font-weight: 600; display: block; margin-bottom: 2px; font-family: var(--font); font-size: 0.75rem; }
+    .risk-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+    .risk-med  { background: rgba(251,204,92,0.15); color: var(--gold); }
+    .risk-low  { background: rgba(53,208,127,0.12); color: var(--green); }
+    .risk-info { background: rgba(139,148,158,0.15); color: var(--muted); }
+    .audit-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+    .audit-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
+    .audit-desc  { font-size: 0.825rem; color: var(--muted); line-height: 1.6; margin: 0; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    .back-link:hover { opacity: 0.8; }
+
+    /* ── Custom Lang Picker ── */
+    .lang-picker { position: relative; }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 6px 8px 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font);
+      line-height: 1;
+    }
+    .lang-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .lang-chevron { width: 10px; height: 6px; flex-shrink: 0; margin-left: 3px; }
+    .lang-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      min-width: 90px;
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .lang-menu.open { display: block; }
+    .lang-menu button {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: left;
+    }
+    .lang-menu button:hover { background: rgba(253,132,14,0.08); color: var(--orange); }
+    /* Match header width to content */
+    .docs-page header { max-width: 620px; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;position:relative;">
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span id="lang-label">🌐 EN</span>
+          <svg class="lang-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+          <button onclick="pickLang('en')">🌐 EN</button>
+          <button onclick="pickLang('es')">🌐 ES</button>
+          <button onclick="pickLang('pt')">🌐 PT</button>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="stats.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📊 Stats</a>
+        <a href="agent.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🤖 Agent</a>
+        <a href="build.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🛠️ Build</a>
+        <a href="index.html" data-i18n="docs-back-app" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+      </div>
+      <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="Menu">☰</button>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <a href="stats.html">📊 Stats</a>
+        <a href="agent.html">🤖 Agent</a>
+        <a href="build.html">🛠️ Build</a>
+        <a href="index.html" class="nav-app">← App</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-wrap">
+
+    <a href="index.html" class="back-link" data-i18n="docs-back-top">← Back to App</a>
+
+    <h1 data-i18n-html="docs-title">How <span>Zorrito</span> Works</h1>
+    <p class="tagline" data-i18n="docs-tagline">A no-loss lottery on Celo — your principal is always safe.</p>
+
+    <!-- ── Core Concept ── -->
+    <div class="highlight-box">
+      <p data-i18n-html="docs-highlight">💡 <strong>The idea is simple:</strong> everyone deposits USDT, the pooled funds earn yield on Aave, and every January 1st that yield goes to one random winner. No one ever loses their deposit — ever.</p>
+    </div>
+
+    <h2 data-i18n="how-it-works-h2">How it works</h2>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong data-i18n="step1-title">Deposit USDT</strong>
+          <p data-i18n="step1-desc">Deposit any amount ≥ 1 USDT. Every 1 USDT = 1 lottery ticket. More USDT = higher chance of winning.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong data-i18n="step2-title">Funds go to Aave V3</strong>
+          <p data-i18n="step2-desc">Your USDT is immediately supplied to Aave V3 on Celo. It starts earning the current USDT supply APY — see the live rate above.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong data-i18n="step3-title">Annual draw — every January 1st</strong>
+          <p data-i18n="step3-desc">Every January 1st the draw triggers automatically via a keeper bot. Only foxes fed in the last 24 hours are eligible. A winner is chosen proportionally to their effective tickets (fish × streak multiplier). 90% of the accumulated yield goes to the winner instantly, on-chain — 10% goes to the Zorrito platform wallet to sustain the protocol. You don't have to do anything.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong data-i18n="step4-title">Prize lands in your wallet</strong>
+          <p data-i18n="step4-desc">Winnings are sent directly by Aave to the winner's wallet. No claim needed. The contract never holds the prize.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong data-i18n="step5-title">Withdraw any time</strong>
+          <p data-i18n="step5-desc">Your principal is never at risk. Withdraw all or part of your deposit whenever you want, with no penalty or lock-up.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Gamification ── -->
+    <h2 data-i18n="fox-h2">🦊 Feed Your Fox</h2>
+    <div class="highlight-box">
+      <p data-i18n-html="fox-highlight">🎮 <strong>Zorrito is a game.</strong> You don't just deposit and wait — you have a fox that needs care every day to stay in the annual lottery.</p>
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">🐟</div>
+        <div class="step-body">
+          <strong data-i18n="fox-s1-title">1 USDT = 1 Fish = 1 Ticket</strong>
+          <p data-i18n="fox-s1-desc">Each fish is one lottery ticket. More fish = higher chance of winning. All your USDT (fish) stays deposited in Aave V3 earning yield — 90% of that yield becomes the annual prize.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🦊</div>
+        <div class="step-body">
+          <strong data-i18n="fox-s2-title">Feed your fox 1 USDT every day</strong>
+          <p data-i18n-html="fox-s2-desc">Once you adopt a fox, you must feed it <strong>1 USDT per day</strong>. Each feed deposits 1 more USDT into the pool, giving you +1 fish and +1 ticket. Each consecutive day you feed builds your 🔥 streak. The more days you feed, the more fish you accumulate and the better your odds.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">💀</div>
+        <div class="step-body">
+          <strong data-i18n="fox-s3-title">Miss a day → fox dies</strong>
+          <p data-i18n-html="fox-s3-desc">If you don't feed within 24 hours, your fox dies and is excluded from the annual draw. <strong>Your USDT is never at risk</strong> — all your accumulated fish stay safe in Aave, earning yield. You just won't be in the draw until you revive.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">✨</div>
+        <div class="step-body">
+          <strong data-i18n="fox-s4-title">Revive with 1 USDT</strong>
+          <p data-i18n="fox-s4-desc">Feed 1 USDT to revive your dead fox instantly. Your streak resets to 1 but all your previously accumulated fish (USDT in Aave) remain.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🏆</div>
+        <div class="step-body">
+          <strong data-i18n="fox-s5-title">Streak leaderboard</strong>
+          <p data-i18n="fox-s5-desc">The home page shows the top 10 longest current streaks. The player with the longest unbroken streak is the most committed fox keeper. Future versions may reward long streaks with bonus tickets.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.2);border-radius:10px;padding:16px 20px;margin-bottom:14px;">
+      <p style="margin:0;font-size:0.875rem;" data-i18n-html="fox-warning"><strong style="color:var(--red);">⚠️ Important:</strong> Your USDT deposit is <strong>always safe</strong> in Aave. Fox death only affects lottery participation — it never affects your capital.</p>
+    </div>
+
+    <!-- ── Streak Multiplier ── -->
+    <h2 data-i18n="streak-docs-h2">🔥 Streak Multiplier</h2>
+    <div class="highlight-box">
+      <p data-i18n-html="streak-docs-highlight">💡 <strong>Imagine two players who both deposit 100 USDT.</strong> Player A deposits once and never feeds again — 0-day streak, 1× multiplier = <strong>100 effective tickets</strong>. Player B feeds every single day for a year — 365-day streak, 5× multiplier = <strong>500 effective tickets</strong>. Same deposit, but Player B is <strong>5× more likely to win</strong>.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:14px;" data-i18n="streak-docs-formula">
+      Your win probability = your effective tickets ÷ total effective tickets in the pool. Feeding daily is the most powerful lever you have — it costs 1 USDT/day and your capital stays safe in Aave the whole time.
+    </p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:10px;" data-i18n="streak-docs-table-title">Streak tiers</div>
+      <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+        <thead>
+          <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+            <th style="padding:6px 4px;text-align:left;" data-i18n="streak-col-days">Consecutive days</th>
+            <th style="padding:6px 4px;text-align:left;" data-i18n="streak-col-mult">Multiplier</th>
+            <th style="padding:6px 4px;text-align:left;" data-i18n="streak-col-example">Example (100 fish)</th>
+          </tr>
+        </thead>
+        <tbody style="color:var(--text);">
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;">0 – 6 days</td>
+            <td style="padding:8px 4px;font-weight:700;">1.0×</td>
+            <td style="padding:8px 4px;color:var(--muted);">100 effective tickets</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;">7 – 29 days</td>
+            <td style="padding:8px 4px;font-weight:700;color:var(--orange);">1.5×</td>
+            <td style="padding:8px 4px;color:var(--muted);">150 effective tickets</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;">30 – 89 days</td>
+            <td style="padding:8px 4px;font-weight:700;color:var(--orange);">2.0×</td>
+            <td style="padding:8px 4px;color:var(--muted);">200 effective tickets</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;">90 – 179 days</td>
+            <td style="padding:8px 4px;font-weight:700;color:var(--orange);">3.0×</td>
+            <td style="padding:8px 4px;color:var(--muted);">300 effective tickets</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;">180 – 364 days</td>
+            <td style="padding:8px 4px;font-weight:700;color:var(--orange);">4.0×</td>
+            <td style="padding:8px 4px;color:var(--muted);">400 effective tickets</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 4px;color:var(--orange);font-weight:600;">365+ days 🏆</td>
+            <td style="padding:8px 4px;font-weight:800;color:var(--orange);font-size:0.95rem;">5.0×</td>
+            <td style="padding:8px 4px;color:var(--muted);">500 effective tickets</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight-box">
+      <p style="font-size:0.875rem;" data-i18n-html="streak-docs-security">
+        🛡️ <strong>Security unchanged.</strong> Streak multipliers are deterministic and publicly readable on-chain — any observer can verify them at any time. They don't affect <em>how</em> the random winner is selected, only <em>how many tickets</em> each player earns. An attacker cannot manipulate their multiplier to bias the entropy accumulator — streaks are earned through real time and can't be faked.
+      </p>
+    </div>
+
+    <!-- ── Prize Math ── -->
+    <h2 data-i18n="prize-h2">Prize Size</h2>
+    <p data-i18n="prize-desc">
+      The annual prize equals 90% of the yield accumulated by the entire pool over 365 days — drawn every January 1st. It grows with the total pool size:
+    </p>
+    <!-- Live APY badge -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 14px;background:rgba(253,132,14,0.07);border:1px solid rgba(253,132,14,0.2);border-radius:8px;">
+      <img src="assets/aave-logo.png" alt="Aave" style="width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+      <img src="assets/usdt-logo.png" alt="USDT" style="width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+      <span style="font-size:0.8rem;color:var(--muted);" data-i18n="prize-apy-label">Current Aave V3 USDT Supply APY on Celo</span>
+      <span class="live-apy" style="color:var(--green);font-weight:700;font-size:0.95rem;">fetching...</span>
+      <span id="apy-dot" style="width:7px;height:7px;background:var(--green);border-radius:50%;flex-shrink:0;animation:pulse 2s infinite;"></span>
+    </div>
+    <style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}</style>
+
+    <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:8px;">
+      <thead>
+        <tr style="color:var(--muted);text-align:left;border-bottom:1px solid var(--border);">
+          <th style="padding:8px 4px;" data-i18n="prize-col-pool">Pool Size</th>
+          <th style="padding:8px 4px;" data-i18n="prize-col-annual-prize">Est. Annual Prize 🎁</th>
+        </tr>
+      </thead>
+      <tbody id="prize-tbody" style="color:var(--text);">
+        <tr><td colspan="3" style="padding:12px 4px;color:var(--muted);font-size:0.8rem;">Loading live rates...</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.8rem;color:var(--muted);" data-i18n="prize-footer">Based on live Aave V3 APY (annual) · refreshes every 5 minutes.</p>
+
+    <script type="module">
+      import { ethers } from "https://esm.sh/ethers@6.11.1?bundle";
+      const POOL = "0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402";
+      const USDT = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
+      const ABI  = ["function getReserveData(address asset) view returns (uint256,uint128,uint128,uint128,uint128,uint128,uint40,uint16,address,address,address,address,uint128,uint128,uint128)"];
+      async function loadAPY() {
+        try {
+          const rpc  = new ethers.JsonRpcProvider("https://forno.celo.org");
+          const pool = new ethers.Contract(POOL, ABI, rpc);
+          const data = await pool.getReserveData(USDT);
+          const apr  = Number(BigInt(data[2])) / 1e27;
+          const apy  = (Math.pow(1 + apr / 31_536_000, 31_536_000) - 1) * 100;
+          document.querySelectorAll(".live-apy").forEach(el => {
+            el.textContent = apy.toFixed(2) + "% APY";
+            el.title = "Live from Aave V3 on Celo · updated " + new Date().toLocaleTimeString();
+          });
+          const pools = [
+            { size: 5_000 },
+            { size: 10_000 },
+            { size: 25_000 },
+            { size: 50_000 },
+            { size: 100_000 },
+            { size: 250_000 },
+            { size: 500_000 },
+            { size: 1_000_000 },
+            { size: 5_000_000 },
+            { size: 10_000_000 },
+            { size: 50_000_000 },
+          ];
+          function prizeColor(annual) {
+            if (annual < 1)    return "var(--muted)";
+            if (annual < 100)  return "var(--text)";
+            if (annual < 1000) return "var(--gold)";
+            return "var(--green)";
+          }
+          // Share live APY with calculator
+          window._calcAPY = apy;
+          document.dispatchEvent(new CustomEvent("apyLoaded", { detail: apy }));
+          const tbody = document.getElementById("prize-tbody");
+          if (tbody) {
+            tbody.innerHTML = pools.map(({size}) => {
+              const annual = size * apy / 100 * 0.9; // 90% to winner, 10% platform fee
+              const color  = prizeColor(annual);
+              const bold   = annual >= 100 ? "700" : "400";
+              const annualFmt = annual < 1 ? annual.toFixed(3) : annual < 100 ? annual.toFixed(2) : annual.toLocaleString("en-US",{maximumFractionDigits:0});
+              return `<tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:8px 4px;color:var(--text)">${size.toLocaleString()} USDT</td>
+                <td style="padding:8px 4px;color:${color};font-weight:${bold}">~$${annualFmt}</td>
+              </tr>`;
+            }).join("");
+          }
+        } catch(e) {
+          document.querySelectorAll(".live-apy").forEach(el => el.textContent = "~1.00% APY (est.)");
+        }
+      }
+      loadAPY();
+      setInterval(loadAPY, 5 * 60 * 1000);
+    </script>
+
+    <!-- ── Growth Calculator ── -->
+    <h2>📈 Growth Calculator</h2>
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;">
+      How many people depositing daily would it take to reach a target pool size?
+    </p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;">
+
+      <!-- Target pool -->
+      <div style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <label style="font-size:0.85rem;font-weight:600;color:var(--text);">🎯 Target pool size</label>
+          <span id="calc-target-label" style="font-size:0.9rem;font-weight:800;color:var(--green);">$50,000,000</span>
+        </div>
+        <input id="calc-target" type="range" min="1" max="8" step="1" value="7"
+          oninput="calcUpdate()"
+          style="width:100%;accent-color:var(--green);cursor:pointer;" />
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:4px;">
+          <span>$10K</span><span>$100K</span><span>$1M</span><span>$10M</span><span>$50M</span><span>$100M</span><span>$500M</span><span>$1B</span>
+        </div>
+      </div>
+
+      <!-- Daily deposit per person -->
+      <div style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <label style="font-size:0.85rem;font-weight:600;color:var(--text);">🐟 Daily deposit per person</label>
+          <span id="calc-daily-label" style="font-size:0.9rem;font-weight:800;color:var(--orange);">1 USDT/day</span>
+        </div>
+        <input id="calc-daily" type="range" min="1" max="100" step="1" value="1"
+          oninput="calcUpdate()"
+          style="width:100%;accent-color:var(--orange);cursor:pointer;" />
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:4px;">
+          <span>1 USDT</span><span>25</span><span>50</span><span>75</span><span>100 USDT</span>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;line-height:1.5;">
+          Depositing <span id="calc-daily-inline" style="color:var(--orange);font-weight:700;">1 USDT/day</span> for 365 days → <span id="calc-per-person" style="color:var(--orange);font-weight:700;">365 USDT</span> per person per year
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="text-align:center;padding:14px 10px;background:rgba(53,208,127,0.07);border:1px solid rgba(53,208,127,0.2);border-radius:8px;">
+            <div style="font-size:0.72rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">People needed</div>
+            <div id="calc-people" style="font-size:1.5rem;font-weight:800;color:var(--green);">137K</div>
+          </div>
+          <div style="text-align:center;padding:14px 10px;background:rgba(251,204,92,0.07);border:1px solid rgba(251,204,92,0.2);border-radius:8px;">
+            <div style="font-size:0.72rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">Annual prize at that pool</div>
+            <div id="calc-prize" style="font-size:1.5rem;font-weight:800;color:var(--gold);">—</div>
+          </div>
+        </div>
+        <div id="calc-context" style="margin-top:12px;font-size:0.8rem;color:var(--muted);text-align:center;line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <script>
+      const CALC_TARGETS = [10_000, 100_000, 1_000_000, 10_000_000, 50_000_000, 100_000_000, 500_000_000, 1_000_000_000];
+      const CALC_LABELS  = ["$10K","$100K","$1M","$10M","$50M","$100M","$500M","$1B"];
+
+      function fmtNum(n) {
+        if (n >= 1_000_000_000) return (n/1_000_000_000).toFixed(1).replace(/\.0$/,"") + "B";
+        if (n >= 1_000_000)     return (n/1_000_000).toFixed(1).replace(/\.0$/,"") + "M";
+        if (n >= 1_000)         return (n/1_000).toFixed(1).replace(/\.0$/,"") + "K";
+        return n.toLocaleString();
+      }
+      function fmtMoney(n) {
+        if (n >= 1_000_000) return "$" + (n/1_000_000).toFixed(2).replace(/\.00$/,"") + "M";
+        if (n >= 1_000)     return "$" + (n/1_000).toFixed(1).replace(/\.0$/,"") + "K";
+        return "$" + n.toLocaleString("en-US",{maximumFractionDigits:0});
+      }
+
+      // APY shared from the loadAPY script above (set as global when loaded)
+      window._calcAPY = 1.0; // fallback; overwritten by loadAPY
+
+      function calcUpdate() {
+        const tIdx  = parseInt(document.getElementById("calc-target").value) - 1;
+        const daily = parseInt(document.getElementById("calc-daily").value);
+        const target = CALC_TARGETS[tIdx];
+        const perPerson = daily * 365;
+        const people = Math.ceil(target / perPerson);
+        const prize  = target * window._calcAPY / 100 * 0.9; // 90% to winner, 10% platform fee
+
+        document.getElementById("calc-target-label").textContent = CALC_LABELS[tIdx];
+        document.getElementById("calc-daily-label").textContent  = daily + " USDT/day";
+        document.getElementById("calc-daily-inline").textContent = daily + " USDT/day";
+        document.getElementById("calc-per-person").textContent   = fmtMoney(perPerson) + " per person";
+        document.getElementById("calc-people").textContent       = fmtNum(people);
+        document.getElementById("calc-prize").textContent        = fmtMoney(prize);
+
+        document.getElementById("calc-context").textContent =
+          people.toLocaleString() + " people depositing " + daily + " USDT/day for a year → "
+          + fmtMoney(target) + " pool · " + fmtMoney(prize) + " annual prize";
+      }
+
+      // Hook into the APY loader above so prize updates with live rate
+      const _origLoadAPY = window._loadAPYDone;
+      document.addEventListener("apyLoaded", function(e) {
+        window._calcAPY = e.detail; calcUpdate();
+      });
+      calcUpdate();
+    </script>
+
+    <!-- ── Randomness ── -->
+    <h2 data-i18n="odds-h2">Winning Chances</h2>
+    <p data-i18n-html="odds-desc">
+      The winner is selected on-chain using a <strong>weighted pseudo-random</strong> algorithm.
+      Your probability of winning equals your share of the total pool:
+    </p>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:0.875rem;color:var(--muted);margin-bottom:14px;">
+      P(win) = your USDT deposit ÷ total pool USDT
+    </div>
+    <p data-i18n="odds-example">Example: you have 100 fish with a 30-day streak (2× multiplier) = 200 effective tickets out of 1000 total = 20% chance of winning the annual draw.</p>
+
+    <!-- ── Randomness Deep Dive ── -->
+    <h2 data-i18n="rand-h2">🎲 How Randomness Works</h2>
+    <p data-i18n-html="rand-intro">
+      Picking a winner on-chain is hard — the blockchain is deterministic and public, so any single value known at draw time can potentially be manipulated by whoever proposes that block.
+      Zorrito solves this with a <strong>RANDAO-style entropy accumulator</strong>, the same principle used by Ethereum's own consensus layer.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-weight:700;font-size:0.875rem;margin-bottom:6px;color:var(--green);" data-i18n="rand-phase1-title">🔁 Phase 1 — Accumulation (days 1–365)</div>
+        <p style="margin:0;font-size:0.825rem;color:var(--muted);line-height:1.6;" data-i18n-html="rand-phase1-desc">
+          Every time any user calls <code>deposit()</code>, <code>feed()</code>, or <code>withdraw()</code>, the contract mixes the <em>current Celo random beacon</em> + the caller's address + the block timestamp into a rolling <code>_roundEntropy</code> value stored on-chain:
+        </p>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;margin-top:10px;font-family:monospace;font-size:0.78rem;color:var(--muted);line-height:1.7;">
+          _roundEntropy = keccak256(<br>
+          &nbsp;&nbsp;_roundEntropy,&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green);">// previous accumulated value</span><br>
+          &nbsp;&nbsp;CELO_RANDOM.random(),&nbsp;<span style="color:var(--green);">// Celo beacon at this moment</span><br>
+          &nbsp;&nbsp;block.timestamp,<br>
+          &nbsp;&nbsp;msg.sender,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green);">// who is transacting right now</span><br>
+          &nbsp;&nbsp;totalDeposited<br>
+          )
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-weight:700;font-size:0.875rem;margin-bottom:6px;color:var(--gold);" data-i18n="rand-phase2-title">🎯 Phase 2 — Draw (Jan 1st — day 365)</div>
+        <p style="margin:0;font-size:0.825rem;color:var(--muted);line-height:1.6;" data-i18n="rand-phase2-desc">
+          At draw time, the final seed combines everything:
+        </p>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;margin-top:10px;font-family:monospace;font-size:0.78rem;color:var(--muted);line-height:1.7;">
+          finalSeed = keccak256(<br>
+          &nbsp;&nbsp;_roundEntropy,&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gold);">// 365 days of mixed entropy</span><br>
+          &nbsp;&nbsp;CELO_RANDOM.random(),&nbsp;<span style="color:var(--gold);">// current beacon</span><br>
+          &nbsp;&nbsp;block.timestamp,<br>
+          &nbsp;&nbsp;block.number,<br>
+          &nbsp;&nbsp;aliveTotal<br>
+          )
+        </div>
+      </div>
+
+    </div>
+
+    <div class="highlight-box" style="background:rgba(253,132,14,0.06);">
+      <p style="font-size:0.875rem;" data-i18n-html="rand-shield">
+        🛡️ <strong>Why this is hard to manipulate:</strong> To bias the outcome, an attacker would need to control the Celo random beacon at <em>every single deposit, feed, and withdrawal</em> made by all users over the entire 30-day round.
+        That includes random strangers feeding their foxes at unpredictable times.
+        Even a validator with significant network power would need to corrupt dozens of independent transactions — a practically impossible coordination attack.
+      </p>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:10px;" data-i18n="rand-table-title">Comparison: randomness approaches</div>
+      <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+        <thead>
+          <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+            <th style="padding:6px 4px;text-align:left;" data-i18n="rand-col-approach">Approach</th>
+            <th style="padding:6px 4px;text-align:left;" data-i18n="rand-col-influence">Validator influence</th>
+            <th style="padding:6px 4px;text-align:left;" data-i18n="rand-col-cost">Attack cost</th>
+          </tr>
+        </thead>
+        <tbody style="font-size:0.8rem;">
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;color:var(--text);">blockhash only</td>
+            <td style="padding:8px 4px;color:var(--red);">High — full control</td>
+            <td style="padding:8px 4px;color:var(--red);">1 block proposal</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;color:var(--text);">Celo beacon only</td>
+            <td style="padding:8px 4px;color:var(--gold);">Low — skip 1 turn</td>
+            <td style="padding:8px 4px;color:var(--gold);">1 bit of influence</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:8px 4px;color:var(--green);font-weight:600;">Zorrito accumulator ✓</td>
+            <td style="padding:8px 4px;color:var(--green);">Negligible</td>
+            <td style="padding:8px 4px;color:var(--green);">Control every tx, 365 days</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 4px;color:var(--muted);">External VRF oracle</td>
+            <td style="padding:8px 4px;color:var(--green);">Zero</td>
+            <td style="padding:8px 4px;color:var(--muted);">Not yet on Celo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Contracts ── -->
+    <h2 data-i18n="contracts-h2">Smart Contracts</h2>
+    <div class="addr-box">
+      <span class="addr-label"><img src="assets/celo-logo.png" alt="Celo" style="width:12px;height:12px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;" /><span data-i18n="addr-zorrito">Zorrito v8 (Celo Mainnet)</span></span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <a href="https://celoscan.io/address/0x135dc8DC4bEd4e619B97b07bA16bCE348CAeFF62#code" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none;font-family:monospace;font-size:0.8rem;">0x135dc8DC4bEd4e619B97b07bA16bCE348CAeFF62 ↗</a>
+        <a href="https://celoscan.io/address/0x135dc8DC4bEd4e619B97b07bA16bCE348CAeFF62#code" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;background:rgba(26,153,96,0.10);color:var(--green);border:1px solid rgba(26,153,96,0.25);border-radius:6px;padding:2px 7px;font-size:0.68rem;font-weight:700;text-decoration:none;white-space:nowrap;">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4.5" fill="#1a9960"/><path d="M3 5l1.5 1.5L7 3.5" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Verified on Celoscan
+        </a>
+      </div>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label"><img src="assets/usdt-logo.png" alt="USDT" style="width:12px;height:12px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;" /><span data-i18n="addr-usdt">USDT on Celo (LayerZero)</span></span>
+      <a href="https://celoscan.io/token/0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none;font-family:monospace;font-size:0.8rem;">0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label"><img src="assets/aave-logo.png" alt="Aave" style="width:12px;height:12px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;" /><span data-i18n="addr-aave">Aave V3 Pool (Celo)</span></span>
+      <a href="https://celoscan.io/address/0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none;font-family:monospace;font-size:0.8rem;">0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402 ↗</a>
+    </div>
+
+    <!-- ── Security ── -->
+    <h2 data-i18n="security-h2">Security Notes</h2>
+    <div class="audit-item">
+      <div class="audit-title"><span class="risk-low">Low</span> <span data-i18n="sec1-title">RANDAO-style entropy accumulator + EIP-4399 prevrandao</span></div>
+      <p class="audit-desc" data-i18n-html="sec1-p1">
+        Zorrito uses a two-layer randomness approach. Throughout the 365-day round, every <code>deposit()</code>, <code>feed()</code>, and <code>withdraw()</code> mixes the current block's <code>prevrandao</code> value (EIP-4399, plus the caller address and timestamp) into a rolling accumulator stored in the contract.
+        At draw time the winner is selected using a final hash of: <em>accumulated entropy + prevrandao + block number + block timestamp</em>.
+      </p>
+      <p class="audit-desc" style="margin-top:8px;" data-i18n-html="sec1-p2">
+        To bias the outcome an attacker would need to control the L1 proposer at <strong>every single user interaction over 365 days</strong> — including random strangers feeding their foxes.
+        This is a nation-state level attack, not a realistic threat. <code>block.prevrandao</code> is the standard EIP-4399 randomness source on Celo L2 (OP Stack), replacing the legacy L1 precompile that was removed during the Celo → L2 migration.
+      </p>
+    </div>
+    <div class="audit-item">
+      <div class="audit-title"><span class="risk-low">Low</span> <span data-i18n="sec2-title">No admin keys</span></div>
+      <p class="audit-desc" data-i18n="sec2-desc">The contract has no owner, no pause function, and no upgrade mechanism. Once deployed, no one can change it — including the team.</p>
+    </div>
+    <div class="audit-item">
+      <div class="audit-title"><span class="risk-low">Low</span> <span data-i18n="sec3-title">Aave dependency</span></div>
+      <p class="audit-desc" data-i18n="sec3-desc">Funds are deposited directly into Aave V3 on Celo. Risk is equivalent to the Aave protocol risk. Aave V3 has been audited and has over $10B in TVL across all chains.</p>
+    </div>
+    <div class="audit-item">
+      <div class="audit-title"><span class="risk-info">Info</span> <span data-i18n="sec4-title">MVP — use with caution</span></div>
+      <p class="audit-desc" data-i18n="sec4-desc">Zorrito is an experimental MVP. Do not deposit funds you cannot afford to lose. A formal third-party audit is recommended before scaling up.</p>
+    </div>
+
+    <!-- ── Agent Integration ── -->
+    <h2 id="agent" data-i18n="agent-h2">🤖 AI Agent Integration · x402</h2>
+    <div class="highlight-box">
+      <p data-i18n-html="agent-highlight">🦾 <strong>Zorrito supports the x402 payment protocol.</strong> AI agents can autonomously deposit USDT, feed their fox daily, and compete in the annual lottery — all via standard HTTP requests, no wallet UI needed.</p>
+    </div>
+
+    <h2 style="margin-top:24px;" data-i18n="x402-h2">What is x402?</h2>
+    <p data-i18n-html="x402-desc">
+      <strong>x402</strong> revives the HTTP <code>402 Payment Required</code> status code as a machine-readable payment protocol for AI agents.
+      Instead of a browser wallet popup, an agent receives a <code>402</code> response containing structured payment instructions, executes an on-chain transfer automatically, and re-calls the endpoint with a payment proof header.
+      The server verifies the transaction and performs the action. No human approval needed at any step.
+    </p>
+
+    <h2 style="margin-top:24px;" data-i18n="flow-h2">Payment Flow</h2>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong data-i18n="flow-s1-title">Agent calls the endpoint</strong>
+          <p data-i18n-html="flow-s1-desc">No headers needed. The server responds with <code>HTTP 402</code> and a <code>X-Payment-Required</code> header describing exactly how much USDT to send, to which address, on which network.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong data-i18n="flow-s2-title">Agent sends USDT on Celo</strong>
+          <p data-i18n="flow-s2-desc">Transfer the required USDT amount to the facilitator address shown in the 402 response. This is a standard ERC-20 transfer — no special contract interaction needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong data-i18n="flow-s3-title">Agent re-calls with payment proof</strong>
+          <p data-i18n-html="flow-s3-desc">Include <code>X-Payment: base64(JSON.stringify({txHash: "0x..."}))</code> in the request headers. The server verifies the transaction on-chain.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong data-i18n="flow-s4-title">Server executes the action</strong>
+          <p data-i18n-html="flow-s4-desc">The facilitator calls <code>depositFor(agentAddress, amount)</code> or <code>feedFor(agentAddress)</code> on the Zorrito contract. The agent's wallet address is registered in the lottery with their own on-chain identity.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong data-i18n="flow-s5-title">Agent receives 200 with Celo tx hash</strong>
+          <p data-i18n="flow-s5-desc">The response includes the Zorrito transaction hash, the agent's current fish count, and instructions for the next action (feed daily to maintain eligibility).</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:24px;" data-i18n="ep-h2">Endpoints</h2>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="background:rgba(53,208,127,0.15);color:var(--green);font-family:monospace;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:4px;">GET</span>
+        <code style="font-size:0.85rem;">/api/agent?action=status&amp;address=0x...</code>
+        <span style="font-size:0.75rem;color:var(--muted);margin-left:auto;" data-i18n="ep-status-free">free · no payment</span>
+      </div>
+      <p style="margin:0;font-size:0.8rem;color:var(--muted);" data-i18n="ep-status-desc">Returns fox status, fish count, streak, seconds until dead, and pool stats for any address. Use this before acting to decide whether to deposit or feed.</p>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="background:rgba(251,204,92,0.15);color:var(--gold);font-family:monospace;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:4px;">POST</span>
+        <code style="font-size:0.85rem;">/api/agent?action=deposit&amp;beneficiary=0x...&amp;amount=10</code>
+      </div>
+      <p style="margin:0;font-size:0.8rem;color:var(--muted);" data-i18n-html="ep-deposit-desc">Deposits N USDT into the lottery pool for <code>beneficiary</code>. Returns <code>402</code> with payment instructions if no <code>X-Payment</code> header is present. Minimum 1 USDT.</p>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="background:rgba(251,204,92,0.15);color:var(--gold);font-family:monospace;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:4px;">POST</span>
+        <code style="font-size:0.85rem;">/api/agent?action=feed&amp;beneficiary=0x...</code>
+      </div>
+      <p style="margin:0;font-size:0.8rem;color:var(--muted);" data-i18n-html="ep-feed-desc">Feeds the fox for <code>beneficiary</code> (costs 1 USDT, adds 1 fish, increments streak). Must be called every 24h to stay alive. Returns <code>402</code> if no payment header.</p>
+    </div>
+
+    <h2 style="margin-top:24px;" data-i18n="examples-h2">Code Examples</h2>
+
+    <div style="margin-bottom:6px;font-size:0.8rem;color:var(--muted);font-weight:600;" data-i18n="ex-js-label">JavaScript / TypeScript (ethers.js)</div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:0.78rem;color:#444444;line-height:1.8;overflow-x:auto;margin-bottom:18px;">
+      <span style="color:#8b949e;">// Agent wallet — must hold CELO (gas) and USDT on Celo</span><br>
+      const wallet = new ethers.Wallet(AGENT_PRIVATE_KEY, provider);<br>
+      const usdt   = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, wallet);<br>
+      <br>
+      const BASE_URL    = <span style="color:var(--green);">"https://www.zorrito.app"</span>;<br>
+      const BENEFICIARY = wallet.address;<br>
+      <br>
+      <span style="color:#8b949e;">// Step 1 — probe for payment instructions</span><br>
+      const probe = await fetch(<br>
+      &nbsp;&nbsp;<span style="color:var(--green);">`${BASE_URL}/api/agent?action=deposit&beneficiary=${BENEFICIARY}&amount=10`</span>,<br>
+      &nbsp;&nbsp;{ method: <span style="color:var(--green);">"POST"</span> }<br>
+      );<br>
+      const { payTo, asset, amountRequired } = await probe.json();<br>
+      <br>
+      <span style="color:#8b949e;">// Step 2 — send USDT to facilitator</span><br>
+      const tx = await usdt.transfer(payTo, <span style="color:var(--green);">"10000000"</span>); <span style="color:#8b949e;">// 10 USDT</span><br>
+      await tx.wait();<br>
+      <br>
+      <span style="color:#8b949e;">// Step 3 — re-call with payment proof</span><br>
+      const proof = btoa(JSON.stringify({ txHash: tx.hash }));<br>
+      const res   = await fetch(<br>
+      &nbsp;&nbsp;<span style="color:var(--green);">`${BASE_URL}/api/agent?action=deposit&beneficiary=${BENEFICIARY}&amount=10`</span>,<br>
+      &nbsp;&nbsp;{ method: <span style="color:var(--green);">"POST"</span>, headers: { <span style="color:var(--green);">"X-Payment"</span>: proof } }<br>
+      );<br>
+      const result = await res.json();<br>
+      console.log(<span style="color:var(--green);">"Zorrito tx:"</span>, result.zorritoTx);
+    </div>
+
+    <div style="margin-bottom:6px;font-size:0.8rem;color:var(--muted);font-weight:600;" data-i18n="ex-py-label">Python</div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:0.78rem;color:#444444;line-height:1.8;overflow-x:auto;margin-bottom:20px;">
+      <span style="color:#8b949e;"># pip install web3 requests</span><br>
+      import requests, base64, json<br>
+      from web3 import Web3<br>
+      <br>
+      w3          = Web3(Web3.HTTPProvider(<span style="color:var(--green);">"https://forno.celo.org"</span>))<br>
+      account     = w3.eth.account.from_key(AGENT_PRIVATE_KEY)<br>
+      BASE_URL    = <span style="color:var(--green);">"https://www.zorrito.app"</span><br>
+      BENEFICIARY = account.address<br>
+      <br>
+      <span style="color:#8b949e;"># Step 1 — probe for payment instructions</span><br>
+      probe = requests.post(<br>
+      &nbsp;&nbsp;f<span style="color:var(--green);">"{BASE_URL}/api/agent"</span>,<br>
+      &nbsp;&nbsp;params={<span style="color:var(--green);">"action"</span>: <span style="color:var(--green);">"deposit"</span>, <span style="color:var(--green);">"beneficiary"</span>: BENEFICIARY, <span style="color:var(--green);">"amount"</span>: <span style="color:var(--green);">"10"</span>}<br>
+      )<br>
+      data = probe.json()<br>
+      pay_to = data[<span style="color:var(--green);">"payTo"</span>]<br>
+      <br>
+      <span style="color:#8b949e;"># Step 2 — send USDT on Celo</span><br>
+      tx_hash = send_usdt(w3, account, pay_to, <span style="color:var(--green);">10_000_000</span>)  <span style="color:#8b949e;"># 10 USDT</span><br>
+      <br>
+      <span style="color:#8b949e;"># Step 3 — re-call with payment proof</span><br>
+      proof = base64.b64encode(json.dumps({<span style="color:var(--green);">"txHash"</span>: tx_hash}).encode()).decode()<br>
+      res   = requests.post(<br>
+      &nbsp;&nbsp;f<span style="color:var(--green);">"{BASE_URL}/api/agent"</span>,<br>
+      &nbsp;&nbsp;params={<span style="color:var(--green);">"action"</span>: <span style="color:var(--green);">"deposit"</span>, <span style="color:var(--green);">"beneficiary"</span>: BENEFICIARY, <span style="color:var(--green);">"amount"</span>: <span style="color:var(--green);">"10"</span>},<br>
+      &nbsp;&nbsp;headers={<span style="color:var(--green);">"X-Payment"</span>: proof}<br>
+      )<br>
+      print(res.json()[<span style="color:var(--green);">"zorritoTx"</span>])
+    </div>
+
+    <div style="background:rgba(248,81,73,0.07);border:1px solid rgba(248,81,73,0.18);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <p style="margin:0;font-size:0.825rem;line-height:1.6;" data-i18n-html="agent-warning">
+        <strong style="color:#f85149;">⚠️ Agent requirements:</strong>
+        The agent wallet must hold <strong>CELO</strong> for gas (~$0.001/tx) and <strong>USDT on Celo</strong> for deposits/feeds.
+        Bridge USDT via <a href="https://app.uniswap.org" style="color:var(--green);">Uniswap</a> or <a href="https://cbridge.celer.network" style="color:var(--green);">cBridge</a>.
+        To maintain lottery eligibility, the agent must call the <code>feed</code> endpoint once per day.
+      </p>
+    </div>
+
+    <!-- ── Lemon Compatibility ── -->
+    <h2 data-i18n="lemon-h2">🍋 Lemon Mini-App Compatible</h2>
+    <div class="highlight-box" style="background:rgba(253,204,13,0.06);border-color:rgba(253,204,13,0.3);">
+      <p data-i18n-html="lemon-highlight">🌎 <strong>Zorrito runs natively as a Lemon mini-app</strong> — the leading crypto super-app in Latin America with 5M+ verified users in Argentina, Brazil, and beyond.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n="lemon-what">Lemon is a fintech app that lets users buy, sell, and manage crypto with built-in fiat on-ramps. Its mini-app platform lets developers embed dApps directly inside Lemon, with Lemon handling wallet security and user identity.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:12px;" data-i18n="lemon-compat-title">What we implement for Lemon</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="lemon-c1"><strong>Auto-authenticate on load</strong> — Zorrito calls <code>authenticate({ chainId: 42220 })</code> via the Lemon SDK on startup, getting the user's wallet address without any button.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="lemon-c2"><strong>Native contract calls</strong> — all writes (<code>deposit</code>, <code>feed</code>, <code>withdraw</code>, <code>approve</code>, <code>draw</code>) go through <code>callSmartContract()</code> from the Lemon SDK. Lemon handles signing and gas natively, so users just tap "Confirm" in the app.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="lemon-c3"><strong>Read-only provider for data</strong> — balance reads, fox status, leaderboard and pool stats use a public Celo RPC directly, with no wallet interaction needed.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="lemon-c4"><strong>Lemon badge + hidden connect button</strong> — the WalletConnect button is hidden and replaced by a yellow Lemon badge showing the user's address.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="lemon-c5"><strong>Celo mainnet (chainId 42220)</strong> — fully supported by Lemon.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(253,204,13,0.06);border:1px solid rgba(253,204,13,0.25);border-radius:10px;padding:14px 18px;margin-bottom:30px;">
+      <p style="margin:0;font-size:0.825rem;" data-i18n-html="lemon-how-to">🍋 <strong>How to open Zorrito in Lemon:</strong> Open the Lemon app → tap the mini-apps section → search for <strong>Zorrito</strong>.</p>
+    </div>
+
+    <!-- ── MiniPay Compatibility ── -->
+    <h2 data-i18n="minipay-h2">📱 MiniPay Compatible</h2>
+    <div class="highlight-box" style="background:rgba(53,208,127,0.06);border-color:rgba(53,208,127,0.25);">
+      <p data-i18n-html="minipay-highlight">🌍 <strong>Zorrito works natively inside MiniPay</strong> — the stablecoin wallet built into Opera Mini with 10M+ activations across Africa and Latin America.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n="minipay-what">MiniPay is a lightweight non-custodial wallet by Opera, focused on the Global South. Users transact with stablecoins (USDT, USDC, cUSD) with sub-cent fees on Celo — no browser extension needed.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:12px;" data-i18n="minipay-compat-title">What we implement for MiniPay</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="minipay-c1"><strong>Auto-connect on load</strong> — when running inside MiniPay, Zorrito automatically requests the injected wallet address without showing a "Connect Wallet" button.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="minipay-c2"><strong>Hidden connect button</strong> — the WalletConnect button is hidden inside MiniPay and replaced by a compact address badge, keeping the UI clean on mobile.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="minipay-c3"><strong>Legacy transactions (type 0)</strong> — MiniPay only accepts legacy transactions. Every contract write (<code>deposit</code>, <code>feed</code>, <code>withdraw</code>, <code>approve</code>) automatically uses <code>type: 0</code> with explicit <code>gasPrice</code> when inside MiniPay.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="minipay-c4"><strong>Account change listener</strong> — if the user switches accounts inside MiniPay, the app reconnects automatically and refreshes all balances and fox status.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="minipay-c5"><strong>Celo-only network</strong> — Zorrito runs exclusively on Celo mainnet, which is the only network MiniPay supports.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(53,208,127,0.06);border:1px solid rgba(53,208,127,0.2);border-radius:10px;padding:14px 18px;margin-bottom:30px;">
+      <p style="margin:0;font-size:0.825rem;" data-i18n-html="minipay-how-to">📲 <strong>How to open Zorrito in MiniPay:</strong> Open MiniPay → tap the compass icon (discovery page) → search for <strong>Zorrito</strong>.</p>
+    </div>
+
+    <!-- ── Valora Compatibility ── -->
+    <h2>💜 Valora Compatible</h2>
+    <div class="highlight-box" style="background:rgba(101,52,255,0.06);border-color:rgba(101,52,255,0.3);">
+      <p>💜 <strong>Zorrito is listed on the Valora dApp browser</strong> — the leading self-custody wallet on Celo with millions of users across Africa and Latin America.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;">Valora is a mobile-first, self-custody wallet built on Celo. It has a built-in dApp browser and passes the user's wallet address to dApps via URL templating, enabling zero-friction onboarding.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:12px;">What we implement for Valora</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span><strong>Valora featured wallet</strong> — Valora's WalletConnect ID is listed first in the AppKit wallet selector so users are never lost looking for their wallet.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span><strong><code>{{address}}</code> URL templating</strong> — the Zorrito URL in the Valora dApp list uses <code>?address={{address}}</code>. When Valora opens the dApp it injects the user's wallet address, instantly loading their fox status in read-only mode before they tap Connect.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span><strong>WalletConnect v2 signing</strong> — all contract writes (deposit, feed, withdraw) use Reown AppKit → WalletConnect v2. Valora connects via the standard WalletConnect flow and handles signing natively.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span><strong>Celo mainnet (chainId 42220)</strong> — Zorrito runs exclusively on Celo, the same chain Valora is built around.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(101,52,255,0.06);border:1px solid rgba(101,52,255,0.2);border-radius:10px;padding:14px 18px;margin-bottom:14px;">
+      <p style="margin:0;font-size:0.825rem;">💜 <strong>How to open Zorrito in Valora:</strong> Open Valora → tap the Discover tab → search for <strong>Zorrito</strong>.</p>
+    </div>
+
+
+    <!-- ── How to Create Your Own Agent ── -->
+<h2>🤖 How to Create Your Own Agent</h2>
+<div class="highlight-box">
+  <p>🦾 <strong>Anyone can run a fully autonomous Zorrito agent.</strong> Copy the prompt below into Claude — it will generate every file you need and walk you through the full deploy. No DevOps experience required.</p>
+</div>
+
+<p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;">
+  The agent runs on <strong>Vercel Cron</strong> (free tier), fires once a day inside the streak window, feeds your fox, and auto-withdraws excess USDT back to your wallet so you never have more than 3 USDT at risk total.
+</p>
+
+<!-- Tech stack chips -->
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+  <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">▲ Vercel Cron</span>
+  <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">⬡ Node.js</span>
+  <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">⚡ ethers.js v6</span>
+  <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">🟡 Celo Mainnet</span>
+  <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--green);">Free · ~$0/month</span>
+</div>
+
+<!-- Quick steps -->
+<div class="step-list" style="margin-bottom:20px;">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Copy the prompt below → paste into Claude</strong>
+      <p>Claude will generate <code>api/zorrito-daily.js</code>, <code>vercel.json</code>, and a README with every address and parameter pre-filled.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Create a dedicated agent wallet</strong>
+      <p>Run <code>node -e "const {ethers}=require('ethers'); const w=ethers.Wallet.createRandom(); console.log(w.privateKey, w.address)"</code> — fund it with 0.1 CELO (gas) + 3 USDT on Celo mainnet.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Push to GitHub → import to Vercel</strong>
+      <p>Add <code>AGENT_PRIVATE_KEY</code> and <code>CRON_SECRET</code> as environment variables in the Vercel dashboard.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Test manually, then let it run</strong>
+      <p>Trigger once with <code>curl -X POST https://your-project.vercel.app/api/zorrito-daily -H "Authorization: Bearer your-secret"</code>. From then on, the cron fires every day at 05:50 UTC automatically.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Claude prompt box -->
+<div style="position:relative;margin-bottom:20px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+    <span style="font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">Claude prompt — copy &amp; paste</span>
+    <button id="copy-prompt-btn" onclick="copyAgentPrompt()"
+      style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:0.78rem;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--font);transition:all 0.15s;">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Copy prompt
+    </button>
+  </div>
+  <div id="agent-prompt-box"
+    style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px;font-family:monospace;font-size:0.78rem;color:#444;line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:340px;overflow-y:auto;position:relative;">I want to build an autonomous agent that feeds my Zorrito fox every day to maintain my streak in the Zorrito no-loss lottery on Celo mainnet.
+
+<span style="color:var(--green);font-weight:700;">## What is Zorrito?</span>
+Zorrito (https://zorrito.app) is a no-loss savings lottery on Celo. Users deposit USDT; funds earn yield on Aave V3; every January 1st the accumulated yield goes to one random winner weighted by effective tickets (fish count × streak multiplier). To stay in the draw you must feed your fox 1 USDT every 24 hours. Missing a day kills your fox and removes you from the draw.
+
+<span style="color:var(--green);font-weight:700;">## The streak window</span>
+The contract only advances the streak counter (+1) when the feed happens in the LAST 4 hours before the 24h deadline. A feed that lands too early counts as a fish deposit but does NOT advance the streak. So the agent must:
+1. Skip if secondsUntilDead &gt; 4 * 3600 (not yet in the streak window)
+2. Feed when secondsUntilDead &lt;= 4 * 3600 (inside window → streak +1)
+3. If the fox is dead → call depositFor instead of feedFor to revive it
+
+<span style="color:var(--green);font-weight:700;">## Withdrawal cap (max 3 USDT total exposure)</span>
+After each successful feed (which adds 1 USDT to the pool), if getUserDeposit &gt; 2 USDT, withdraw the excess back to the agent wallet. This keeps the pool deposit at exactly 2 USDT and 1 USDT liquid in the wallet — total 3 USDT at risk.
+
+<span style="color:var(--green);font-weight:700;">## Tech stack</span>
+- Vercel Serverless Function (Node.js runtime)
+- Vercel Cron — free Hobby plan, 1 cron/day — schedule: "50 5 * * *" (05:50 UTC)
+- ethers.js v6 for Celo RPC + contract interactions
+- Env vars: AGENT_PRIVATE_KEY, CRON_SECRET
+
+<span style="color:var(--green);font-weight:700;">## Contracts (Celo Mainnet, chainId 42220)</span>
+- Zorrito v8:  0x135dc8DC4bEd4e619B97b07bA16bCE348CAeFF62
+- USDT (LayerZero): 0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e
+- Celo RPC: https://forno.celo.org
+
+<span style="color:var(--green);font-weight:700;">## ABI fragments</span>
+depositFor(address beneficiary, uint256 amount)
+feedFor(address beneficiary)
+withdraw(uint256 amount)
+getFoxStatus(address user) → (bool alive, uint32 currentStreak, uint32 bestStreak, uint256 fishCount, uint256 nextFeedDeadline, uint256 secondsUntilDead)
+getUserDeposit(address user) → uint256
+balanceOf(address account) → uint256   [ERC-20 USDT]
+approve(address spender, uint256 amount) → bool   [ERC-20 USDT]
+
+<span style="color:var(--green);font-weight:700;">## Please create</span>
+1. api/zorrito-daily.js with the full agent logic:
+   - Bearer token auth via CRON_SECRET env var
+   - Read fox status, deposit, and USDT wallet balance in parallel
+   - Skip with JSON response if outside streak window (fox alive + secondsUntilDead &gt; 4h)
+   - Skip if wallet balance &lt; 1 USDT
+   - Approve USDT for Zorrito with MaxUint256 if allowance &lt; 1 USDT
+   - depositFor on first run (deposit == 0) or to revive a dead fox
+   - feedFor on every normal daily run inside the streak window
+   - After the action, re-read getUserDeposit; if &gt; 2 USDT call withdraw(excess)
+   - Return JSON: { action, txHash, explorer link, optional withdraw object, status }
+
+2. vercel.json:
+   { "crons": [{ "path": "/api/zorrito-daily", "schedule": "50 5 * * *" }] }
+
+3. README.md explaining:
+   - How to generate a dedicated agent wallet (ethers.Wallet.createRandom())
+   - How to fund it: 0.1 CELO for gas + 3 USDT on Celo mainnet
+   - How to bridge USDT to Celo via Uniswap or cBridge
+   - How to set AGENT_PRIVATE_KEY and CRON_SECRET in Vercel dashboard
+   - How to deploy: git push → Vercel auto-deploys
+   - How to test: curl -X POST https://your-project.vercel.app/api/zorrito-daily -H "Authorization: Bearer your-secret"
+   - How to verify: open https://zorrito.app and search the agent wallet address to see the fox status, streak, and fish count</div>
+</div>
+
+<div style="background:rgba(53,208,127,0.06);border:1px solid rgba(53,208,127,0.2);border-radius:10px;padding:14px 18px;margin-bottom:30px;">
+  <p style="margin:0;font-size:0.825rem;line-height:1.6;">
+    🟡 <strong>Cost to run:</strong> Vercel Hobby is free (1 cron/day). Gas on Celo is ~$0.001/tx — 0.1 CELO lasts months. Starting capital: just <strong>3 USDT</strong> (2 deposited + 1 liquid for the first feed). The agent auto-refills liquidity by withdrawing after each feed.
+  </p>
+</div>
+
+<script>
+  function copyAgentPrompt() {
+    const box = document.getElementById('agent-prompt-box');
+    const text = box.innerText;
+    navigator.clipboard.writeText(text).then(function() {
+      const btn = document.getElementById('copy-prompt-btn');
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+      btn.style.color = 'var(--green)';
+      btn.style.borderColor = 'rgba(53,208,127,0.4)';
+      setTimeout(function() {
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> Copy prompt';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    });
+  }
+</script>
+
+    <!-- ── Business Model ── -->
+    <h2 data-i18n="biz-h2">💰 Business Model</h2>
+    <div style="background:rgba(253,204,13,0.08);border:1px solid rgba(253,204,13,0.3);border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+      <p style="margin:0;font-size:0.9rem;line-height:1.6;color:#333;" data-i18n-html="biz-highlight">💡 <strong>Zorrito takes a 10% platform fee from the annual prize yield.</strong> Your principal is always safe — the fee only applies to the yield, never to deposits.</p>
+    </div>
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n="biz-desc">To keep Zorrito running, infrastructure maintained, and development ongoing, a 10% fee is deducted from the annual yield prize at draw time. This fee is sent directly to the Zorrito treasury wallet on-chain, with full transparency.</p>
+    <p style="font-size:0.875rem;font-weight:600;margin-bottom:8px;" data-i18n="biz-how-title">How it works:</p>
+    <ul style="font-size:0.875rem;color:#444;line-height:1.9;padding-left:20px;margin-bottom:16px;">
+      <li data-i18n="biz-c1">365 days of yield accumulates in Aave V3</li>
+      <li data-i18n="biz-c2">At draw time, 10% of the yield goes to the Zorrito platform wallet</li>
+      <li data-i18n="biz-c3">90% of the yield is paid to the lucky winner</li>
+      <li data-i18n="biz-c4">Principal is 100% untouched — always withdrawable</li>
+      <li data-i18n="biz-c5">Everything happens on-chain: transparent and verifiable on Celoscan</li>
+    </ul>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:24px;">
+      <span data-i18n="biz-wallet-label">Platform wallet:</span>
+      <a href="https://celoscan.io/address/0x19eC1797000F434EB2fd622E642BeF80234425cb" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none;font-family:monospace;">0x19eC1797000F434EB2fd622E642BeF80234425cb ↗</a>
+    </p>
+
+    <!-- ── FAQ ── -->
+    <h2 data-i18n="faq-h2">FAQ</h2>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq-q1">Can I lose my deposit?</div>
+      <p class="faq-a" data-i18n="faq-a1">No. Your principal is always withdrawable. Only the yield (the extra amount earned by Aave) is given to the winner — your original deposit stays intact.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq-q2">When does the draw happen?</div>
+      <p class="faq-a" data-i18n="faq-a2">Automatically, every January 1st. A keeper bot runs via GitHub Actions and triggers the draw on-chain as soon as the year is up and yield has accumulated — no human intervention needed. You don't have to do anything.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq-q3">How do I receive my prize?</div>
+      <p class="faq-a" data-i18n="faq-a3">Winnings are sent directly to your wallet by Aave at draw time. No claiming needed — the USDT just appears in your wallet.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq-q4">Why is the prize so small right now?</div>
+      <p class="faq-a" data-i18n="faq-a4">The prize = 90% of 365 days of yield from the entire pool (10% goes to the platform). With a small pool the prize is still growing. As more people deposit throughout the year, the annual prize grows. Invite friends to deposit and the prize gets bigger for everyone!</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq-q5">What network is this on?</div>
+      <p class="faq-a" data-i18n-html="faq-a5">Celo mainnet. Gas fees are paid in CELO and are very cheap (&lt;$0.001 per transaction). You'll need a small amount of CELO in your wallet for gas.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq-q6">Is the code open source?</div>
+      <p class="faq-a" data-i18n="faq-a6">Yes. The smart contract source is verified on Celoscan and the full repository is public on GitHub.</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <span data-i18n="docs-footer-tagline">Lotería sin pérdidas en Celo. Ahorrá, jugá y ganá.</span>
+    &nbsp;·&nbsp; <a href="index.html" style="color:var(--green);text-decoration:none;" data-i18n="docs-back-top">← Back to App</a>
+    &nbsp;·&nbsp; <a href="terms.html" style="color:var(--green);text-decoration:none;">Terms</a>
+    &nbsp;·&nbsp; <a href="privacy.html" style="color:var(--green);text-decoration:none;">Privacy</a>
+  </footer>
+
+  <script src="lang.js"></script>
+  <script>
+    // ── Custom lang picker ──────────────────────
+    function toggleLangMenu(e) {
+      e.stopPropagation();
+      document.getElementById('lang-menu').classList.toggle('open');
+    }
+    function pickLang(lang) {
+      document.getElementById('lang-menu').classList.remove('open');
+      zorritoSetLang(lang);
+      const labels = { en: '🌐 EN', es: '🌐 ES', pt: '🌐 PT' };
+      document.getElementById('lang-label').textContent = labels[lang] || '🌐 EN';
+    }
+    function toggleNavMenu() {
+      document.getElementById('nav-dropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      document.getElementById('lang-menu')?.classList.remove('open');
+      if (!e.target.closest('.nav-hamburger') && !e.target.closest('.nav-dropdown')) {
+        document.getElementById('nav-dropdown')?.classList.remove('open');
+      }
+    });
+    // Init label from saved lang
+    (function() {
+      const lang = localStorage.getItem('zorrito-lang') || 'en';
+      const labels = { en: '🌐 EN', es: '🌐 ES', pt: '🌐 PT' };
+      const el = document.getElementById('lang-label');
+      if (el) el.textContent = labels[lang] || '🌐 EN';
+    })();
+  </script>
+</body>
+</html>

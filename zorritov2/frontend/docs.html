@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="docs-page-title">Cómo funciona — Zorrito V2</title>
+  <!-- ── SEO ── -->
+  <meta name="description" content="Documentación de Zorrito V2: streak diario, premio extra semanal, referidos, Self.xyz, contratos en Celo, integración con agentes.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="Zorrito">
+  <link rel="canonical" href="https://www.zorrito.app/docs.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Zorrito V2">
+  <meta property="og:title" content="Zorrito V2 — Cómo funciona">
+  <meta property="og:description" content="Documentación de Zorrito V2: streak diario, premio extra semanal, referidos, Self.xyz, contratos en Celo, integración con agentes.">
+  <meta property="og:url" content="https://www.zorrito.app/docs.html">
+  <meta property="og:image" content="https://www.zorrito.app/assets/zorritoimage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="646">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ZorritoApp">
+  <meta name="twitter:title" content="Zorrito V2 — Cómo funciona">
+  <meta name="twitter:description" content="Documentación de Zorrito V2: streak diario, premio extra semanal, referidos, Self.xyz, contratos en Celo, integración con agentes.">
+  <meta name="twitter:image" content="https://www.zorrito.app/assets/zorritoimage.png">
+
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* body.docs-page is defined in style.css:
+       white background, bg.png at 0.08 opacity, flex column centered */
+
+    /* ── Docs wrapper ── */
+    .docs-wrap { width:100%; max-width:620px; padding:0 20px; box-sizing:border-box; }
+    .docs-wrap h1 { font-size:2rem; font-weight:800; margin-bottom:8px; line-height:1.2; }
+    .docs-wrap h1 span { color:var(--green); }
+    .docs-wrap .tagline { color:var(--muted); font-size:1rem; margin-bottom:40px; }
+    .docs-wrap h2 { font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+      color:var(--muted); margin-bottom:14px; margin-top:36px; }
+    .docs-wrap p { color:#444; line-height:1.7; margin-bottom:14px; font-size:0.95rem; }
+    .docs-wrap strong { color:var(--text); }
+
+    /* ── Steps ── */
+    .step-list { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
+    .step { display:flex; gap:16px; align-items:flex-start; background:var(--surface);
+      border:1px solid var(--border); border-radius:10px; padding:16px; }
+    .step-num { background:var(--orange); color:#fff; font-weight:800; font-size:0.9rem;
+      width:28px; height:28px; border-radius:50%; display:flex; align-items:center;
+      justify-content:center; flex-shrink:0; }
+    .step-body strong { display:block; margin-bottom:4px; font-size:0.95rem; }
+    .step-body p { margin:0; font-size:0.875rem; color:var(--muted); line-height:1.5; }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-q { font-weight:600; color:var(--text); margin-bottom:8px; font-size:0.95rem; }
+    .faq-a { color:var(--muted); font-size:0.875rem; line-height:1.6; margin:0; }
+
+    /* ── Highlight & code boxes ── */
+    .highlight-box { background:rgba(253,132,14,.07); border:1px solid rgba(253,132,14,.25);
+      border-radius:10px; padding:18px 20px; margin-bottom:14px; }
+    .highlight-box p { margin:0; color:var(--text); }
+    .code-box { background:#1a1a1a; border-radius:10px; padding:14px 16px;
+      font-family:monospace; font-size:0.8rem; color:#e5e7eb; overflow-x:auto;
+      white-space:pre; margin-bottom:14px; }
+    .formula { background:#f5f5f5; border:1px solid var(--border); border-radius:8px;
+      padding:12px 16px; font-family:monospace; font-size:0.88rem; margin-bottom:14px; }
+
+    /* ── Streak table ── */
+    .streak-table { width:100%; border-collapse:collapse; font-size:0.875rem; margin-bottom:14px; }
+    .streak-table th { text-align:left; padding:8px 12px; font-size:0.72rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+      border-bottom:2px solid var(--border); }
+    .streak-table td { padding:10px 12px; border-bottom:1px solid var(--border); color:#444; }
+    .streak-table tr:last-child td { border-bottom:none; }
+    .streak-table td:nth-child(2) { font-weight:800; color:var(--orange); }
+
+    /* ── Contract addresses ── */
+    .addr-box { background:var(--bg); border:1px solid var(--border); border-radius:8px;
+      padding:12px 16px; font-family:monospace; font-size:0.8rem; color:var(--muted);
+      word-break:break-all; margin-bottom:10px; }
+    .addr-label { color:var(--green); font-weight:600; display:block; margin-bottom:2px;
+      font-family:var(--font); font-size:0.75rem; }
+    .addr-link { color:var(--orange); text-decoration:none; font-size:0.75rem; font-family:var(--font); }
+    .addr-link:hover { text-decoration:underline; }
+
+    /* ── Risk tags ── */
+    .risk-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7rem;
+      font-weight:700; margin-right:6px; vertical-align:middle; }
+    .risk-low  { background:rgba(26,153,96,.12);  color:var(--green);  border:1px solid rgba(26,153,96,.25); }
+    .risk-med  { background:rgba(253,132,14,.12); color:var(--orange); border:1px solid rgba(253,132,14,.3); }
+    .risk-info { background:rgba(59,130,246,.12); color:#3b82f6;       border:1px solid rgba(59,130,246,.3); }
+    .security-item { display:flex; align-items:flex-start; gap:10px;
+      padding:14px 0; border-bottom:1px solid var(--border); }
+    .security-item:last-child { border-bottom:none; }
+    .security-text strong { display:block; font-size:0.9rem; margin-bottom:3px; }
+    .security-text p { margin:0; font-size:0.82rem; color:var(--muted); line-height:1.5; }
+
+    /* ── Comparison table ── */
+    .cmp-table { width:100%; border-collapse:collapse; font-size:0.82rem; margin-bottom:14px; }
+    .cmp-table th { padding:8px 10px; font-size:0.72rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--border); text-align:left; }
+    .cmp-table td { padding:9px 10px; border-bottom:1px solid var(--border); color:#444; }
+    .cmp-table tr:last-child td { border-bottom:none; }
+    .cmp-table td.good { color:var(--green); font-weight:700; }
+
+    hr { border:none; border-top:1px solid #f0f0f0; margin:32px 0 0; }
+  </style>
+  <!-- PostHog analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: true,
+    });
+  </script>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span> <span style="font-size:0.65em;opacity:0.8;">V2</span></span>
+    </div>
+    <p class="header-tagline" data-i18n="home-header-tagline">Ahorrá USDT. Ganá un premio semanal.</p>
+    <div class="nav-links">
+      <a href="stats.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📊 Stats</a>
+      <a href="agent.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🤖 Agent</a>
+      <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+    </div>
+  </header>
+
+  <div style="display:flex; justify-content:center; width:100%;">
+  <div class="docs-wrap">
+
+    <h1 data-i18n-html="docs-h1">Cómo funciona<br><span>Zorrito V2</span></h1>
+    <p class="tagline" data-i18n="docs-tagline">Ahorro en USDT sin pérdidas — tu principal siempre está seguro.</p>
+
+    <div class="highlight-box">
+      <p data-i18n="docs-intro">💡 La idea es simple: depositás USDT, el pool genera rendimiento en Aave V3, y cada semana ese rendimiento va a un ahorrador activo elegido al azar. Además, los incentivos Merit de ACI se distribuyen directamente a todos los depositantes. Nunca perdés tu capital — nunca.</p>
+    </div>
+
+    <!-- ── Cómo funciona ── -->
+    <h2 data-i18n="docs-how-h2">Cómo funciona</h2>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong data-i18n="docs-step1-title">Depositás USDT</strong>
+          <p data-i18n="docs-step1-desc">Mínimo 0.25 USDT. Tu depósito va directo a Aave V3 en Celo y empieza a generar rendimiento al instante. Cada USDT = más chances en el sorteo semanal.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong data-i18n="docs-step2-title">Ahorrás cada día</strong>
+          <p data-i18n="docs-step2-desc">Presionás "Ahorrar hoy" una vez por día UTC. Cada día suma +1 al streak (racha) de la semana. El streak multiplica tus chances — a mayor streak, mayor probabilidad de ganar.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong data-i18n="docs-step3-title">Acumulás Merit Rewards</strong>
+          <p data-i18n="docs-step3-desc">El programa Merit de ACI distribuye incentivos en USDT directamente a todos los depositantes, proporcional a tu depósito. Se acumulan en el contrato y los reclamás cuando querés — sin acción diaria requerida.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong data-i18n="docs-step4-title">Sorteo cada lunes</strong>
+          <p data-i18n="docs-step4-desc">Cada lunes a las 10:05 UTC, el rendimiento base de Aave se sortea entre todos los ahorradores activos. El ganador recibe el 90% del prize pool directamente en su wallet — sin claim, sin demoras.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong data-i18n="docs-step5-title">Retirás cuando querés</strong>
+          <p data-i18n="docs-step5-desc">Tu principal nunca está bloqueado. Retirás todo o parte en cualquier momento, sin penalidades ni lock-up. Los Merit rewards los reclamás por separado.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Streak ── -->
+    <h2 data-i18n="docs-streak-h2">🔥 Streak semanal</h2>
+    <p data-i18n="docs-streak-p">Cada semana (lunes a domingo UTC) tenés 7 días para ahorrar. Cada día que presionás "Ahorrar hoy" suma +1 al streak. El streak multiplica tus chances en el sorteo de esa semana.</p>
+
+    <div class="highlight-box">
+      <p data-i18n="docs-streak-example">💡 Dos usuarios con 100 USDT cada uno: el que ahorra todos los días tiene streak 7 (700 chances). El que no ahorra ninguno tiene streak 1 mínimo (100 chances). Misma inversión, 7× más probabilidad de ganar.</p>
+    </div>
+
+    <table class="streak-table">
+      <tr><th data-i18n="docs-streak-th-days">Días ahorrados esta semana</th><th data-i18n="docs-streak-th-mult">Multiplicador</th><th data-i18n="docs-streak-th-example">Ejemplo (100 USDT)</th></tr>
+      <tr><td data-i18n="docs-streak-row-0d">0 días (nunca ahorraste)</td><td>1×</td><td data-i18n="docs-streak-chances-100">100 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-1d">1 día</td><td>1×</td><td data-i18n="docs-streak-chances-100">100 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-2d">2 días</td><td>2×</td><td data-i18n="docs-streak-chances-200">200 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-3d">3 días</td><td>3×</td><td data-i18n="docs-streak-chances-300">300 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-4d">4 días</td><td>4×</td><td data-i18n="docs-streak-chances-400">400 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-5d">5 días</td><td>5×</td><td data-i18n="docs-streak-chances-500">500 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-6d">6 días</td><td>6×</td><td data-i18n="docs-streak-chances-600">600 chances</td></tr>
+      <tr><td data-i18n="docs-streak-row-7d">7 días 🏆</td><td>7×</td><td data-i18n="docs-streak-chances-700">700 chances</td></tr>
+    </table>
+
+    <p style="font-size:0.82rem;color:var(--muted);" data-i18n="docs-streak-reset">El streak resetea automáticamente cada lunes a las 00:00 UTC. Si no ahorrás ningún día de la semana, tu multiplicador es 1× (el mínimo garantizado para usuarios con depósito).</p>
+
+    <div class="highlight-box" style="background:rgba(26,153,96,0.06);border-color:rgba(26,153,96,0.25);margin-top:14px;">
+      <p style="font-size:0.875rem;" data-i18n-html="docs-streak-security">🛡️ <strong>Seguridad sin cambios.</strong> Los multiplicadores de streak son determinísticos y públicamente legibles on-chain — cualquier observador puede verificarlos en cualquier momento. No afectan <em>cómo</em> se elige al ganador, sólo <em>cuántas chances</em> tiene cada jugador. Un atacante no puede manipular su multiplicador para sesgar el acumulador de entropía — los streaks se ganan con tiempo real y no se pueden falsificar.</p>
+    </div>
+
+    <hr>
+
+    <!-- ── Chances ── -->
+    <h2 data-i18n="docs-chances-h2">🎫 Cómo sumar más chances</h2>
+
+    <p data-i18n="docs-chances-intro">Hay cuatro maneras de aumentar tu probabilidad de ganar el sorteo semanal:</p>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">💰</span>
+        <div data-i18n-html="docs-chances-deposit"><strong>Depositá más USDT</strong> — más depósito = más chances base. Cada USDT cuenta directamente en la fórmula.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔥</span>
+        <div data-i18n-html="docs-chances-streak"><strong>Mantené el streak diario</strong> — cada día que ahorrás sube el multiplicador. Máximo 7× el domingo de la semana.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔗</span>
+        <div data-i18n-html="docs-chances-refs"><strong>Traé referidos</strong> — cada amigo que deposita con tu código suma +10% a tus chances de forma permanente.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(59,130,246,.04);border:1px solid rgba(59,130,246,.2);border-radius:10px;">
+        <img src="assets/selflogo.png" alt="Self" style="width:22px;height:22px;border-radius:5px;flex-shrink:0;margin-top:1px;">
+        <div data-i18n-html="docs-chances-self"><strong>Verificate con Self</strong> <span style="font-size:0.72rem;background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.25);padding:1px 6px;border-radius:5px;font-weight:700;vertical-align:middle;">+25%</span> — verificás tu pasaporte con ZK proof, una sola vez, sin revelar datos personales. El bonus es permanente.</div>
+      </div>
+    </div>
+
+    <p data-i18n-html="docs-formula-label"><strong>Fórmula completa:</strong></p>
+    <div class="formula" data-i18n="docs-formula-chances">chances = depósito × streakDay × (10 + referidos) / 10 × Self bonus</div>
+    <p style="font-size:0.82rem;color:var(--muted);" data-i18n="docs-self-bonus-note">El Self bonus es 1.25× para wallets verificadas con Self, 1× para el resto.</p>
+    <p data-i18n="docs-prob-intro">Tu probabilidad de ganar el sorteo es proporcional a tus chances efectivas sobre el total del pool:</p>
+    <div class="formula" data-i18n="docs-formula-prob">P(ganar) = tus chances efectivas ÷ total de chances del pool</div>
+    <p data-i18n-html="docs-prob-example">Ejemplo: tenés 50 USDT, streak 7, 2 referidos, verificado con Self → <strong>50 × 7 × 12/10 × 1.25 = 525 chances</strong>. Sin Self serían 420. Si el pool tiene 4.000 chances totales, tu probabilidad pasa de 10.5% a 13.1%.</p>
+
+    <hr>
+
+    <!-- ── Prize Pool ── -->
+    <h2 data-i18n="docs-prize-h2">🏆 El sorteo semanal</h2>
+    <p data-i18n="docs-prize-p">El prize pool es el rendimiento que acumula el pool completo en Aave V3 durante la semana. Crece con el monto total depositado y el APY de Aave.</p>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li data-i18n-html="docs-prize-li-when"><strong>Cuándo:</strong> todos los lunes a las 10:05 UTC</li>
+      <li data-i18n-html="docs-prize-li-fee"><strong>Fee de plataforma:</strong> 10% del prize pool — el ganador recibe el 90%</li>
+      <li data-i18n-html="docs-prize-li-delivery"><strong>Entrega:</strong> el USDT llega directo a la wallet del ganador desde Aave, sin claim</li>
+      <li data-i18n-html="docs-prize-li-small"><strong>Si el pool es pequeño:</strong> el prize puede ser $0 en las primeras semanas. Se acumula a medida que crece el TVL</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── Merit Rewards ── -->
+    <h2 data-i18n="docs-merit-h2">🎖️ Merit Rewards (ACI)</h2>
+    <p data-i18n="docs-merit-p">Zorrito participa en el programa Merit de ACI (Aave Chan Initiative). ACI distribuye USDT adicional a los proveedores de liquidez de USDT en Aave V3 en Celo.</p>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li data-i18n-html="docs-merit-li-source"><strong>Fuente:</strong> incentivos externos de ACI — independientes del rendimiento base de Aave</li>
+      <li data-i18n-html="docs-merit-li-dist"><strong>Distribución:</strong> el keeper reclama las recompensas de Merkl y las envía al contrato. El contrato las distribuye proporcionalmente a todos los depositantes</li>
+      <li data-i18n-html="docs-merit-li-fee"><strong>Fee:</strong> 15% de plataforma sobre los Merit rewards distribuidos</li>
+      <li data-i18n-html="docs-merit-li-claim"><strong>Claim:</strong> reclamás cuando querés desde el home — no hay deadline</li>
+    </ul>
+    <div class="highlight-box">
+      <p data-i18n-html="docs-merit-note">📌 Los Merit Rewards son <strong>independientes del sorteo</strong>. Ganar o perder el sorteo no afecta tus Merit rewards. Todo depositante los recibe proporcionalmente — siempre.</p>
+    </div>
+
+    <hr>
+
+    <!-- ── Referidos ── -->
+    <h2 data-i18n="docs-refs-h2">🤝 Referidos</h2>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li data-i18n="docs-refs-li-1">Al depositar por primera vez, el contrato genera tu código de referido automáticamente</li>
+      <li data-i18n-html="docs-refs-li-2">Cada referido activo te suma <strong>+10% de chances</strong> adicionales en el sorteo</li>
+      <li data-i18n-html="docs-refs-li-3">Para que cuente: tu referido debe tener depósito &gt; 0 y vos debés tener ≥ 1 USDT</li>
+      <li data-i18n="docs-refs-li-4">Si tu referido retira todo su depósito, el bono desaparece automáticamente del Fenwick tree</li>
+      <li data-i18n="docs-refs-li-5">No hay límite de referidos — más referidos = más chances</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── Welcome Bonus ── -->
+    <h2 data-i18n="docs-welcome-h2">🎁 Bonus de bienvenida</h2>
+    <p data-i18n-html="docs-welcome-p">La primera vez que completás <strong>5 días consecutivos</strong> ahorrando, recibís <strong>0.5 USDT</strong> directamente en tu wallet. El bonus está financiado por la wallet de incentivos del proyecto y se entrega automáticamente al completar el quinto día.</p>
+    <ul style="font-size:0.9rem;line-height:1.8;color:#444;padding-left:18px;margin-bottom:14px;">
+      <li data-i18n="docs-welcome-li-1">Una sola vez por dirección</li>
+      <li data-i18n="docs-welcome-li-2">Solo disponible mientras la wallet de incentivos tenga fondos</li>
+      <li data-i18n="docs-welcome-li-3">Limitado a los primeros 1.000 usuarios</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── Randomness Deep Dive ── -->
+    <h2 data-i18n="docs-rand-h2">🎲 Cómo funciona el azar</h2>
+    <p data-i18n-html="docs-rand-p">Elegir un ganador on-chain es difícil — el blockchain es determinístico y público, así que cualquier valor conocido al momento del sorteo puede ser manipulado por el proposer de ese bloque. Zorrito resuelve esto con un <strong>acumulador de entropía estilo RANDAO</strong>, el mismo principio que usa la capa de consenso de Ethereum.</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-weight:700;font-size:0.875rem;margin-bottom:6px;color:var(--green);" data-i18n="docs-rand-phase1-title">🔁 Fase 1 — Acumulación (durante la semana)</div>
+        <p style="margin:0;font-size:0.825rem;color:var(--muted);line-height:1.6;" data-i18n-html="docs-rand-phase1-desc">
+          Cada vez que cualquier usuario llama a <code>deposit()</code> o <code>withdraw()</code>, el contrato mezcla el <em>prevrandao del bloque actual</em> (EIP-4399) + la dirección del caller + el timestamp en un acumulador rodante <code>entropyAccumulator</code> almacenado on-chain:
+        </p>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;margin-top:10px;font-family:monospace;font-size:0.78rem;color:var(--muted);line-height:1.7;">
+          entropyAccumulator = keccak256(<br>
+          &nbsp;&nbsp;entropyAccumulator,&nbsp;<span style="color:var(--green);">// valor previo acumulado</span><br>
+          &nbsp;&nbsp;block.prevrandao,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green);">// beacon EIP-4399 del bloque</span><br>
+          &nbsp;&nbsp;block.timestamp,<br>
+          &nbsp;&nbsp;msg.sender,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--green);">// quién transacciona ahora</span><br>
+          &nbsp;&nbsp;totalPrincipal<br>
+          )
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-weight:700;font-size:0.875rem;margin-bottom:6px;color:var(--orange);" data-i18n="docs-rand-phase2-title">🎯 Fase 2 — Sorteo (cada lunes 10:05 UTC)</div>
+        <p style="margin:0;font-size:0.825rem;color:var(--muted);line-height:1.6;" data-i18n="docs-rand-phase2-desc">
+          El keeper hace commit del estado de entropía en el bloque 0 y ejecuta el sorteo unos bloques después, usando el blockhash de un bloque intermedio futuro:
+        </p>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;margin-top:10px;font-family:monospace;font-size:0.78rem;color:var(--muted);line-height:1.7;">
+          finalSeed = keccak256(<br>
+          &nbsp;&nbsp;committedEntropy,&nbsp;&nbsp;&nbsp;<span style="color:var(--orange);">// acumulado de toda la semana</span><br>
+          &nbsp;&nbsp;blockhash(commit + 5)<span style="color:var(--orange);">// hash de un bloque futuro</span><br>
+          ) % totalEffectiveChances
+        </div>
+      </div>
+
+    </div>
+
+    <div class="highlight-box" style="background:rgba(253,132,14,0.06);">
+      <p style="font-size:0.875rem;" data-i18n-html="docs-rand-attack">
+        🛡️ <strong>Por qué es difícil manipularlo:</strong> Para sesgar el resultado, un atacante necesitaría controlar el proposer L1 en <em>cada depósito, save y withdraw</em> hecho por cualquier usuario durante toda la semana. Eso incluye desconocidos al azar haciendo save a horarios impredecibles. Incluso un validador con poder de red significativo necesitaría corromper docenas de transacciones independientes — un ataque de coordinación prácticamente imposible.
+      </p>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:10px;" data-i18n="docs-cmp-title">Comparación: enfoques de aleatoriedad</div>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th data-i18n="docs-cmp-th-approach">Enfoque</th>
+            <th data-i18n="docs-cmp-th-influence">Influencia del validador</th>
+            <th data-i18n="docs-cmp-th-cost">Costo de ataque</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="docs-cmp-r1-a">Sólo blockhash</td>
+            <td style="color:#dc2626;" data-i18n="docs-cmp-r1-b">Alta — control total</td>
+            <td style="color:#dc2626;" data-i18n="docs-cmp-r1-c">1 propuesta de bloque</td>
+          </tr>
+          <tr>
+            <td data-i18n="docs-cmp-r2-a">Sólo beacon Celo</td>
+            <td style="color:var(--orange);" data-i18n="docs-cmp-r2-b">Baja — saltear 1 turno</td>
+            <td style="color:var(--orange);" data-i18n="docs-cmp-r2-c">1 bit de influencia</td>
+          </tr>
+          <tr>
+            <td class="good" data-i18n="docs-cmp-r3-a">Acumulador Zorrito ✓</td>
+            <td class="good" data-i18n="docs-cmp-r3-b">Negligible</td>
+            <td class="good" data-i18n="docs-cmp-r3-c">Controlar cada tx de toda la semana</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted);" data-i18n="docs-cmp-r4-a">VRF oracle externo</td>
+            <td class="good" data-i18n="docs-cmp-r4-b">Cero</td>
+            <td style="color:var(--muted);" data-i18n="docs-cmp-r4-c">Aún no disponible en Celo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ── Contratos ── -->
+    <h2 data-i18n="docs-contracts-h2">📋 Contratos inteligentes</h2>
+
+    <div class="addr-box">
+      <span class="addr-label">Zorrito V2 (Celo Mainnet)</span>
+      0x0D18f6e8f8A22ED9D1259205a5eB236c62df8Fe6
+      <br><a class="addr-link" href="https://celoscan.io/address/0x0D18f6e8f8A22ED9D1259205a5eB236c62df8Fe6" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label">USDT en Celo (LayerZero)</span>
+      0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e
+      <br><a class="addr-link" href="https://celoscan.io/address/0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label">Aave V3 Pool (Celo)</span>
+      0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402
+      <br><a class="addr-link" href="https://celoscan.io/address/0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+    <div class="addr-box">
+      <span class="addr-label">aUSDT (Aave Celo)</span>
+      0xDeE98402A302e4D707fB9bf2bac66fAEEc31e8Df
+      <br><a class="addr-link" href="https://celoscan.io/address/0xDeE98402A302e4D707fB9bf2bac66fAEEc31e8Df" target="_blank" rel="noopener">Ver en CeloScan ↗</a>
+    </div>
+
+    <hr>
+
+    <!-- ── Seguridad ── -->
+    <h2 data-i18n="docs-sec-h2">🛡️ Seguridad</h2>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong data-i18n="docs-sec-1-title">Acumulador de entropía RANDAO-style + EIP-4399 prevrandao</strong>
+          <p data-i18n-html="docs-sec-1-desc">Zorrito usa un enfoque de aleatoriedad de dos capas. Durante la semana, cada <code>deposit()</code> y <code>withdraw()</code> mezcla el <code>prevrandao</code> del bloque actual (EIP-4399, junto con la dirección del caller y el timestamp) en un acumulador rodante guardado en el contrato. Al momento del sorteo, el ganador se elige con un hash final de: <em>entropía acumulada + blockhash de bloque futuro</em>. Para sesgar el resultado un atacante necesitaría controlar el proposer L1 en cada interacción de usuario durante 7 días — un ataque de nivel estatal, no una amenaza realista. <code>block.prevrandao</code> es la fuente estándar de aleatoriedad EIP-4399 en Celo L2 (OP Stack).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong data-i18n="docs-sec-2-title">Sin admin keys peligrosas</strong>
+          <p data-i18n="docs-sec-2-desc">El owner puede ajustar parámetros (fees, bonus) pero con un límite hardcodeado del 20%. No puede pausar el contrato, cambiar la lógica de sorteo, ni acceder a los fondos. La lógica core es inmutable.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong data-i18n="docs-sec-3-title">Dependencia de Aave V3</strong>
+          <p data-i18n="docs-sec-3-desc">Los fondos están depositados directamente en Aave V3 en Celo. El riesgo es equivalente al riesgo del protocolo Aave. Aave V3 ha sido auditado y tiene más de $10B en TVL en todos sus deployments.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong data-i18n="docs-sec-4-title">Emergency return</strong>
+          <p data-i18n-html="docs-sec-4-desc">En caso de migración o bug crítico, el owner puede activar el modo emergencia. <code>emergencyReturn()</code> devuelve el principal a todos los usuarios automáticamente — sin que tengan que hacer nada.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-low">LOW</span>
+        <div class="security-text">
+          <strong data-i18n="docs-sec-5-title">Verificación con Self · ZK proofs</strong>
+          <p data-i18n="docs-sec-5-desc">La integración con Self.xyz usa pruebas de cero conocimiento. El contrato sólo guarda un flag booleano (verificado / no verificado) por wallet. Ningún dato personal, número de pasaporte ni fecha de nacimiento toca el contrato ni el frontend de Zorrito.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-item">
+      <div>
+        <span class="risk-tag risk-info">INFO</span>
+        <div class="security-text">
+          <strong data-i18n="docs-sec-6-title">MVP — usá con precaución</strong>
+          <p data-i18n="docs-sec-6-desc">Zorrito V2 es un MVP experimental. No depositás fondos que no puedas permitirte perder. Se recomienda una auditoría formal antes de escalar el TVL.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Self.xyz ── -->
+    <h2><img src="assets/selflogo.png" alt="Self" style="width:22px;height:22px;border-radius:5px;vertical-align:middle;margin-right:6px;"><span data-i18n="docs-self-h2">Verificación de identidad con Self · +25% chances</span></h2>
+
+    <div class="highlight-box" style="background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.25);">
+      <p data-i18n-html="docs-self-hero">🛂 <strong>Verificate con tu pasaporte y sumá +25% de chances permanentes.</strong> Sin revelar datos personales — solo probás que sos un humano real.</p>
+    </div>
+
+    <p data-i18n-html="docs-self-what"><strong>¿Qué es Self?</strong> Self es un protocolo de verificación de identidad con ZK proofs (pruebas de cero conocimiento) construido sobre Celo. Escaneás tu pasaporte con la app Self, se genera una prueba criptográfica de que el documento es válido, y esa prueba se verifica on-chain — sin que nadie vea tus datos.</p>
+
+    <p data-i18n-html="docs-self-how"><strong>¿Cómo funciona el bonus?</strong> Una vez verificada tu wallet, el contrato de Zorrito V2 registra esa verificación permanentemente. Tu fórmula de chances se multiplica × 1.25 desde ese momento:</p>
+
+    <div class="formula" data-i18n-html="docs-self-formula">Chances = depósito × streakDay × (10 + referidos) / 10 × <strong>1.25 (Self bonus)</strong></div>
+
+    <p data-i18n-html="docs-self-flow-label"><strong>Flujo de verificación (una sola vez):</strong></p>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong data-i18n="docs-self-s1-title">Instalá la app Self</strong>
+          <p data-i18n="docs-self-s1-desc">Disponible en iOS y Android. Necesitás tu pasaporte o documento biométrico.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong data-i18n="docs-self-s2-title">Tocá "Verificar con Self" en el home de Zorrito</strong>
+          <p data-i18n="docs-self-s2-desc">Se abre la app Self automáticamente. No uses el botón de volver — Self te redirige de vuelta cuando termina.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong data-i18n="docs-self-s3-title">Escaneá tu pasaporte en Self</strong>
+          <p data-i18n="docs-self-s3-desc">Self genera un ZK proof que prueba que el pasaporte es válido y no está vencido, sin revelar nombre, número ni fecha de nacimiento.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong data-i18n="docs-self-s4-title">Volvé a la app de Zorrito</strong>
+          <p data-i18n="docs-self-s4-desc">La verificación se registra on-chain automáticamente. Ves el badge ✅ y el +25% ya está activo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p data-i18n-html="docs-self-privacy">🔒 <strong>Privacidad:</strong> Zorrito nunca ve tu nombre, número de pasaporte ni ningún dato personal. El ZK proof solo prueba que "este pasaporte existe, es válido, y pertenece al holder" — nada más. La verificación es <strong>permanente</strong>: solo necesitás hacerla una vez.</p>
+    </div>
+
+    <hr>
+
+    <!-- ── Zorro IA Customizer ── -->
+    <h2 id="fox-ai" data-i18n="docs-foxai-h2">🎨 Personalizá tu zorro con IA · 0.25 USDT</h2>
+    <p data-i18n="docs-foxai-intro">Por solo <strong>0.25 USDT</strong> podés generar una imagen única de tu zorro con IA (Gemini 2.5 Flash Image). El zorro se guarda en tu perfil y aparece en lugar del zorro genérico en el home, en el card de "Tu Zorro" y en las shares de X cuando compartís tu streak.</p>
+
+    <h3 data-i18n="docs-foxai-h3-how">Cómo funciona</h3>
+    <ol>
+      <li data-i18n="docs-foxai-step-1"><strong>Depositá primero</strong> (cualquier monto ≥ 0.25 USDT). El customizer está bloqueado hasta que adoptes tu zorro.</li>
+      <li data-i18n="docs-foxai-step-2"><strong>Tocá "Personalizá tu Zorro IA"</strong> en la home — se abre un modal con opciones de pelaje, accesorio, fondo, camiseta de fútbol, expresión, y un campo de descripción libre (200 chars máx).</li>
+      <li data-i18n="docs-foxai-step-3"><strong>Tocá "Generar mi Zorro"</strong>. Tu wallet manda <strong>0.25 USDT</strong> a la wallet de plataforma (Platform Wallet). El pago se verifica on-chain.</li>
+      <li data-i18n="docs-foxai-step-4"><strong>Esperá ~20 segundos</strong> mientras Gemini 2.5 Flash Image genera tu zorro a partir de la imagen base de Zorrito + tus traits. Se guarda en Vercel Blob y aparece en tu home.</li>
+      <li data-i18n="docs-foxai-step-5"><strong>Tu zorro queda público</strong> en la <a href="fox-gallery.html" style="color:var(--orange);">galería</a>. Cuando compartís en X, la card embebe tu zorro automáticamente.</li>
+    </ol>
+
+    <h3 data-i18n="docs-foxai-h3-cost">¿Por qué cuesta?</h3>
+    <p data-i18n="docs-foxai-cost-desc">Cada generación corre Gemini 2.5 Flash Image (vía Vercel AI Gateway) — eso tiene un costo real en infra. El precio de 0.25 USDT cubre la inferencia, el storage del blob, y mantiene la galería curada (sino la spammean en minutos). El pago NO va al contrato — va directo a la <code>PLATFORM_WALLET</code>, separada del pool de ahorros.</p>
+
+    <h3 data-i18n="docs-foxai-h3-regen">¿Puedo regenerar?</h3>
+    <p data-i18n="docs-foxai-regen-desc">Sí, cuántas veces quieras — cada generación cuesta 0.25 USDT. La galería pública mantiene solo el último zorro por wallet (no acumula).</p>
+
+    <hr>
+
+    <!-- ── x402 / Agent Integration ── -->
+    <h2 id="agent" data-i18n="docs-agent-h2">🤖 Integración con agentes de IA · x402</h2>
+    <div class="highlight-box">
+      <p data-i18n-html="docs-agent-intro">🦾 <strong>Zorrito V2 soporta el protocolo de pago x402.</strong> Los agentes de IA pueden depositar USDT, hacer save todos los días y competir en el sorteo semanal — todo vía HTTP estándar, sin UI de wallet.</p>
+    </div>
+
+    <h2 style="margin-top:24px;" data-i18n="docs-x402-h2">¿Qué es x402?</h2>
+    <p data-i18n-html="docs-x402-p">
+      <strong>x402</strong> revive el código de estado HTTP <code>402 Payment Required</code> como un protocolo de pago legible por máquinas para agentes de IA. En vez de un popup de wallet, el agente recibe una respuesta <code>402</code> con instrucciones de pago estructuradas, ejecuta una transferencia on-chain automáticamente, y re-llama al endpoint con un header de comprobante. El servidor verifica la transacción y ejecuta la acción. Sin aprobación humana en ningún paso.
+    </p>
+
+    <h2 style="margin-top:24px;" data-i18n="docs-x402-flow-h2">Flujo de pago</h2>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong data-i18n="docs-x402-s1-title">El agente llama al endpoint</strong>
+          <p data-i18n-html="docs-x402-s1-desc">Sin headers. El servidor responde con <code>HTTP 402</code> y un header <code>X-Payment-Required</code> describiendo cuánto USDT enviar, a qué dirección, y en qué red.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong data-i18n="docs-x402-s2-title">El agente envía USDT en Celo</strong>
+          <p data-i18n="docs-x402-s2-desc">Transferí el USDT requerido a la dirección facilitadora que aparece en la respuesta 402. Es un transfer ERC-20 estándar — sin lógica de contrato especial.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong data-i18n="docs-x402-s3-title">El agente re-llama con prueba de pago</strong>
+          <p data-i18n-html="docs-x402-s3-desc">Incluí <code>X-Payment: base64(JSON.stringify({txHash: "0x..."}))</code> en los headers. El servidor verifica la transacción on-chain.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong data-i18n="docs-x402-s4-title">El servidor ejecuta la acción</strong>
+          <p data-i18n-html="docs-x402-s4-desc">El facilitador llama a <code>depositFor(agentAddress, amount)</code> o <code>saveFor(agentAddress)</code> en el contrato de Zorrito V2. La dirección del agente queda registrada en el sorteo semanal con su propia identidad on-chain.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong data-i18n="docs-x402-s5-title">El agente recibe 200 con el txHash de Celo</strong>
+          <p data-i18n="docs-x402-s5-desc">La respuesta incluye el txHash de Zorrito, el streak actual y las chances efectivas del agente para el sorteo semanal.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:24px;" data-i18n="docs-endpoints-h2">Endpoints</h2>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="background:rgba(26,153,96,0.15);color:var(--green);font-family:monospace;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:4px;">GET</span>
+        <code style="font-size:0.85rem;">/api/agent?action=status&amp;address=0x...</code>
+        <span style="font-size:0.75rem;color:var(--muted);margin-left:auto;" data-i18n="docs-ep-free">gratis · sin pago</span>
+      </div>
+      <p style="margin:0;font-size:0.8rem;color:var(--muted);" data-i18n="docs-ep-status-desc">Devuelve depósito, streak actual de la semana, días faltantes hasta el próximo sorteo, chances efectivas y stats del pool para cualquier dirección. Usalo antes de actuar para decidir si depositar o hacer save.</p>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="background:rgba(253,132,14,0.15);color:var(--orange);font-family:monospace;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:4px;">POST</span>
+        <code style="font-size:0.85rem;">/api/agent?action=deposit&amp;beneficiary=0x...&amp;amount=10</code>
+      </div>
+      <p style="margin:0;font-size:0.8rem;color:var(--muted);" data-i18n-html="docs-ep-deposit-desc">Deposita N USDT en el pool a favor de <code>beneficiary</code>. Devuelve <code>402</code> con instrucciones de pago si no hay header <code>X-Payment</code>. Mínimo 0.25 USDT.</p>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="background:rgba(253,132,14,0.15);color:var(--orange);font-family:monospace;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:4px;">POST</span>
+        <code style="font-size:0.85rem;">/api/agent?action=save&amp;beneficiary=0x...</code>
+      </div>
+      <p style="margin:0;font-size:0.8rem;color:var(--muted);" data-i18n-html="docs-ep-save-desc">Hace save por <code>beneficiary</code> (+1 al streak de la semana). Se puede llamar una vez por día UTC. Devuelve <code>402</code> si no hay header de pago. No cuesta USDT más allá del fee de gas — el save es una llamada gratis al contrato.</p>
+    </div>
+
+    <h2 style="margin-top:24px;" data-i18n="docs-code-h2">Ejemplos de código</h2>
+
+    <div style="margin-bottom:6px;font-size:0.8rem;color:var(--muted);font-weight:600;" data-i18n="docs-code-js-label">JavaScript / TypeScript (ethers.js)</div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:0.78rem;color:#444;line-height:1.8;overflow-x:auto;margin-bottom:18px;">
+      <span style="color:#8b949e;">// Wallet del agente — debe tener CELO (gas) y USDT en Celo</span><br>
+      const wallet = new ethers.Wallet(AGENT_PRIVATE_KEY, provider);<br>
+      const usdt   = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, wallet);<br>
+      <br>
+      const BASE_URL    = <span style="color:var(--green);">"https://www.zorrito.app"</span>;<br>
+      const BENEFICIARY = wallet.address;<br>
+      <br>
+      <span style="color:#8b949e;">// Paso 1 — probe para instrucciones de pago</span><br>
+      const probe = await fetch(<br>
+      &nbsp;&nbsp;<span style="color:var(--green);">`${BASE_URL}/api/agent?action=deposit&beneficiary=${BENEFICIARY}&amount=10`</span>,<br>
+      &nbsp;&nbsp;{ method: <span style="color:var(--green);">"POST"</span> }<br>
+      );<br>
+      const { payTo, asset, amountRequired } = await probe.json();<br>
+      <br>
+      <span style="color:#8b949e;">// Paso 2 — enviar USDT al facilitador</span><br>
+      const tx = await usdt.transfer(payTo, <span style="color:var(--green);">"10000000"</span>); <span style="color:#8b949e;">// 10 USDT</span><br>
+      await tx.wait();<br>
+      <br>
+      <span style="color:#8b949e;">// Paso 3 — re-llamar con comprobante</span><br>
+      const proof = btoa(JSON.stringify({ txHash: tx.hash }));<br>
+      const res   = await fetch(<br>
+      &nbsp;&nbsp;<span style="color:var(--green);">`${BASE_URL}/api/agent?action=deposit&beneficiary=${BENEFICIARY}&amount=10`</span>,<br>
+      &nbsp;&nbsp;{ method: <span style="color:var(--green);">"POST"</span>, headers: { <span style="color:var(--green);">"X-Payment"</span>: proof } }<br>
+      );<br>
+      const result = await res.json();<br>
+      console.log(<span style="color:var(--green);">"Zorrito tx:"</span>, result.zorritoTx);
+    </div>
+
+    <div style="margin-bottom:6px;font-size:0.8rem;color:var(--muted);font-weight:600;" data-i18n="docs-code-py-label">Python</div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:0.78rem;color:#444;line-height:1.8;overflow-x:auto;margin-bottom:20px;">
+      <span style="color:#8b949e;"># pip install web3 requests</span><br>
+      import requests, base64, json<br>
+      from web3 import Web3<br>
+      <br>
+      w3          = Web3(Web3.HTTPProvider(<span style="color:var(--green);">"https://forno.celo.org"</span>))<br>
+      account     = w3.eth.account.from_key(AGENT_PRIVATE_KEY)<br>
+      BASE_URL    = <span style="color:var(--green);">"https://www.zorrito.app"</span><br>
+      BENEFICIARY = account.address<br>
+      <br>
+      <span style="color:#8b949e;"># Paso 1 — probe para instrucciones de pago</span><br>
+      probe = requests.post(<br>
+      &nbsp;&nbsp;f<span style="color:var(--green);">"{BASE_URL}/api/agent"</span>,<br>
+      &nbsp;&nbsp;params={<span style="color:var(--green);">"action"</span>: <span style="color:var(--green);">"deposit"</span>, <span style="color:var(--green);">"beneficiary"</span>: BENEFICIARY, <span style="color:var(--green);">"amount"</span>: <span style="color:var(--green);">"10"</span>}<br>
+      )<br>
+      data = probe.json()<br>
+      pay_to = data[<span style="color:var(--green);">"payTo"</span>]<br>
+      <br>
+      <span style="color:#8b949e;"># Paso 2 — enviar USDT en Celo</span><br>
+      tx_hash = send_usdt(w3, account, pay_to, <span style="color:var(--green);">10_000_000</span>)  <span style="color:#8b949e;"># 10 USDT</span><br>
+      <br>
+      <span style="color:#8b949e;"># Paso 3 — re-llamar con comprobante</span><br>
+      proof = base64.b64encode(json.dumps({<span style="color:var(--green);">"txHash"</span>: tx_hash}).encode()).decode()<br>
+      res   = requests.post(<br>
+      &nbsp;&nbsp;f<span style="color:var(--green);">"{BASE_URL}/api/agent"</span>,<br>
+      &nbsp;&nbsp;params={<span style="color:var(--green);">"action"</span>: <span style="color:var(--green);">"deposit"</span>, <span style="color:var(--green);">"beneficiary"</span>: BENEFICIARY, <span style="color:var(--green);">"amount"</span>: <span style="color:var(--green);">"10"</span>},<br>
+      &nbsp;&nbsp;headers={<span style="color:var(--green);">"X-Payment"</span>: proof}<br>
+      )<br>
+      print(res.json()[<span style="color:var(--green);">"zorritoTx"</span>])
+    </div>
+
+    <div style="background:rgba(248,81,73,0.07);border:1px solid rgba(248,81,73,0.18);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <p style="margin:0;font-size:0.825rem;line-height:1.6;" data-i18n-html="docs-agent-reqs">
+        <strong style="color:#f85149;">⚠️ Requisitos del agente:</strong>
+        La wallet del agente debe tener <strong>CELO</strong> para gas (~$0.001/tx) y <strong>USDT en Celo</strong> para depósitos.
+        Para mantenerse activo en el sorteo semanal, el agente debe llamar al endpoint <code>save</code> una vez por día UTC.
+      </p>
+    </div>
+
+    <hr>
+
+    <!-- ── Cómo crear tu propio agente ── -->
+    <h2 data-i18n="docs-buildagent-h2">🤖 Cómo crear tu propio agente</h2>
+    <div class="highlight-box">
+      <p data-i18n-html="docs-buildagent-intro">🦾 <strong>Cualquiera puede correr un agente autónomo de Zorrito V2.</strong> Copiá el prompt de abajo en Claude — te va a generar todos los archivos necesarios y guiarte por el deploy completo. Sin experiencia de DevOps.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n-html="docs-buildagent-desc">
+      El agente corre en <strong>Vercel Cron</strong> (free tier), se ejecuta una vez por día UTC, hace save en Zorrito y opcionalmente retira el USDT excedente a la wallet del agente.
+    </p>
+
+    <!-- Tech stack chips -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+      <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">▲ Vercel Cron</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">⬡ Node.js</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">⚡ ethers.js v6</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--text);">🟡 Celo Mainnet</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:var(--green);" data-i18n="docs-buildagent-free">Free · ~$0/mes</span>
+    </div>
+
+    <!-- Quick steps -->
+    <div class="step-list" style="margin-bottom:20px;">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong data-i18n="docs-buildagent-s1-title">Copiá el prompt de abajo → pegalo en Claude</strong>
+          <p data-i18n-html="docs-buildagent-s1-desc">Claude va a generar <code>api/zorrito-daily.js</code>, <code>vercel.json</code> y un README con todas las direcciones y parámetros pre-cargados.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong data-i18n="docs-buildagent-s2-title">Creá una wallet dedicada para el agente</strong>
+          <p data-i18n-html="docs-buildagent-s2-desc">Corré <code>node -e "const {ethers}=require('ethers'); const w=ethers.Wallet.createRandom(); console.log(w.privateKey, w.address)"</code> — financiala con 0.1 CELO (gas) + el USDT que quieras depositar en Celo mainnet.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong data-i18n="docs-buildagent-s3-title">Push a GitHub → importá en Vercel</strong>
+          <p data-i18n-html="docs-buildagent-s3-desc">Agregá <code>AGENT_PRIVATE_KEY</code> y <code>CRON_SECRET</code> como variables de entorno en el dashboard de Vercel.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong data-i18n="docs-buildagent-s4-title">Probá manualmente, después dejalo correr</strong>
+          <p data-i18n-html="docs-buildagent-s4-desc">Disparalo una vez con <code>curl -X POST https://your-project.vercel.app/api/zorrito-daily -H "Authorization: Bearer your-secret"</code>. De ahí en más el cron se ejecuta solo todos los días.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Claude prompt box -->
+    <div style="position:relative;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;" data-i18n="docs-claude-prompt-label">Claude prompt — copiar y pegar</span>
+        <button id="copy-prompt-btn" onclick="copyAgentPrompt()"
+          style="display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:0.78rem;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--font);transition:all 0.15s;">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span data-i18n="docs-copy-prompt-btn">Copiar prompt</span>
+        </button>
+      </div>
+      <div id="agent-prompt-box"
+        style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px;font-family:monospace;font-size:0.78rem;color:#444;line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:340px;overflow-y:auto;position:relative;">I want to build an autonomous agent that deposits 0.25 USDT every day on Zorrito V2 to maintain a daily streak in the no-loss raffle on Celo mainnet.
+
+<span style="color:var(--green);font-weight:700;">## What is Zorrito V2?</span>
+Zorrito V2 (https://zorrito.app) is a no-loss savings raffle on Celo. Users deposit USDT; funds earn yield on Aave V3; every Monday at 10:05 UTC the accumulated weekly yield goes to one random saver weighted by effective chances. Chances = deposit × streakDay × (10 + referrals)/10 × selfBonus. To maximize chances, the agent must deposit at least 0.25 USDT once per UTC day (each daily deposit adds +1 to the streak, capped at 7). Skipping a UTC day kills the fox — next deposit resets streak to 1.
+
+<span style="color:var(--green);font-weight:700;">## The daily deposit window</span>
+Each UTC day (00:00 to 23:59 UTC), the agent must call deposit(0.25 USDT) at least once. Multiple deposits the same UTC day are allowed but only the first one increments the streak; the rest just add USDT. Skipping a day means the fox dies and the streak resets to 1 on the next deposit.
+
+<span style="color:var(--green);font-weight:700;">## Tech stack</span>
+- Vercel Serverless Function (Node.js runtime)
+- Vercel Cron — free Hobby plan, 1 cron/day — schedule: "5 8 * * *" (08:05 UTC)
+- ethers.js v6 for Celo RPC + contract interactions
+- Env vars: AGENT_PRIVATE_KEY, CRON_SECRET
+
+<span style="color:var(--green);font-weight:700;">## Contracts (Celo Mainnet, chainId 42220)</span>
+- Zorrito V2:        0x8f4E627d4C4Af5dfE11908Bd8B929588d9Ee58c9
+- USDT (LayerZero):  0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e
+- Aave V3 Pool:      0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402
+- aUSDT (Aave Celo): 0xDeE98402A302e4D707fB9bf2bac66fAEEc31e8Df
+- Celo RPC:          https://forno.celo.org
+
+<span style="color:var(--green);font-weight:700;">## ABI fragments</span>
+deposit(uint256 amount, bytes4 refCode)
+depositFor(address beneficiary, uint256 amount, bytes4 refCode)   // sponsorship
+withdraw(uint256 amount)
+claimSavings()
+deposits(address user) → uint256
+streakDay(address user) → uint8
+lastDepositDay(address user) → uint256
+getStatus(address user) → (bool alive, uint8 streak, uint256 deadline, uint256 secondsUntilDead)
+effectiveChances(address user) → uint256
+balanceOf(address account) → uint256   [ERC-20 USDT]
+approve(address spender, uint256 amount) → bool   [ERC-20 USDT]
+
+<span style="color:var(--green);font-weight:700;">## Please create</span>
+1. api/zorrito-daily.js with the full agent logic:
+   - Bearer token auth via CRON_SECRET env var
+   - Read lastDepositDay and getStatus in parallel
+   - Compute todayUtc = floor(Date.now() / 86400000). If lastDepositDay &gt;= todayUtc → already deposited today, return early.
+   - Ensure USDT allowance to the contract is &gt;= 0.25 USDT (approve MaxUint256 once if needed).
+   - Call deposit(250_000, "0x00000000") — every deposit auto-extends the streak.
+   - Return JSON: { action, txHash, explorer link, currentStreak, deadline, status }
+
+2. vercel.json:
+   { "crons": [{ "path": "/api/zorrito-daily", "schedule": "5 8 * * *" }] }
+
+3. README.md explaining:
+   - How to generate a dedicated agent wallet (ethers.Wallet.createRandom())
+   - How to fund it: ~0.1 CELO for ~30 days of gas + 0.25 USDT × days_planned for daily deposits
+   - How to set AGENT_PRIVATE_KEY and CRON_SECRET in Vercel dashboard
+   - How to deploy: git push → Vercel auto-deploys
+   - How to test: curl -X POST https://your-project.vercel.app/api/zorrito-daily -H "Authorization: Bearer your-secret"
+   - How to verify: open https://zorrito.app and check the agent wallet address — see deposit, streak and effective chances</div>
+    </div>
+
+    <div style="background:rgba(26,153,96,0.06);border:1px solid rgba(26,153,96,0.2);border-radius:10px;padding:14px 18px;margin-bottom:30px;">
+      <p style="margin:0;font-size:0.825rem;line-height:1.6;" data-i18n-html="docs-buildagent-cost">
+        🟡 <strong>Costo de operación:</strong> Vercel Hobby es gratis (1 cron/día). El gas en Celo es ~$0.001/tx — 0.1 CELO te dura meses. Capital inicial: el mínimo de Zorrito V2 (0.25 USDT) — todo principal es retirable en cualquier momento.
+      </p>
+    </div>
+
+    <hr>
+
+    <!-- ── MiniPay Compatibility ── -->
+    <h2 data-i18n="docs-minipay-h2">📱 Compatible con MiniPay</h2>
+    <div class="highlight-box" style="background:rgba(26,153,96,0.06);border-color:rgba(26,153,96,0.25);">
+      <p data-i18n-html="docs-minipay-intro">🌍 <strong>Zorrito V2 funciona nativo dentro de MiniPay</strong> — la wallet de stablecoins integrada en Opera Mini con más de 10M de activaciones en África y Latinoamérica.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n="docs-minipay-desc">MiniPay es una wallet liviana no custodial de Opera, enfocada en el Sur Global. Los usuarios transaccionan con stablecoins (USDT, USDC, cUSD) con fees inferiores a 1 centavo en Celo — sin extensiones de browser.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:12px;" data-i18n="docs-minipay-impl-title">Qué implementamos para MiniPay</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-mp-1"><strong>Auto-connect al cargar</strong> — corriendo dentro de MiniPay, Zorrito pide la dirección de wallet inyectada sin mostrar botón de "Connect Wallet".</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-mp-2"><strong>Botón de connect oculto</strong> — dentro de MiniPay el botón de WalletConnect se oculta y se reemplaza por un badge compacto con la dirección, manteniendo la UI limpia en mobile.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-mp-3"><strong>Transacciones legacy (type 0)</strong> — MiniPay sólo acepta transacciones legacy. Cada contract write (<code>deposit</code>, <code>save</code>, <code>withdraw</code>, <code>approve</code>) usa <code>type: 0</code> con <code>gasPrice</code> explícito al estar dentro de MiniPay.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-mp-4"><strong>Listener de cambio de cuenta</strong> — si el usuario cambia de cuenta dentro de MiniPay, la app se reconecta automáticamente y refresca balances y estado.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-mp-5"><strong>Self.xyz dentro de MiniPay</strong> — el botón de verificación abre la app Self, generás el ZK proof, y al volver a Zorrito la verificación se detecta automáticamente sin recargar (polling compatible con el WebView de MiniPay).</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-mp-6"><strong>Sólo Celo mainnet</strong> — Zorrito V2 corre exclusivamente en Celo, la única red que soporta MiniPay.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(26,153,96,0.06);border:1px solid rgba(26,153,96,0.2);border-radius:10px;padding:14px 18px;margin-bottom:30px;">
+      <p style="margin:0;font-size:0.825rem;" data-i18n-html="docs-minipay-open">📲 <strong>Cómo abrir Zorrito en MiniPay:</strong> Abrí MiniPay → tocá el ícono de la brújula (página de discovery) → buscá <strong>Zorrito</strong>.</p>
+    </div>
+
+    <!-- ── Valora Compatibility ── -->
+    <h2 data-i18n="docs-valora-h2">💜 Compatible con Valora</h2>
+    <div class="highlight-box" style="background:rgba(101,52,255,0.06);border-color:rgba(101,52,255,0.3);">
+      <p data-i18n-html="docs-valora-intro">💜 <strong>Zorrito V2 está listado en el dApp browser de Valora</strong> — la wallet self-custody líder en Celo con millones de usuarios en África y Latinoamérica.</p>
+    </div>
+
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n="docs-valora-desc">Valora es una wallet self-custody mobile-first construida sobre Celo. Tiene un dApp browser integrado y pasa la dirección de wallet a las dApps vía URL templating, permitiendo onboarding sin fricción.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:12px;" data-i18n="docs-valora-impl-title">Qué implementamos para Valora</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-val-1"><strong>Valora como wallet destacada</strong> — el WalletConnect ID de Valora aparece primero en el selector de AppKit para que los usuarios no se pierdan buscando su wallet.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-val-2"><strong>URL templating con <code>{{address}}</code></strong> — la URL de Zorrito en la lista de dApps de Valora usa <code>?address={{address}}</code>. Cuando Valora abre la dApp inyecta la dirección, cargando el estado del usuario en modo read-only antes de tocar Connect.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-val-3"><strong>Firma vía WalletConnect v2</strong> — todos los contract writes (deposit, save, withdraw) usan Reown AppKit → WalletConnect v2. Valora se conecta vía el flow estándar y firma nativamente.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:0.85rem;color:var(--text);">
+          <span style="color:var(--green);flex-shrink:0;font-size:1rem;">✅</span>
+          <span data-i18n-html="docs-val-4"><strong>Celo mainnet (chainId 42220)</strong> — Zorrito V2 corre exclusivamente en Celo, la misma red sobre la que está construido Valora.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(101,52,255,0.06);border:1px solid rgba(101,52,255,0.2);border-radius:10px;padding:14px 18px;margin-bottom:14px;">
+      <p style="margin:0;font-size:0.825rem;" data-i18n-html="docs-valora-open">💜 <strong>Cómo abrir Zorrito en Valora:</strong> Abrí Valora → tocá la tab Discover → buscá <strong>Zorrito</strong>.</p>
+    </div>
+
+    <hr>
+
+    <!-- ── Business Model ── -->
+    <h2 data-i18n="docs-biz-h2">💰 Modelo de negocio</h2>
+    <div style="background:rgba(253,204,13,0.08);border:1px solid rgba(253,204,13,0.3);border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+      <p style="margin:0;font-size:0.9rem;line-height:1.6;color:#333;" data-i18n-html="docs-biz-hero">💡 <strong>Zorrito V2 cobra un 10% del rendimiento semanal del sorteo y un 15% sobre los Merit rewards distribuidos.</strong> Tu principal está siempre seguro — los fees aplican sólo al yield, nunca al depósito.</p>
+    </div>
+    <p style="font-size:0.875rem;color:#444;line-height:1.7;margin-bottom:16px;" data-i18n="docs-biz-intro">Para mantener Zorrito V2 operativo, la infraestructura corriendo y el desarrollo activo, se descuentan dos fees on-chain con total transparencia:</p>
+    <p style="font-size:0.875rem;font-weight:600;margin-bottom:8px;" data-i18n="docs-biz-how-label">Cómo funciona:</p>
+    <ul style="font-size:0.875rem;color:#444;line-height:1.9;padding-left:20px;margin-bottom:16px;">
+      <li data-i18n="docs-biz-li-1">El rendimiento de Aave V3 se acumula durante 7 días</li>
+      <li data-i18n="docs-biz-li-2">Cada lunes, el 10% del prize pool se envía a la wallet de plataforma</li>
+      <li data-i18n="docs-biz-li-3">El 90% restante va al ganador del sorteo semanal</li>
+      <li data-i18n="docs-biz-li-4">Sobre los Merit rewards de ACI, la plataforma retiene un 15% antes de distribuir el resto proporcionalmente a depositantes</li>
+      <li data-i18n="docs-biz-li-5">El principal queda 100% intacto — siempre retirable, sin lock-up</li>
+      <li data-i18n="docs-biz-li-6">Todo ocurre on-chain: transparente y verificable en Celoscan</li>
+    </ul>
+
+    <hr>
+
+    <!-- ── FAQ ── -->
+    <h2 data-i18n="docs-faq-h2">FAQ</h2>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q1">¿Puedo perder mi USDT?</div>
+      <p class="faq-a" data-i18n="docs-faq-a1">No. Tu USDT está siempre en Aave V3. El único "en juego" es el yield generado, que financia el premio semanal. Tu principal nunca está en riesgo — en el peor caso, el owner activa el emergency mode y te devuelve todo.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q2">¿Qué pasa si no ahorro ningún día de la semana?</div>
+      <p class="faq-a" data-i18n="docs-faq-a2">Tu streak queda en 0 y tu multiplicador es 1× (el mínimo). Seguís participando en el sorteo con tus chances base (depósito × 1). Tu depósito sigue generando Merit rewards de todas formas.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q3">¿Cómo sé que el sorteo es justo?</div>
+      <p class="faq-a" data-i18n="docs-faq-a3">El sorteo usa un acumulador de entropía que mezcla datos de cada transacción durante la semana. El número ganador se commitea el lunes 10:00 UTC y se ejecuta unos bloques después usando el blockhash intermedio. Todo es verificable on-chain en CeloScan — el código fuente está verificado.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q4">¿Puedo retirar cuando quiero?</div>
+      <p class="faq-a" data-i18n="docs-faq-a4">Sí, en cualquier momento, sin penalidades. Si retirás antes del lunes, perdés tus chances de esa semana. Los Merit rewards acumulados los reclamás por separado desde el home.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q5">¿Qué son los Merit Rewards y cómo llegan?</div>
+      <p class="faq-a" data-i18n="docs-faq-a5">ACI (Aave Chan Initiative) paga incentivos adicionales en USDT a los proveedores de liquidez de USDT en Aave V3 en Celo. El keeper del protocolo reclama esas recompensas de Merkl periódicamente y las deposita en el contrato. El contrato las distribuye automáticamente de forma proporcional. Vos solo tenés que hacer "Reclamar savings" cuando quieras cobrarlas.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q6">¿El streak resetea si no gané el sorteo?</div>
+      <p class="faq-a" data-i18n="docs-faq-a6">No. El streak no depende de ganar o perder el sorteo. Solo resetea si no presionás "Ahorrar hoy" en la semana actual. Un nuevo lunes = nuevo streak que empieza desde 0 (o desde donde venías si seguís ahorrando).</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q7">¿Cuánto es el mínimo para depositar?</div>
+      <p class="faq-a" data-i18n="docs-faq-a7">0.25 USDT. No hay máximo.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q8">¿Funciona en MiniPay?</div>
+      <p class="faq-a" data-i18n="docs-faq-a8">Sí. Zorrito V2 es compatible con MiniPay (Opera Mini wallet) — usa transacciones tipo 0 (legacy) que MiniPay soporta. Conectá tu wallet y usá el app normalmente.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q9">¿La verificación con Self funciona dentro de MiniPay?</div>
+      <p class="faq-a" data-i18n="docs-faq-a9">Sí. Tocás el botón de verificación, MiniPay abre la app Self, generás el ZK proof, y cuando volvés a Zorrito la verificación se detecta automáticamente (sin necesidad de recargar). El sistema usa polling en background compatible con el WebView de MiniPay — iOS puede pausar el tab mientras estás en Self, pero la verificación se registra igual cuando volvés.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q10">¿El bonus de Self se aplica de inmediato?</div>
+      <p class="faq-a" data-i18n="docs-faq-a10">Sí. En cuanto el contrato registra la verificación (≈5 segundos — un bloque de Celo), el árbol de Fenwick se actualiza y tus chances efectivas ya incluyen el +25%. Aplica para el próximo sorteo semanal.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q11">¿Qué pasa si no me verifico con Self?</div>
+      <p class="faq-a" data-i18n="docs-faq-a11">Nada — seguís participando normalmente. La verificación con Self es opcional y solo suma un bonus. No afecta la mecánica base del protocolo.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q12">¿Cómo recibo el premio si gano el sorteo?</div>
+      <p class="faq-a" data-i18n="docs-faq-a12">Directo a tu wallet desde Aave al momento del sorteo. No hay que reclamarlo — el USDT aparece solo.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q13">¿En qué red corre?</div>
+      <p class="faq-a" data-i18n-html="docs-faq-a13">Celo mainnet (chainId 42220). El gas se paga en CELO y es muy barato (&lt;$0.001 por transacción). Necesitás una pequeña cantidad de CELO en tu wallet para gas.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="docs-faq-q14">¿El código es open source?</div>
+      <p class="faq-a" data-i18n="docs-faq-a14">Sí. El contrato está verificado en Celoscan y el repositorio completo es público en GitHub.</p>
+    </div>
+
+  </div>
+  </div>
+
+  <script>
+    function copyAgentPrompt() {
+      const box = document.getElementById('agent-prompt-box');
+      const text = box.innerText;
+      navigator.clipboard.writeText(text).then(function() {
+        const btn = document.getElementById('copy-prompt-btn');
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> ¡Copiado!';
+        btn.style.color = 'var(--green)';
+        btn.style.borderColor = 'rgba(26,153,96,0.4)';
+        setTimeout(function() {
+          btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> Copiar prompt';
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 2000);
+      });
+    }
+  </script>
+  <script src="lang.js?v=20260521r"></script>
+  <script src="nav-shared.js?v=20260521r"></script>
+</body>
+</html>

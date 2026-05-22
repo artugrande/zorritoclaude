@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "outputDirectory": "frontend",
+  "functions": {
+    "api/*.js": {
+      "maxDuration": 300,
+      "memory": 1024
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/:path*",     "destination": "/:path*" }
+  ],
+  "crons": [
+    { "path": "/api/savings-distributor", "schedule": "0 12 * * *" },
+    { "path": "/api/raffle-commit",       "schedule": "0 10 * * 1" },
+    { "path": "/api/raffle-execute",      "schedule": "5 10 * * 1" },
+    { "path": "/api/demo-agent-tick",     "schedule": "0 11 * * *" }
+  ]
+}

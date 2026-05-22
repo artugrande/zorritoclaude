@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zorrito — Live Stats</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- PostHog analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: true,
+    });
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    /* ── Stats page layout ─────────────────────────── */
+    .stats-wrap {
+      width: 100%;
+      max-width: 620px;
+    }
+    .stats-wrap h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .stats-wrap h1 span { color: var(--green); }
+    .stats-wrap .tagline {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 40px;
+    }
+    .stats-wrap h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      margin-top: 36px;
+    }
+
+    /* ── Loading / error state ────────────────────── */
+    .loading-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(253,132,14,0.07);
+      border: 1px solid rgba(253,132,14,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(253,132,14,0.3);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .last-updated {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .live-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      margin-right: 4px;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+
+    /* ── Hero stat grid (2×2 big numbers) ────────── */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .hero-card.green  { border-color: rgba(26,153,96,0.35); background: rgba(26,153,96,0.04); }
+    .hero-card.gold   { border-color: rgba(253,132,14,0.35); background: rgba(253,132,14,0.04); }
+    .hero-card.purple { border-color: rgba(147,51,234,0.3);  background: rgba(147,51,234,0.04); }
+    .hero-card.blue   { border-color: rgba(59,130,246,0.3);  background: rgba(59,130,246,0.04); }
+    .hero-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .hero-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .hero-value.green  { color: var(--green); }
+    .hero-value.gold   { color: var(--orange); }
+    .hero-value.purple { color: #7c3aed; }
+    .hero-value.blue   { color: #2563eb; }
+    .hero-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* ── Stat row grid (3-col) ────────────────────── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .stat-grid.cols2 { grid-template-columns: 1fr 1fr; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .stat-card-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .stat-card-value {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .stat-card-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Progress bar ─────────────────────────────── */
+    .progress-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+    }
+    .progress-label { font-weight: 600; color: var(--text); }
+    .progress-pct   { font-weight: 800; color: var(--green); }
+    .progress-bar-bg {
+      height: 10px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--green), #34d399);
+      transition: width 0.8s ease;
+    }
+    .progress-sub {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── Streak distribution table ────────────────── */
+    .streak-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+      margin-bottom: 6px;
+    }
+    .streak-table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .streak-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      vertical-align: middle;
+    }
+    .streak-table tr:last-child td { border-bottom: none; }
+    .tier-bar-bg {
+      height: 8px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 99px;
+      overflow: hidden;
+      min-width: 60px;
+    }
+    .tier-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--orange);
+      transition: width 0.6s ease;
+    }
+    .mult-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(253,132,14,0.12);
+      color: var(--orange);
+    }
+    .mult-badge.top { background: rgba(26,153,96,0.12); color: var(--green); }
+
+    /* ── Winners table ────────────────────────────── */
+    .winners-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .winners-table th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .winners-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      color: var(--text);
+    }
+    .winners-table tr:last-child td { border-bottom: none; }
+    .winner-addr { font-family: monospace; color: var(--green); }
+
+    /* ── Countdown ────────────────────────────────── */
+    .countdown-box {
+      background: linear-gradient(135deg, rgba(253,132,14,0.06), rgba(253,132,14,0.02));
+      border: 1px solid rgba(253,132,14,0.3);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .countdown-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .countdown-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: 0.04em;
+    }
+    .countdown-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── Empty state ──────────────────────────────── */
+    .empty-state {
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    /* ── Skeleton loader ──────────────────────────── */
+    .skel {
+      display: inline-block;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+      color: transparent !important;
+      min-width: 60px;
+      min-height: 1em;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ── Footer ───────────────────────────────────── */
+    footer {
+      margin-top: 48px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      width: 100%;
+      max-width: 620px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    @media (max-width: 380px) {
+      .hero-value { font-size: 1.3rem; }
+      .countdown-value { font-size: 1.5rem; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Transaction KPIs ──────────────────────── */
+    .tx-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 620px) {
+      .tx-kpi-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Chart section ──────────────────────────── */
+    .chart-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chart-title {
+      font-size: 0.73rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+    }
+    .tf-btns { display: flex; gap: 4px; }
+    .tf-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(253,132,14,0.3);
+      background: none;
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tf-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .tf-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+    .chart-wrap { position: relative; width: 100%; height: 180px; }
+
+    /* ── Pie legend ─────────────────────────────── */
+    .pie-legend-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 3px;
+      flex-shrink: 0;
+    }
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* ── Off-chain analytics sections ──────────────────────────── */
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .badge-offchain {
+      background: rgba(99,102,241,0.12);
+      color: #6366f1;
+      border: 1px solid rgba(99,102,241,0.2);
+    }
+    .badge-onchain {
+      background: rgba(26,153,96,0.1);
+      color: var(--green);
+      border: 1px solid rgba(26,153,96,0.2);
+    }
+
+    /* Funnel */
+    .funnel-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .funnel-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+    .funnel-step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .funnel-step-label { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .funnel-step-count { font-size: 0.82rem; font-weight: 800; color: var(--text); }
+    .funnel-bar-bg { height: 8px; background: rgba(0,0,0,0.06); border-radius: 99px; overflow: hidden; }
+    .funnel-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s ease; }
+    .funnel-conv {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Country list */
+    .country-list { display: flex; flex-direction: column; gap: 8px; }
+    .country-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+    }
+    .country-flag { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+    .country-name { font-size: 0.78rem; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .country-bar-bg { flex: 2; height: 6px; background: rgba(0,0,0,0.06); border-radius: 99px; overflow: hidden; }
+    .country-bar-fill { height: 100%; border-radius: 99px; background: #6366f1; transition: width 0.7s ease; }
+    .country-pct { font-size: 0.72rem; font-weight: 700; color: var(--muted); width: 32px; text-align: right; flex-shrink: 0; }
+
+    /* Referrers */
+    .referrer-list { display: flex; flex-direction: column; gap: 6px; }
+    .referrer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.82rem;
+    }
+    .referrer-domain { color: var(--text); font-weight: 600; }
+    .referrer-count { color: var(--muted); font-weight: 700; font-size: 0.78rem; }
+
+    /* KPI row for sessions */
+    .analytics-kpi {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 500px) { .analytics-kpi { grid-template-columns: 1fr 1fr; } }
+
+    /* Donut pair */
+    .donut-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .donut-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .donut-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      align-self: flex-start;
+    }
+    .donut-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    /* Accumulating badge */
+    .data-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: rgba(99,102,241,0.06);
+      border: 1px dashed rgba(99,102,241,0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    /* ── Custom Lang Picker ── */
+    .lang-picker { position: relative; }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 6px 8px 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font);
+      line-height: 1;
+    }
+    .lang-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .lang-chevron { width: 10px; height: 6px; flex-shrink: 0; margin-left: 3px; }
+    .lang-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      min-width: 90px;
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .lang-menu.open { display: block; }
+    .lang-menu button {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: left;
+    }
+    .lang-menu button:hover { background: rgba(253,132,14,0.08); color: var(--orange); }
+    /* Match header width to content */
+    .docs-page header { max-width: 620px; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;position:relative;">
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span id="lang-label">🌐 EN</span>
+          <svg class="lang-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+          <button onclick="pickLang('en')">🌐 EN</button>
+          <button onclick="pickLang('es')">🌐 ES</button>
+          <button onclick="pickLang('pt')">🌐 PT</button>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="docs.html"  style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📄 Docs</a>
+        <a href="agent.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🤖 Agent</a>
+        <a href="build.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🛠️ Build</a>
+        <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+      </div>
+      <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="Menu">☰</button>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <a href="docs.html">📄 Docs</a>
+        <a href="agent.html">🤖 Agent</a>
+        <a href="build.html">🛠️ Build</a>
+        <a href="index.html" class="nav-app">← App</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats-wrap">
+
+    <!-- ── Title ── -->
+    <h1>Live <span>Stats</span></h1>
+    <p class="tagline" data-i18n="stats-tagline">Real-time on-chain data from Celo mainnet · Zorrito v8</p>
+
+    <!-- ── Loading banner ── -->
+    <div id="loading-banner" class="loading-banner">
+      <div class="spinner"></div>
+      <span id="loading-text">Fetching on-chain data from Celo…</span>
+    </div>
+
+    <!-- ── Last updated ── -->
+    <div class="last-updated" id="last-updated" style="display:none;">
+      <span class="live-dot"></span> Live · last updated <span id="updated-time">—</span>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 0 — Transaction Activity
+    ═══════════════════════════════════════════ -->
+    <h2 style="margin-top:20px;display:flex;align-items:center;gap:10px;">
+      📊 Transaction Activity
+      <a id="graph-badge" href="https://thegraph.com/studio/subgraph/zorrito" target="_blank" rel="noopener"
+         title="Data indexed by The Graph" style="display:none;align-items:center;gap:5px;font-size:0.62rem;font-weight:700;background:#6f4cff;color:#fff;padding:3px 8px;border-radius:20px;text-decoration:none;letter-spacing:0.03em;opacity:0;transition:opacity 0.4s;">
+        ⬡ The Graph
+      </a>
+    </h2>
+
+    <!-- 4 KPI cards -->
+    <div class="tx-kpi-grid" title="Transactions executed by the Zorrito contract on Celo">
+      <div class="stat-card">
+        <div class="stat-card-label">24h</div>
+        <div class="stat-card-value skel" id="s-tx-24h">—</div>
+        <div class="stat-card-sub">last 24 hours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">7 days</div>
+        <div class="stat-card-value skel" id="s-tx-7d">—</div>
+        <div class="stat-card-sub">last 7 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">30 days</div>
+        <div class="stat-card-value skel" id="s-tx-30d">—</div>
+        <div class="stat-card-sub">last 30 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">All Time</div>
+        <div class="stat-card-value skel" id="s-tx-all">—</div>
+        <div class="stat-card-sub">since deploy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">USDT Volume</div>
+        <div class="stat-card-value skel" id="s-tx-volume">—</div>
+        <div class="stat-card-sub">total deposited</div>
+      </div>
+    </div>
+
+    <!-- Line chart: timeline -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <span class="chart-title">Transactions over time</span>
+        <div class="tf-btns" id="tf-btns">
+          <button class="tf-btn active" data-tf="daily">Daily</button>
+          <button class="tf-btn" data-tf="weekly">Weekly</button>
+          <button class="tf-btn" data-tf="monthly">Monthly</button>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="tx-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Row: avg txs/user + type breakdown -->
+    <div class="stat-grid cols2" style="margin-bottom:6px;">
+      <div class="stat-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="stat-card-label" data-i18n="stats-avg-txs-label">Avg Txs / User</div>
+        <div class="stat-card-value skel" id="s-avg-txs" style="font-size:1.6rem;">—</div>
+        <div class="stat-card-sub" data-i18n="stats-all-time">all time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Tx Breakdown</div>
+        <div style="display:flex;justify-content:center;padding:6px 0 2px;">
+          <canvas id="tx-pie" width="140" height="140"></canvas>
+        </div>
+        <div id="tx-pie-legend" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px;"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 1 — Pool & Yield
+    ═══════════════════════════════════════════ -->
+    <h2 data-i18n="stats-pool-h2">💵 Pool & Yield</h2>
+
+    <div class="hero-grid">
+      <div class="hero-card green">
+        <div class="hero-label" data-i18n="stats-total-pool">Total USDT in Pool</div>
+        <div class="hero-value green skel" id="s-pool">—</div>
+        <div class="hero-sub" id="s-pool-sub">—</div>
+      </div>
+      <div class="hero-card gold">
+        <div class="hero-label" data-i18n="stats-yield-now">Yield Accumulated</div>
+        <div class="hero-value gold skel" id="s-yield">—</div>
+        <div class="hero-sub" id="s-yield-sub">—</div>
+      </div>
+      <div class="hero-card purple">
+        <div class="hero-label" data-i18n="stats-projected-prize">Projected Prize (Jan 1)</div>
+        <div class="hero-value purple skel" id="s-prize">—</div>
+        <div class="hero-sub" data-i18n="stats-prize-sub">90% of 365-day yield at current APY</div>
+      </div>
+      <div class="hero-card blue">
+        <div class="hero-label" data-i18n="stats-apy">Live Aave V3 APY</div>
+        <div class="hero-value blue skel" id="s-apy">—</div>
+        <div class="hero-sub" data-i18n="stats-apy-sub">USDT supply rate on Celo</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 2 — Fox Activity
+    ═══════════════════════════════════════════ -->
+    <h2 data-i18n="stats-foxes-h2">🦊 Fox Activity</h2>
+
+    <!-- Survival rate progress bar -->
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label" data-i18n="stats-survival-rate">Fox Survival Rate</span>
+        <span class="progress-pct skel" id="s-survival-pct">—</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="s-survival-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-sub">
+        <span><span id="s-alive-count" class="skel">—</span> <span data-i18n="stats-alive-label">alive 🦊</span></span>
+        <span><span id="s-dead-count" class="skel">—</span> <span data-i18n="stats-dead-label">dead 💀</span></span>
+      </div>
+    </div>
+
+    <div class="stat-grid cols2">
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-total-players">Total Depositors</div>
+        <div class="stat-card-value skel" id="s-players">—</div>
+        <div class="stat-card-sub" data-i18n="stats-all-time">all time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-avg-deposit">Avg Deposit</div>
+        <div class="stat-card-value skel" id="s-avg-deposit">—</div>
+        <div class="stat-card-sub">USDT / player</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION 3 — Streak Distribution
+    ═══════════════════════════════════════════ -->
+    <h2 data-i18n="stats-streak-h2">🔥 Streak Distribution</h2>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;" data-i18n="stats-streak-desc">How players are distributed across streak tiers. Only alive players earn a multiplier in the draw.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;">
+      <table class="streak-table">
+        <thead>
+          <tr>
+            <th data-i18n="stats-tier-col">Tier</th>
+            <th data-i18n="stats-mult-col">Mult</th>
+            <th data-i18n="stats-players-col">Players</th>
+            <th style="min-width:80px;" data-i18n="stats-share-col">Share</th>
+          </tr>
+        </thead>
+        <tbody id="streak-tbody">
+          <tr><td colspan="4" style="padding:16px 8px;color:var(--muted);font-size:0.8rem;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="stat-grid cols2" style="margin-top:10px;">
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-avg-streak">Avg Streak (alive)</div>
+        <div class="stat-card-value skel" id="s-avg-streak">—</div>
+        <div class="stat-card-sub" data-i18n="stats-days">days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-top-streak">Longest Active Streak</div>
+        <div class="stat-card-value skel" id="s-top-streak">—</div>
+        <div class="stat-card-sub skel" id="s-top-streak-addr" style="font-family:monospace;">—</div>
+      </div>
+    </div>
+
+    <div class="stat-grid cols2">
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-total-eff">Total Eff. Tickets</div>
+        <div class="stat-card-value skel" id="s-total-eff">—</div>
+        <div class="stat-card-sub" data-i18n="stats-eff-sub">fish × multiplier (alive)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-top-holder">Largest Holder Share</div>
+        <div class="stat-card-value skel" id="s-top-holder">—</div>
+        <div class="stat-card-sub" data-i18n="stats-top-holder-sub">% of effective tickets</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 4 — Draw
+    ═══════════════════════════════════════════ -->
+    <h2 data-i18n="stats-draw-h2">🎯 Annual Draw</h2>
+
+    <div class="countdown-box">
+      <div class="countdown-label" data-i18n="stats-next-draw-label">Next draw · January 1st 2027</div>
+      <div class="countdown-value" id="s-countdown">--d --:--:--</div>
+      <div class="countdown-sub" id="s-countdown-sub" data-i18n="stats-countdown-sub">Countdown to the annual lottery draw</div>
+    </div>
+
+    <h2 data-i18n="stats-winners-h2" style="margin-top:20px;">🏆 Winner History</h2>
+    <div id="winners-wrap">
+      <div class="empty-state" data-i18n="stats-no-winners">No draws have taken place yet. First draw: January 1st 2027.</div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 5 — Platform Economy
+    ═══════════════════════════════════════════ -->
+    <h2 data-i18n="stats-economy-h2">💰 Platform Economy</h2>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;" data-i18n="stats-economy-desc">Zorrito takes a 10% platform fee at each annual draw. 90% goes to the winner.</p>
+
+    <div class="stat-grid cols2">
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-platform-fee">Platform Fee Earned</div>
+        <div class="stat-card-value skel" id="s-platform-fee">—</div>
+        <div class="stat-card-sub" data-i18n="stats-platform-fee-sub">total across all draws</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="stats-total-prizes">Total Prizes Paid</div>
+        <div class="stat-card-value skel" id="s-total-prizes">—</div>
+        <div class="stat-card-sub" data-i18n="stats-total-prizes-sub">to winners (all time)</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 6 — Web Analytics (Off-chain)
+    ═══════════════════════════════════════════ -->
+    <h2 style="margin-top:36px;">
+      🌐 Web Analytics
+      <span class="section-badge badge-offchain">Off-chain · PostHog</span>
+    </h2>
+    <p class="data-note">📡 Data collection started April 21, 2026 — metrics grow as users visit the app.</p>
+
+    <!-- KPI row -->
+    <div class="analytics-kpi">
+      <div class="stat-card">
+        <div class="stat-card-label">Visitors 7d</div>
+        <div class="stat-card-value skel" id="ph-v7d">—</div>
+        <div class="stat-card-sub">unique</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Visitors 30d</div>
+        <div class="stat-card-value skel" id="ph-v30d">—</div>
+        <div class="stat-card-sub">unique</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Sessions 30d</div>
+        <div class="stat-card-value skel" id="ph-sessions">—</div>
+        <div class="stat-card-sub">total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Avg Duration</div>
+        <div class="stat-card-value skel" id="ph-duration">—</div>
+        <div class="stat-card-sub">per session</div>
+      </div>
+    </div>
+
+    <!-- Visitor growth chart -->
+    <div class="chart-section" style="margin-bottom:10px;">
+      <div class="chart-header">
+        <span class="chart-title">Daily Unique Visitors</span>
+        <span style="font-size:0.68rem;color:var(--muted);">last 30 days</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="visitors-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 7 — Conversion Funnel
+    ═══════════════════════════════════════════ -->
+    <h2 style="margin-top:36px;">
+      🔄 Conversion Funnel
+      <span class="section-badge badge-offchain">Off-chain · PostHog</span>
+    </h2>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">How many visitors actually become active depositors — last 30 days.</p>
+
+    <div class="funnel-wrap" id="funnel-wrap">
+      <div class="funnel-step">
+        <div class="funnel-step-header">
+          <span class="funnel-step-label">1 · Site Visitors</span>
+          <span class="funnel-step-count skel" id="fn-v">—</span>
+        </div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill" id="fn-bar-v" style="width:100%;background:#6366f1;"></div></div>
+        <div class="funnel-conv" id="fn-conv-v">100% baseline</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-step-header">
+          <span class="funnel-step-label">2 · Wallet Connected</span>
+          <span class="funnel-step-count skel" id="fn-c">—</span>
+        </div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill" id="fn-bar-c" style="width:0%;background:#FD840E;"></div></div>
+        <div class="funnel-conv" id="fn-conv-c">—% of visitors</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-step-header">
+          <span class="funnel-step-label">3 · First Deposit ✅</span>
+          <span class="funnel-step-count skel" id="fn-d">—</span>
+        </div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill" id="fn-bar-d" style="width:0%;background:var(--green);"></div></div>
+        <div class="funnel-conv" id="fn-conv-d">—% of connected wallets</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 8 — Geographic Reach
+    ═══════════════════════════════════════════ -->
+    <h2 style="margin-top:36px;">
+      🌍 Geographic Reach <span style="font-size:0.7em;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0;">· all time</span>
+      <span class="section-badge badge-offchain">Off-chain · PostHog</span>
+    </h2>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;">
+      <!-- show first 20, rest hidden until "Show more" -->
+      <div class="country-list" id="country-list">
+        <div style="color:var(--muted);font-size:0.82rem;">Loading geographic data…</div>
+      </div>
+      <div id="country-show-more" style="display:none;text-align:center;margin-top:10px;">
+        <button onclick="expandCountries()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 16px;font-size:0.75rem;color:var(--muted);cursor:pointer;font-family:inherit;">
+          Show more ▾
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 9 — Platform & Device Breakdown
+    ═══════════════════════════════════════════ -->
+    <h2 style="margin-top:36px;">
+      📱 Platform & Device
+      <span class="section-badge badge-offchain">Off-chain · PostHog</span>
+    </h2>
+
+    <div class="donut-pair">
+      <div class="donut-card">
+        <div class="donut-title">Device Type</div>
+        <canvas id="device-pie" width="120" height="120"></canvas>
+        <div class="donut-legend" id="device-legend"></div>
+      </div>
+      <div class="donut-card">
+        <div class="donut-title">Wallet Connector</div>
+        <canvas id="wallet-pie" width="120" height="120"></canvas>
+        <div class="donut-legend" id="wallet-legend"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 10 — Traffic Sources
+    ═══════════════════════════════════════════ -->
+    <h2 style="margin-top:36px;">
+      🔗 Traffic Sources
+      <span class="section-badge badge-offchain">Off-chain · PostHog</span>
+    </h2>
+
+    <div class="referrer-list" id="referrer-list">
+      <div style="color:var(--muted);font-size:0.82rem;padding:8px;">Loading referrer data…</div>
+    </div>
+
+    <!-- ── Footer ── -->
+    <footer>
+      <span data-i18n="stats-footer">Live data from Celo mainnet · Zorrito v8 · auto-refreshes every 60s</span>
+      &nbsp;·&nbsp;
+      <a href="index.html" style="color:var(--green);text-decoration:none;" data-i18n="docs-back-top">← Back to App</a>
+      &nbsp;·&nbsp; <a href="terms.html" style="color:var(--green);text-decoration:none;">Terms</a>
+      &nbsp;·&nbsp; <a href="privacy.html" style="color:var(--green);text-decoration:none;">Privacy</a>
+    </footer>
+
+  </div><!-- /stats-wrap -->
+
+  <script src="lang.js"></script>
+  <script type="module">
+    import { ethers } from "https://esm.sh/ethers@6.11.1?bundle";
+
+    // ── Addresses ──────────────────────────────────────────────────────────────
+    const ZORRITO_ADDR = "0x135dc8DC4bEd4e619B97b07bA16bCE348CAeFF62"; // v8
+    const USDT_ADDR    = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
+    const AUSDT_ADDR   = "0xDeE98402A302e4D707fB9bf2bac66fAEEc31e8Df";
+    const AAVE_POOL    = "0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402";
+    const RPC          = "https://forno.celo.org";
+
+    // ── ABIs ───────────────────────────────────────────────────────────────────
+    const ZORRITO_ABI = [
+      "function getStats() view returns (uint256 poolSize, uint256 yieldAvailable, uint256 playerCount, uint256 nextDraw, uint256 aliveFoxes)",
+      "function getLeaderboardData() view returns (address[] addrs, uint32[] streaks, uint32[] bestStreaks, bool[] alive, uint256[] fishCounts, uint256[] effTickets)",
+      "function totalDeposited() view returns (uint256)",
+      "function lastDrawTime() view returns (uint256)",
+      "event WinnerPicked(address indexed winner, uint256 prize, uint256 platformFee, uint256 timestamp)",
+      "event FoxFed(address indexed user, uint32 newStreak, bool wasRevived)",
+      "event Deposited(address indexed user, uint256 amount, uint256 fish)",
+      "event Withdrawn(address indexed user, uint256 amount)",
+    ];
+    const AUSDT_ABI  = ["function balanceOf(address) view returns (uint256)"];
+    const AAVE_ABI   = ["function getReserveData(address asset) view returns (uint256,uint128,uint128,uint128,uint128,uint128,uint40,uint16,address,address,address,address,uint128,uint128,uint128)"];
+
+    const provider = new ethers.JsonRpcProvider(RPC);
+    const zorrito  = new ethers.Contract(ZORRITO_ADDR, ZORRITO_ABI, provider);
+    const aUsdt    = new ethers.Contract(AUSDT_ADDR, AUSDT_ABI, provider);
+    const aavePool = new ethers.Contract(AAVE_POOL, AAVE_ABI, provider);
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    const fmtUSDT = (raw) => {
+      const n = Number(ethers.formatUnits(raw, 6));
+      if (n >= 1_000_000) return "$" + (n/1_000_000).toFixed(2) + "M";
+      if (n >= 1_000)     return "$" + (n/1_000).toFixed(1) + "K";
+      return "$" + n.toFixed(2);
+    };
+    const shortAddr = (a) => a.slice(0,6) + "…" + a.slice(-4);
+    const setSkel   = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = val; el.classList.remove("skel"); }
+    };
+    const TIER_LABELS = ["< 7 days","7–29 days","30–89 days","90–179 days","180–364 days","365+ days 🏆"];
+    const TIER_MULTS  = ["1.0×","1.5×","2.0×","3.0×","4.0×","5.0×"];
+    const TIER_COLORS = ["var(--muted)","var(--orange)","var(--orange)","var(--orange)","var(--green)","var(--green)"];
+
+    function streakTier(s) {
+      if (s >= 365) return 5;
+      if (s >= 180) return 4;
+      if (s >= 90)  return 3;
+      if (s >= 30)  return 2;
+      if (s >= 7)   return 1;
+      return 0;
+    }
+
+    // ── Countdown ──────────────────────────────────────────────────────────────
+    function startCountdown(nextDrawTs) {
+      function tick() {
+        const now  = Math.floor(Date.now() / 1000);
+        const diff = Number(nextDrawTs) - now;
+        if (diff <= 0) {
+          document.getElementById("s-countdown").textContent = "🎉 Draw time!";
+          return;
+        }
+        const d = Math.floor(diff / 86400);
+        const h = String(Math.floor((diff % 86400) / 3600)).padStart(2,"0");
+        const m = String(Math.floor((diff % 3600) / 60)).padStart(2,"0");
+        const s = String(diff % 60).padStart(2,"0");
+        document.getElementById("s-countdown").textContent = `${d}d ${h}:${m}:${s}`;
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    // ── Module-level chart state (survives loadStats refreshes) ─────────────
+    let _txChartInst  = null;
+    let _currentTxTf  = localStorage.getItem("zorrito-tx-tf") || "daily";
+    let _chartDataByTf = { daily:{labels:[],data:[]}, weekly:{labels:[],data:[]}, monthly:{labels:[],data:[]} };
+    let _foxTf = localStorage.getItem("zorrito-fox-tf") || "daily";
+    let _foxFeedEvents     = [];
+    let _foxDepositEvents  = [];
+    let _foxBlockToTs      = () => 0;
+    let _foxNowTs          = 0;
+
+    function makeGradient(ctx) {
+      const g = ctx.createLinearGradient(0, 0, 0, 180);
+      g.addColorStop(0, "rgba(253,132,14,0.18)");
+      g.addColorStop(1, "rgba(253,132,14,0)");
+      return g;
+    }
+
+    function renderTxChart(tf) {
+      const { labels, data } = _chartDataByTf[tf] || { labels: [], data: [] };
+      const canvas = document.getElementById("tx-chart");
+      if (!canvas) return;
+      if (_txChartInst) _txChartInst.destroy();
+      const ctx = canvas.getContext("2d");
+      _txChartInst = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            data,
+            borderColor: "#FD840E",
+            backgroundColor: makeGradient(ctx),
+            fill: true,
+            tension: 0.35,
+            pointRadius: data.length <= 30 ? 3 : 1,
+            pointHoverRadius: 5,
+            pointBackgroundColor: "#FD840E",
+            borderWidth: 2,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          animation: { duration: 500, easing: "easeOutQuart" },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "#fff", titleColor: "#1a1a1a", bodyColor: "#666",
+              borderColor: "rgba(253,132,14,0.3)", borderWidth: 1, padding: 10,
+              callbacks: {
+                title: ([c]) => c.label,
+                label: (c) => `  ${c.parsed.y.toLocaleString()} txs`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { family: "'Baloo 2', sans-serif", size: 10 }, color: "#999", maxRotation: 0, maxTicksLimit: tf === "daily" ? 8 : 12 },
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: "rgba(0,0,0,0.04)", drawBorder: false },
+              ticks: { font: { family: "'Baloo 2', sans-serif", size: 10 }, color: "#999", precision: 0, maxTicksLimit: 5 },
+            },
+          },
+        },
+      });
+    }
+
+    function renderFoxPeriodStats() {
+      const tf     = _foxTf;
+      const period = tf === "daily" ? 86400 : tf === "weekly" ? 7 * 86400 : 30 * 86400;
+      const cutoff = _foxNowTs - period;
+      const lang   = localStorage.getItem("zorrito-lang") || "en";
+      const T      = window.ZORRITO_T?.[lang] || {};
+      const periodLabel = tf === "daily"
+        ? (T["stats-period-24h"] || "last 24h")
+        : tf === "weekly"
+        ? (T["stats-period-7d"] || "last 7 days")
+        : (T["stats-period-30d"] || "last 30 days");
+
+      const feedsIn     = _foxFeedEvents.filter(e => _foxBlockToTs(e.blockNumber) > cutoff);
+      const uniqueWallets = new Set(feedsIn.map(e => e.args?.[0] || "")).size;
+      const depositsIn  = _foxDepositEvents.filter(e => _foxBlockToTs(e.blockNumber) > cutoff);
+
+      setSkel("s-fox-feeds-period",   feedsIn.length.toLocaleString());
+      setSkel("s-fox-feeders-period", uniqueWallets.toLocaleString());
+      setSkel("s-fox-deposits-period", depositsIn.length.toLocaleString());
+
+      ["s-fox-period-sub", "s-fox-period-sub2"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = periodLabel;
+      });
+    }
+
+    // ── Main load ──────────────────────────────────────────────────────────────
+    // Zorrito v8 deploy block on Celo mainnet — safe starting point for event queries
+    // (Celo forno.celo.org rejects eth_getLogs with fromBlock=0 as range too large)
+    const DEPLOY_BLOCK = 64_226_000;
+
+    async function loadStats() {
+      try {
+        // ── Contract state + latest block (view calls — always fast) ─────────
+        const [stats, lbData, aUsdtBal, aaveData, totalDep, latestBlock] = await Promise.all([
+          zorrito.getStats(),
+          zorrito.getLeaderboardData(),
+          aUsdt.balanceOf(ZORRITO_ADDR),
+          aavePool.getReserveData(USDT_ADDR),
+          zorrito.totalDeposited(),          // accurate all-time USDT volume
+          provider.getBlock("latest"),
+        ]);
+
+        // ── Block → timestamp interpolation (2 RPC calls) ────────────────────
+        let blockToTs = (bn) => Math.floor(Date.now() / 1000); // safe fallback
+        try {
+          const deployBlock = await provider.getBlock(DEPLOY_BLOCK);
+          const avgBlockTime = (latestBlock.timestamp - deployBlock.timestamp) /
+                               Math.max(1, latestBlock.number - DEPLOY_BLOCK);
+          const deployTs = deployBlock.timestamp;
+          blockToTs = (bn) => Math.round(deployTs + (bn - DEPLOY_BLOCK) * avgBlockTime);
+        } catch (btErr) {
+          console.warn("Block timestamp setup failed (non-fatal):", btErr.message);
+        }
+
+        // ── Event queries — single call from deploy block ─────────────────────
+        // forno caps eth_getLogs at ~1 000 events per call; we use the contract's
+        // totalDeposited() for USDT volume so events are only needed for counts/charts.
+        let winnerEvents = [], feedEvents = [], depositEvents = [], withdrawEvents = [];
+        try {
+          [winnerEvents, feedEvents, depositEvents, withdrawEvents] = await Promise.all([
+            zorrito.queryFilter(zorrito.filters.WinnerPicked(), DEPLOY_BLOCK, "latest"),
+            zorrito.queryFilter(zorrito.filters.FoxFed(),       DEPLOY_BLOCK, "latest"),
+            zorrito.queryFilter(zorrito.filters.Deposited(),    DEPLOY_BLOCK, "latest"),
+            zorrito.queryFilter(zorrito.filters.Withdrawn(),    DEPLOY_BLOCK, "latest"),
+          ]);
+        } catch (evErr) {
+          console.warn("Event query failed (non-fatal):", evErr.message);
+        }
+
+        const [poolSize, yieldAvail, playerCount, nextDraw, aliveFoxes] = stats;
+        const [addrs, streaks, , aliveArr, fishCounts, effTickets] = lbData;
+
+        // ── APY ─────────────────────────────────────────────────────────────
+        const RAY = 10n ** 27n;
+        const apr = Number(BigInt(aaveData[2])) / Number(RAY);
+        const apy = (Math.pow(1 + apr / 31_536_000, 31_536_000) - 1);
+
+        // ── Pool & Yield ─────────────────────────────────────────────────────
+        const poolNum     = Number(ethers.formatUnits(poolSize, 6));
+        const yieldNum    = Number(ethers.formatUnits(yieldAvail, 6));
+        const projPrize   = poolNum * apy * 0.9; // 90% after fee
+
+        setSkel("s-pool",  fmtUSDT(poolSize));
+        document.getElementById("s-pool-sub").textContent =
+          `${Number(playerCount)} depositor${Number(playerCount)===1?"":"s"}`;
+
+        setSkel("s-yield", `$${yieldNum < 0.000001 ? "<0.000001" : yieldNum.toFixed(4)}`);
+        document.getElementById("s-yield-sub").textContent =
+          `${yieldNum < 0.01 ? "accumulating…" : "ready for Jan 1st draw"}`;
+
+        setSkel("s-prize", projPrize < 0.01
+          ? `$${projPrize.toFixed(4)}`
+          : projPrize < 1000 ? `$${projPrize.toFixed(2)}` : fmtUSDT(BigInt(Math.round(projPrize * 1e6))));
+
+        setSkel("s-apy",  (apy * 100).toFixed(2) + "%");
+
+        // ── Countdown ────────────────────────────────────────────────────────
+        startCountdown(nextDraw);
+
+        // ── Fox activity ─────────────────────────────────────────────────────
+        const totalP = Number(playerCount);
+        const alive  = Number(aliveFoxes);
+        const dead   = totalP - alive;
+        const survPct = totalP > 0 ? (alive / totalP * 100) : 0;
+
+        // All-time unique depositors — prefer leaderboard (contract state, always accurate)
+        // Fall back to deposit events only if leaderboard is empty
+        const uniqueDepositors = addrs.length > 0 ? addrs.length : (new Set(depositEvents.map(e => e.args?.[0])).size || totalP);
+
+        setSkel("s-survival-pct", survPct.toFixed(1) + "%");
+        document.getElementById("s-survival-bar").style.width = survPct + "%";
+        setSkel("s-alive-count", alive);
+        setSkel("s-dead-count", dead);
+        setSkel("s-players", uniqueDepositors);
+
+        const avgDeposit = totalP > 0
+          ? Number(ethers.formatUnits(poolSize, 6)) / totalP
+          : 0;
+        setSkel("s-avg-deposit", "$" + avgDeposit.toFixed(2));
+
+        // ── Transaction KPIs & Charts ────────────────────────────────────────
+        const allTxEvents = [
+          ...depositEvents.map(e => ({ blockNumber: e.blockNumber, type: 'deposit' })),
+          ...feedEvents.map(e =>    ({ blockNumber: e.blockNumber, type: 'feed' })),
+          ...withdrawEvents.map(e => ({ blockNumber: e.blockNumber, type: 'withdraw' })),
+        ].sort((a, b) => a.blockNumber - b.blockNumber);
+
+        const nowTs  = Math.floor(Date.now() / 1000);
+        const tx24h  = allTxEvents.filter(e => blockToTs(e.blockNumber) > nowTs - 86400).length;
+        const tx7d   = allTxEvents.filter(e => blockToTs(e.blockNumber) > nowTs - 7 * 86400).length;
+        const tx30d  = allTxEvents.filter(e => blockToTs(e.blockNumber) > nowTs - 30 * 86400).length;
+        const txAll  = allTxEvents.length; // forno-capped; overridden below by chain-stats
+
+        // Animated count-up
+        function countUp(el, target, duration = 700) {
+          if (!el) return;
+          el.classList.remove("skel");
+          const start = performance.now();
+          const from  = parseInt(el.textContent.replace(/,/g, "")) || 0;
+          function frame(now) {
+            const t     = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            el.textContent = Math.round(from + (target - from) * eased).toLocaleString();
+            if (t < 1) requestAnimationFrame(frame);
+          }
+          requestAnimationFrame(frame);
+        }
+
+        setTimeout(() => {
+          countUp(document.getElementById("s-tx-24h"),  tx24h,  600);
+          countUp(document.getElementById("s-tx-7d"),   tx7d,   700);
+          countUp(document.getElementById("s-tx-30d"),  tx30d,  800);
+          // All Time shown as forno value first; chain-stats will update it if available
+          countUp(document.getElementById("s-tx-all"),  txAll,  900);
+        }, 200);
+
+        // ── The Graph: accurate all-time + time-series (overrides forno-capped values) ──
+        fetch("/api/graph-stats")
+          .then(r => r.ok ? r.json() : null)
+          .then(gs => {
+            if (!gs?.ok) return;
+
+            // Show The Graph badge
+            const badge = document.getElementById("graph-badge");
+            if (badge) { badge.style.display = "flex"; setTimeout(() => badge.style.opacity = "1", 50); }
+
+            // TX counts — accurate, not capped by forno
+            countUp(document.getElementById("s-tx-all"),  gs.allTime.total,    800);
+            countUp(document.getElementById("s-tx-24h"),  gs.periods.h24.tx,   600);
+            countUp(document.getElementById("s-tx-7d"),   gs.periods.d7.tx,    700);
+            countUp(document.getElementById("s-tx-30d"),  gs.periods.d30.tx,   750);
+
+            // Players, avg txs, volume — override contract values with accurate subgraph counts
+            setSkel("s-players", gs.users.total.toLocaleString());
+
+            // USDT Volume: lifetime gross (contract only tracks net balance)
+            const grossUSDT = parseFloat(gs.allTime.totalDepositedUSDT);
+            const fmtGross  = grossUSDT >= 1_000_000 ? "$" + (grossUSDT/1_000_000).toFixed(2) + "M"
+              : grossUSDT >= 1_000 ? "$" + (grossUSDT/1_000).toFixed(1) + "K"
+              : "$" + grossUSDT.toFixed(2);
+            setSkel("s-tx-volume", fmtGross);
+            if (gs.users.total > 0) {
+              setSkel("s-avg-txs", (gs.allTime.total / gs.users.total).toFixed(1));
+            }
+
+            // Longest streak from The Graph
+            if (gs.foxMechanics.longestActiveStreak > 0) {
+              setSkel("s-top-streak", gs.foxMechanics.longestActiveStreak + "d");
+              const topAddrEl = document.getElementById("s-top-streak-addr");
+              if (topAddrEl && gs.foxMechanics.longestActiveUser) {
+                const a = gs.foxMechanics.longestActiveUser;
+                topAddrEl.textContent = a.slice(0,6) + "…" + a.slice(-4);
+                topAddrEl.classList.remove("skel");
+              }
+            }
+
+            // Override chart data with The Graph time-series (accurate, not event-capped)
+            if (gs.timeSeries?.length > 0) {
+              const ts = gs.timeSeries; // [{date, txCount, feedCount, ...}] chronological
+
+              const dailySlice  = ts.slice(-30);
+              const dailyLabels = dailySlice.map(d => {
+                const [y, m, day] = d.date.split("-");
+                return new Date(+y, +m - 1, +day).toLocaleDateString("en-US", { month:"short", day:"numeric" });
+              });
+
+              function aggWeekly(ts, weeks = 12) {
+                const labels = [], data = [];
+                for (let i = weeks - 1; i >= 0; i--) {
+                  const cutEnd   = Date.now() / 1000 - i * 7 * 86400;
+                  const cutStart = cutEnd - 7 * 86400;
+                  const slice    = ts.filter(d => { const t = new Date(d.date + "T00:00:00Z").getTime() / 1000; return t >= cutStart && t < cutEnd; });
+                  labels.push("w/" + new Date(cutStart * 1000).toLocaleDateString("en-US", { month:"short", day:"numeric" }));
+                  data.push(slice.reduce((s, x) => s + (x.txCount || 0), 0));
+                }
+                return { labels, data };
+              }
+
+              function aggMonthly(ts, months = 12) {
+                const labels = [], data = [];
+                const now = new Date();
+                for (let i = months - 1; i >= 0; i--) {
+                  const mDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                  const mEnd  = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+                  const slice = ts.filter(d => { const t = new Date(d.date + "T00:00:00Z").getTime(); return t >= mDate.getTime() && t < mEnd.getTime(); });
+                  labels.push(mDate.toLocaleDateString("en-US", { month:"short", year:"2-digit" }));
+                  data.push(slice.reduce((s, x) => s + (x.txCount || 0), 0));
+                }
+                return { labels, data };
+              }
+
+              _chartDataByTf = {
+                daily:   { labels: dailyLabels, data: dailySlice.map(d => d.txCount || 0) },
+                weekly:  aggWeekly(ts),
+                monthly: aggMonthly(ts),
+              };
+              renderTxChart(_currentTxTf);
+            }
+          })
+          .catch(() => {}); // non-fatal — forno values stay
+
+        // Avg txs per user (initial estimate from forno-capped data)
+        const avgTxs = uniqueDepositors > 0 ? (txAll / uniqueDepositors).toFixed(1) : "—";
+        setSkel("s-avg-txs", avgTxs);
+
+        // Total USDT deposited — use contract value as initial (net); The Graph overrides with lifetime gross
+        const totalVolumeRaw = Number(ethers.formatUnits(totalDep, 6));
+        const fmtVolume = totalVolumeRaw >= 1_000_000 ? "$" + (totalVolumeRaw/1_000_000).toFixed(2) + "M"
+          : totalVolumeRaw >= 1_000 ? "$" + (totalVolumeRaw/1_000).toFixed(1) + "K"
+          : "$" + totalVolumeRaw.toFixed(2);
+        setSkel("s-tx-volume", fmtVolume); // overridden below by graph-stats
+
+        // ── Line chart data builders ─────────────────────────────────────────
+        function buildDailyData(events, days = 30) {
+          const labels = [], data = [];
+          for (let i = days - 1; i >= 0; i--) {
+            const d = new Date((nowTs - i * 86400) * 1000);
+            labels.push(d.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+            const start = nowTs - (i + 1) * 86400;
+            const end   = nowTs - i * 86400;
+            data.push(events.filter(e => {
+              const ts = blockToTs(e.blockNumber);
+              return ts > start && ts <= end;
+            }).length);
+          }
+          return { labels, data };
+        }
+
+        function buildWeeklyData(events, weeks = 12) {
+          const labels = [], data = [];
+          for (let i = weeks - 1; i >= 0; i--) {
+            const weekEnd   = nowTs - i * 7 * 86400;
+            const weekStart = weekEnd - 7 * 86400;
+            const d = new Date(weekStart * 1000);
+            labels.push("w/" + d.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+            data.push(events.filter(e => {
+              const ts = blockToTs(e.blockNumber);
+              return ts > weekStart && ts <= weekEnd;
+            }).length);
+          }
+          return { labels, data };
+        }
+
+        function buildMonthlyData(events, months = 12) {
+          const labels = [], data = [];
+          const now = new Date(nowTs * 1000);
+          for (let i = months - 1; i >= 0; i--) {
+            const y = now.getFullYear();
+            const m = now.getMonth() - i;
+            const date = new Date(y, m, 1);
+            const endDate = new Date(y, m + 1, 1);
+            labels.push(date.toLocaleDateString("en-US", { month: "short", year: "2-digit" }));
+            data.push(events.filter(e => {
+              const ts = blockToTs(e.blockNumber) * 1000;
+              return ts >= date.getTime() && ts < endDate.getTime();
+            }).length);
+          }
+          return { labels, data };
+        }
+
+        // ── Update module-level chart data & render ──────────────────────────
+        _chartDataByTf = {
+          daily:   buildDailyData(allTxEvents, 30),
+          weekly:  buildWeeklyData(allTxEvents, 12),
+          monthly: buildMonthlyData(allTxEvents, 12),
+        };
+        // Sync tx chart button states
+        document.querySelectorAll("#tf-btns .tf-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.tf === _currentTxTf);
+        });
+        renderTxChart(_currentTxTf);
+
+        // ── Fox period stats ─────────────────────────────────────────────────
+        _foxFeedEvents    = feedEvents;
+        _foxDepositEvents = depositEvents;
+        _foxBlockToTs     = blockToTs;
+        _foxNowTs         = nowTs;
+        // Sync fox period button states
+        document.querySelectorAll("#fox-tf-btns .tf-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.tf === _foxTf);
+        });
+        renderFoxPeriodStats();
+
+        // ── Pie / donut chart: tx type breakdown ─────────────────────────────
+        const pieCanvas = document.getElementById("tx-pie");
+        const pieData   = [depositEvents.length + feedEvents.length, withdrawEvents.length];
+        const pieColors = ["#FD840E", "#2563eb"];
+        const pieLabels = ["Deposits", "Withdrawals"];
+
+        if (pieCanvas && txAll > 0) {
+          new Chart(pieCanvas.getContext("2d"), {
+            type: "doughnut",
+            data: {
+              labels: pieLabels,
+              datasets: [{
+                data: pieData,
+                backgroundColor: pieColors,
+                borderColor: "#fff",
+                borderWidth: 3,
+                hoverOffset: 4,
+              }],
+            },
+            options: {
+              responsive: false,
+              cutout: "60%",
+              layout: { padding: 8 },
+              animation: { duration: 800, easing: "easeOutQuart" },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  enabled: false,
+                  external({ chart, tooltip }) {
+                    let el = document.getElementById("pie-ext-tooltip");
+                    if (!el) {
+                      el = document.createElement("div");
+                      el.id = "pie-ext-tooltip";
+                      el.style.cssText = [
+                        "position:fixed",
+                        "background:#fff",
+                        "border:1px solid rgba(0,0,0,0.12)",
+                        "border-radius:8px",
+                        "padding:7px 12px",
+                        "font-family:'Baloo 2',sans-serif",
+                        "font-size:0.78rem",
+                        "font-weight:700",
+                        "color:#1a1a1a",
+                        "pointer-events:none",
+                        "white-space:nowrap",
+                        "box-shadow:0 2px 10px rgba(0,0,0,0.10)",
+                        "z-index:9999",
+                        "transition:opacity 0.1s",
+                        "opacity:0",
+                      ].join(";");
+                      document.body.appendChild(el);
+                    }
+                    if (tooltip.opacity === 0) { el.style.opacity = "0"; return; }
+                    const line = tooltip.body?.[0]?.lines?.[0]?.trim() || "";
+                    el.textContent = line;
+                    el.style.opacity = "1";
+                    const rect = chart.canvas.getBoundingClientRect();
+                    el.style.left = (rect.left + tooltip.caretX - el.offsetWidth / 2) + "px";
+                    el.style.top  = (rect.top  + tooltip.caretY - el.offsetHeight - 10) + "px";
+                  },
+                },
+              },
+            },
+          });
+
+          // Build legend
+          const legendEl = document.getElementById("tx-pie-legend");
+          if (legendEl) {
+            legendEl.innerHTML = pieLabels.map((label, i) =>
+              `<span class="pie-legend-item">
+                <span class="pie-legend-dot" style="background:${pieColors[i]};"></span>
+                ${label} ${pieData[i] > 0 ? "(" + ((pieData[i]/txAll)*100).toFixed(0) + "%)" : ""}
+              </span>`
+            ).join("");
+          }
+        } else if (pieCanvas) {
+          pieCanvas.style.display = "none";
+          const legendEl = document.getElementById("tx-pie-legend");
+          if (legendEl) legendEl.textContent = "No txs yet";
+        }
+
+        // ── Streak distribution ──────────────────────────────────────────────
+        const tierCounts   = [0,0,0,0,0,0]; // for alive players
+        const tierCountsAll= [0,0,0,0,0,0]; // for all players
+        let totalEffAlive  = 0n;
+        let avgStreakSum    = 0;
+        let avgStreakAlive  = 0;
+        let topStreak      = 0;
+        let topStreakAddr   = "";
+        let topEffTickets  = 0n;
+        let topEffAddr     = "";
+
+        for (let i = 0; i < addrs.length; i++) {
+          const s    = Number(streaks[i]);
+          const isAl = aliveArr[i];
+          const tier = streakTier(s);
+          tierCountsAll[tier]++;
+          if (isAl) {
+            tierCounts[tier]++;
+            avgStreakSum  += s;
+            totalEffAlive += effTickets[i];
+            if (s > topStreak) { topStreak = s; topStreakAddr = addrs[i]; }
+            if (effTickets[i] > topEffTickets) { topEffTickets = effTickets[i]; topEffAddr = addrs[i]; }
+          }
+        }
+        avgStreakAlive = alive > 0 ? Math.round(avgStreakSum / alive) : 0;
+
+        // Top holder concentration
+        const topPct = totalEffAlive > 0n
+          ? (Number(topEffTickets) / Number(totalEffAlive) * 100).toFixed(1)
+          : "0.0";
+
+        setSkel("s-avg-streak", avgStreakAlive);
+        setSkel("s-top-streak", topStreak + "d");
+        const topStreakEl = document.getElementById("s-top-streak-addr");
+        if (topStreakEl) { topStreakEl.textContent = topStreak > 0 ? shortAddr(topStreakAddr) : "—"; topStreakEl.classList.remove("skel"); }
+        setSkel("s-total-eff", Math.round(Number(totalEffAlive) / 10).toLocaleString());
+        setSkel("s-top-holder", topPct + "%");
+
+        // Render streak table
+        const maxTierCount = Math.max(...tierCounts, 1);
+        const tbody = document.getElementById("streak-tbody");
+        if (tbody) {
+          tbody.innerHTML = TIER_LABELS.map((label, i) => {
+            const cnt     = tierCounts[i];
+            const cntAll  = tierCountsAll[i];
+            const barPct  = Math.round(cnt / maxTierCount * 100);
+            const isTop   = i >= 4;
+            return `<tr>
+              <td style="color:var(--text);font-size:0.82rem;">${label}</td>
+              <td><span class="mult-badge${isTop?" top":""}">${TIER_MULTS[i]}</span></td>
+              <td style="font-weight:700;color:${TIER_COLORS[i]};">${cnt}<span style="color:var(--muted);font-weight:400;font-size:0.72rem;"> /${cntAll}</span></td>
+              <td>
+                <div class="tier-bar-bg">
+                  <div class="tier-bar-fill" style="width:${barPct}%;background:${isTop?"var(--green)":"var(--orange)"};"></div>
+                </div>
+              </td>
+            </tr>`;
+          }).join("");
+        }
+
+        // ── Winner history ────────────────────────────────────────────────────
+        let totalPrizes = 0;
+        let totalFees   = 0;
+
+        if (winnerEvents.length === 0) {
+          document.getElementById("winners-wrap").innerHTML =
+            `<div class="empty-state" data-i18n="stats-no-winners">No draws have taken place yet. First draw: January 1st 2027.</div>`;
+        } else {
+          const rows = winnerEvents.map(ev => {
+            const winner   = ev.args[0];
+            const prize    = Number(ethers.formatUnits(ev.args[1], 6));
+            const fee      = Number(ethers.formatUnits(ev.args[2], 6));
+            const ts       = Number(ev.args[3]);
+            totalPrizes   += prize;
+            totalFees     += fee;
+            const date     = new Date(ts * 1000).toLocaleDateString("en-US", {year:"numeric",month:"short",day:"numeric"});
+            return `<tr>
+              <td style="color:var(--muted);font-size:0.78rem;">${date}</td>
+              <td class="winner-addr">${shortAddr(winner)}</td>
+              <td style="font-weight:700;color:var(--green);">$${prize.toFixed(2)}</td>
+            </tr>`;
+          }).reverse().join("");
+
+          document.getElementById("winners-wrap").innerHTML = `
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+              <table class="winners-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="stats-w-date">Date</th>
+                    <th data-i18n="stats-w-winner">Winner</th>
+                    <th data-i18n="stats-w-prize">Prize</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>`;
+
+          setSkel("s-platform-fee", "$" + totalFees.toFixed(2));
+          setSkel("s-total-prizes", "$" + totalPrizes.toFixed(2));
+        }
+
+        if (winnerEvents.length === 0) {
+          setSkel("s-platform-fee", "$0.00");
+          setSkel("s-total-prizes", "$0.00");
+        }
+
+        // ── UI finalization ───────────────────────────────────────────────────
+        document.getElementById("loading-banner").style.display = "none";
+        const lu = document.getElementById("last-updated");
+        lu.style.display = "block";
+        document.getElementById("updated-time").textContent = new Date().toLocaleTimeString();
+
+        // Re-apply current language (to translate new data-i18n elements)
+        try {
+          const lang = localStorage.getItem("zorrito-lang") || "en";
+          zorritoSetLang(lang);
+        } catch(_) {}
+
+      } catch (err) {
+        console.error("Stats load error:", err);
+        document.getElementById("loading-banner").innerHTML =
+          `<span style="color:var(--red);">⚠️ Could not load data. Check connection and try again.</span>`;
+      }
+    }
+
+    // Load on mount, then every 60s
+    await loadStats();
+    setInterval(loadStats, 60_000);
+
+    // ── Off-chain analytics (PostHog via proxy) ──────────────────────────────
+    // Loaded once on mount; refreshes every 5 minutes (data is cached server-side)
+
+    // Convert any ISO 3166-1 alpha-2 country code to its flag emoji automatically.
+    // Regional indicator letters start at U+1F1E6 ('A') = charCode 65 + 127397.
+    function countryFlag(code) {
+      if (!code || code.length !== 2) return "🌐";
+      return [...code.toUpperCase()]
+        .map(c => String.fromCodePoint(c.charCodeAt(0) + 127397))
+        .join("");
+    }
+
+    function fmtDuration(sec) {
+      if (!sec || sec < 1) return "—";
+      const m = Math.floor(sec / 60);
+      const s = Math.round(sec % 60);
+      return m > 0 ? `${m}m ${s}s` : `${s}s`;
+    }
+
+    let _visitorsChartInst = null;
+
+    function renderVisitorsChart(daily) {
+      const canvas = document.getElementById("visitors-chart");
+      if (!canvas) return;
+      if (_visitorsChartInst) _visitorsChartInst.destroy();
+      const ctx = canvas.getContext("2d");
+      const labels = daily.map(d => {
+        const dt = new Date(d.date);
+        return dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      });
+      const data = daily.map(d => d.unique_visitors);
+      const g = ctx.createLinearGradient(0, 0, 0, 180);
+      g.addColorStop(0, "rgba(99,102,241,0.2)");
+      g.addColorStop(1, "rgba(99,102,241,0)");
+      _visitorsChartInst = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            data, borderColor: "#6366f1", backgroundColor: g,
+            fill: true, tension: 0.35,
+            pointRadius: data.length <= 30 ? 3 : 1,
+            pointHoverRadius: 5, pointBackgroundColor: "#6366f1", borderWidth: 2,
+          }],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          animation: { duration: 600, easing: "easeOutQuart" },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "#fff", titleColor: "#1a1a1a", bodyColor: "#666",
+              borderColor: "rgba(99,102,241,0.3)", borderWidth: 1, padding: 10,
+              callbacks: { label: c => `  ${c.parsed.y.toLocaleString()} visitors` },
+            },
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: "'Baloo 2',sans-serif", size: 10 }, color: "#999", maxTicksLimit: 8 } },
+            y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.04)" }, ticks: { font: { family: "'Baloo 2',sans-serif", size: 10 }, color: "#999", precision: 0, maxTicksLimit: 5 } },
+          },
+        },
+      });
+    }
+
+    function renderDonut(canvasId, legendId, labels, data, colors) {
+      const canvas = document.getElementById(canvasId);
+      const legendEl = document.getElementById(legendId);
+      if (!canvas) return;
+      const total = data.reduce((a, b) => a + b, 0);
+      if (total === 0) {
+        canvas.style.display = "none";
+        if (legendEl) legendEl.innerHTML = `<span style="font-size:0.72rem;color:var(--muted)">No data yet</span>`;
+        return;
+      }
+      new Chart(canvas.getContext("2d"), {
+        type: "doughnut",
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: "#fff", borderWidth: 3, hoverOffset: 4 }] },
+        options: {
+          responsive: false, cutout: "58%",
+          animation: { duration: 700, easing: "easeOutQuart" },
+          plugins: { legend: { display: false }, tooltip: { enabled: true } },
+        },
+      });
+      if (legendEl) {
+        legendEl.innerHTML = labels.map((l, i) =>
+          `<span class="pie-legend-item"><span class="pie-legend-dot" style="background:${colors[i]};"></span>${l} ${total > 0 ? "(" + Math.round(data[i]/total*100) + "%)" : ""}</span>`
+        ).join("");
+      }
+    }
+
+    async function loadAnalytics() {
+      try {
+        const res  = await fetch("/api/analytics?t=" + Date.now());
+        if (!res.ok) return;
+        const d = await res.json();
+        if (!d.ok) return;
+
+        // ── Visitor KPIs ────────────────────────────────────────────────────
+        setSkel("ph-v7d",     (d.visitors.last_7d.unique  || 0).toLocaleString());
+        setSkel("ph-v30d",    (d.visitors.last_30d.unique || 0).toLocaleString());
+        setSkel("ph-sessions",(d.sessions.count           || 0).toLocaleString());
+        setSkel("ph-duration", fmtDuration(d.sessions.avg_duration_sec));
+
+        // ── Visitor growth chart ─────────────────────────────────────────────
+        if (d.dailyChart?.length > 0) renderVisitorsChart(d.dailyChart);
+
+        // ── Funnel ──────────────────────────────────────────────────────────
+        const { visitors: fv, connected: fc, deposited: fd } = d.funnel;
+        setSkel("fn-v", (fv || 0).toLocaleString());
+        setSkel("fn-c", (fc || 0).toLocaleString());
+        setSkel("fn-d", (fd || 0).toLocaleString());
+        const convC = fv > 0 ? (fc / fv * 100).toFixed(1) : 0;
+        const convD = fc > 0 ? (fd / fc * 100).toFixed(1) : 0;
+        document.getElementById("fn-bar-c").style.width = (fv > 0 ? fc / fv * 100 : 0) + "%";
+        document.getElementById("fn-bar-d").style.width = (fv > 0 ? fd / fv * 100 : 0) + "%";
+        document.getElementById("fn-conv-c").textContent = `${convC}% of visitors`;
+        document.getElementById("fn-conv-d").textContent = `${convD}% of connected wallets`;
+
+        // ── Countries ───────────────────────────────────────────────────────
+        const countryEl = document.getElementById("country-list");
+        if (countryEl && d.countries?.length > 0) {
+          const maxV  = d.countries[0].visitors;
+          const total = d.countries.reduce((s, c) => s + c.visitors, 0);
+          const SHOW_INIT = 20;
+
+          function countryRowHTML(c) {
+            const flag = countryFlag(c.country_code);
+            const pct  = total > 0 ? Math.round(c.visitors / total * 100) : 0;
+            return `<div class="country-row">
+              <span class="country-flag">${flag}</span>
+              <span class="country-name">${c.country}</span>
+              <div class="country-bar-bg"><div class="country-bar-fill" style="width:${Math.round(c.visitors/maxV*100)}%;"></div></div>
+              <span class="country-pct">${pct}%</span>
+            </div>`;
+          }
+
+          // Render first 20 immediately
+          countryEl.innerHTML = d.countries.slice(0, SHOW_INIT).map(countryRowHTML).join("");
+
+          // If more countries available, show "Show more" button
+          const showMoreBtn = document.getElementById("country-show-more");
+          if (d.countries.length > SHOW_INIT && showMoreBtn) {
+            showMoreBtn.style.display = "block";
+            window._allCountries = d.countries;
+            window._countryRowHTML = countryRowHTML;
+          }
+        } else if (countryEl) {
+          countryEl.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;text-align:center;padding:12px;">🌍 Geographic data accumulating — visit the site to be tracked</div>`;
+        }
+
+        // ── Device donut ─────────────────────────────────────────────────────
+        const deviceColors = ["#6366f1","#FD840E","#1a9960","#e11d48"];
+        if (d.devices?.length > 0) {
+          renderDonut("device-pie", "device-legend",
+            d.devices.map(x => x.device),
+            d.devices.map(x => x.visitors),
+            deviceColors.slice(0, d.devices.length)
+          );
+        } else {
+          renderDonut("device-pie", "device-legend", ["Mobile","Desktop"], [0, 0], deviceColors);
+        }
+
+        // ── Wallet type donut ────────────────────────────────────────────────
+        const walletColors = ["#6366f1","#FD840E","#1a9960","#e11d48"];
+        if (d.walletTypes?.length > 0) {
+          renderDonut("wallet-pie", "wallet-legend",
+            d.walletTypes.map(x => x.wallet_type.charAt(0).toUpperCase() + x.wallet_type.slice(1)),
+            d.walletTypes.map(x => x.connections),
+            walletColors.slice(0, d.walletTypes.length)
+          );
+        } else {
+          renderDonut("wallet-pie", "wallet-legend", ["MiniPay","WalletConnect"], [0, 0], walletColors);
+        }
+
+        // ── Referrers ────────────────────────────────────────────────────────
+        const refEl = document.getElementById("referrer-list");
+        if (refEl) {
+          if (d.referrers?.length > 0) {
+            const ICONS = { "t.co":"𝕏", "twitter.com":"𝕏", "discord.com":"💬", "discord.gg":"💬",
+              "telegram.org":"✈️", "t.me":"✈️", "reddit.com":"🔴", "youtube.com":"▶️",
+              "github.com":"⚡", "google.com":"🔍", "medium.com":"📝", "linkedin.com":"💼" };
+            const LABELS = { "$direct": "Direct / App" };
+            refEl.innerHTML = d.referrers.map(r => {
+              const label = LABELS[r.domain] || r.domain;
+              const icon  = r.domain === "$direct" ? "📲" : (ICONS[r.domain] || "🔗");
+              return `<div class="referrer-row">
+                <span class="referrer-domain">${icon} ${label}</span>
+                <span class="referrer-count">${r.visitors.toLocaleString()} visitors</span>
+              </div>`;
+            }).join("");
+          } else {
+            refEl.innerHTML = `<div class="referrer-row"><span style="color:var(--muted);font-size:0.82rem;">Referrer data accumulating…</span></div>`;
+          }
+        }
+
+      } catch(e) {
+        console.warn("Analytics load failed (non-fatal):", e.message);
+      }
+    }
+
+    loadAnalytics();
+    setInterval(loadAnalytics, 5 * 60 * 1000);
+
+    // ── Show all countries ────────────────────────────────────────────────────
+    // Note: must be on window because script is type="module" (not global scope)
+    window.expandCountries = function() {
+      const countryEl = document.getElementById("country-list");
+      const btnWrap   = document.getElementById("country-show-more");
+      if (!countryEl || !window._allCountries) return;
+      countryEl.innerHTML = window._allCountries.map(window._countryRowHTML).join("");
+      if (btnWrap) btnWrap.style.display = "none";
+    };
+
+    // ── Toggle event listeners (added once after first load) ─────────────────
+    document.getElementById("tf-btns")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tf-btn");
+      if (!btn || btn.dataset.tf === _currentTxTf) return;
+      _currentTxTf = btn.dataset.tf;
+      localStorage.setItem("zorrito-tx-tf", _currentTxTf);
+      document.querySelectorAll("#tf-btns .tf-btn").forEach(b => b.classList.toggle("active", b === btn));
+      renderTxChart(_currentTxTf);
+    });
+
+    document.getElementById("fox-tf-btns")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tf-btn");
+      if (!btn) return;
+      _foxTf = btn.dataset.tf;
+      localStorage.setItem("zorrito-fox-tf", _foxTf);
+      document.querySelectorAll("#fox-tf-btns .tf-btn").forEach(b => b.classList.toggle("active", b === btn));
+      renderFoxPeriodStats();
+    });
+  </script>
+  <script>
+    // ── Custom lang picker ──────────────────────
+    function toggleLangMenu(e) {
+      e.stopPropagation();
+      document.getElementById('lang-menu').classList.toggle('open');
+    }
+    function pickLang(lang) {
+      document.getElementById('lang-menu').classList.remove('open');
+      zorritoSetLang(lang);
+      const labels = { en: '🌐 EN', es: '🌐 ES', pt: '🌐 PT' };
+      document.getElementById('lang-label').textContent = labels[lang] || '🌐 EN';
+    }
+    function toggleNavMenu() {
+      document.getElementById('nav-dropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      document.getElementById('lang-menu')?.classList.remove('open');
+      if (!e.target.closest('.nav-hamburger') && !e.target.closest('.nav-dropdown')) {
+        document.getElementById('nav-dropdown')?.classList.remove('open');
+      }
+    });
+    // Init label from saved lang
+    (function() {
+      const lang = localStorage.getItem('zorrito-lang') || 'en';
+      const labels = { en: '🌐 EN', es: '🌐 ES', pt: '🌐 PT' };
+      const el = document.getElementById('lang-label');
+      if (el) el.textContent = labels[lang] || '🌐 EN';
+    })();
+  </script>
+</body>
+</html>

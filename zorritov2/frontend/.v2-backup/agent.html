@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent — Zorrito V2</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .hero { text-align:center; padding:28px 20px 12px; }
+    .hero h1 { font-size:1.4rem; font-weight:800; }
+    .section-title { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
+      color:var(--muted); padding:0 16px; margin:24px 0 10px; }
+    .tool-list { padding:0 16px; display:flex; flex-direction:column; gap:8px; }
+    .tool-item { background:var(--surface); border:1.5px solid var(--border); border-radius:12px;
+      padding:12px 14px; display:flex; align-items:flex-start; gap:10px; }
+    .tool-badge { font-size:0.65rem; font-weight:700; padding:2px 7px; border-radius:6px;
+      white-space:nowrap; margin-top:2px; flex-shrink:0; }
+    .tool-badge.read  { background:rgba(26,153,96,.12); color:var(--green); border:1px solid rgba(26,153,96,.25); }
+    .tool-badge.write { background:rgba(253,132,14,.12); color:var(--orange); border:1px solid rgba(253,132,14,.3); }
+    .tool-name { font-weight:700; font-size:0.88rem; font-family:monospace; color:var(--text); }
+    .tool-desc { font-size:0.78rem; color:var(--muted); margin-top:2px; }
+    .code-block { background:#1a1a1a; border:1px solid #333; border-radius:10px;
+      padding:14px 16px; font-family:monospace; font-size:0.8rem; color:#e5e7eb;
+      overflow-x:auto; white-space:pre; margin:0 16px; position:relative; }
+    .copy-btn { position:absolute; top:8px; right:8px; background:#2a2a2a; border:1px solid #444;
+      color:#9ca3af; padding:3px 9px; border-radius:6px; font-size:0.72rem; cursor:pointer; font-family:var(--font); }
+    .copy-btn:hover { background:#333; color:#e5e7eb; }
+    .code-note { font-size:0.75rem; color:var(--muted); margin:6px 16px 0; }
+    .abi-block { background:#f5f5f5; border-radius:10px; padding:12px 14px; margin:0 16px;
+      font-family:monospace; font-size:0.78rem; color:#333; overflow-x:auto; white-space:pre; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span> <span style="font-size:0.65em;opacity:0.8;">V2</span></span>
+    </div>
+    <p class="header-tagline">Ahorrá USDT. Ganá un premio semanal.</p>
+    <div class="nav-links">
+      <a href="docs.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📖 Docs</a>
+      <a href="stats.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📊 Stats</a>
+      <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+    </div>
+  </header>
+
+  <div style="display:flex;justify-content:center;width:100%;">
+  <div style="width:100%;max-width:620px;padding:0 20px;box-sizing:border-box;">
+
+  <div class="hero">
+    <div style="font-size:40px;margin-bottom:6px;">🤖</div>
+    <h1>Zorrito V2 — Agent API</h1>
+    <p style="color:var(--muted);font-size:0.88rem;margin-top:4px;">Integrá Zorrito V2 con agentes de IA via MCP o ABI directo.</p>
+  </div>
+
+  <div class="section-title">Herramientas MCP</div>
+  <div class="tool-list">
+    <div class="tool-item">
+      <span class="tool-badge read">READ</span>
+      <div>
+        <div class="tool-name">get_status</div>
+        <div class="tool-desc">Lee depósito, streak, chances, savings pendientes y premio semanal para cualquier wallet. Sin auth.</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge write">WRITE</span>
+      <div>
+        <div class="tool-name">deposit_usdt</div>
+        <div class="tool-desc">Deposita N USDT en Zorrito. Aprueba USDT y llama a deposit(amount, refCode).</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge write">WRITE</span>
+      <div>
+        <div class="tool-name">save_today</div>
+        <div class="tool-desc">Llama a save() para acumular el streak del día. Una vez por día UTC.</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <span class="tool-badge write">WRITE</span>
+      <div>
+        <div class="tool-name">claim_savings</div>
+        <div class="tool-desc">Reclama los savings rewards acumulados (Merit/Masiv). Llama a claimSavings().</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Configuración MCP</div>
+  <div class="code-block" id="code-mcp"><button class="copy-btn" onclick="copyCode('code-mcp')">Copy</button>{
+  "mcpServers": {
+    "zorrito-v2": {
+      "url": "https://v2.zorrito.app/api/mcp"
+    }
+  }
+}</div>
+  <p class="code-note">Agregá esto a <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></p>
+
+  <div class="section-title">ABI V2</div>
+  <div class="abi-block" id="abi-block">// Zorrito V2 ABI (ethers v6 human-readable)
+const ZORRITO_V2_ABI = [
+  // Write
+  "function deposit(uint256 amount, bytes4 refCode) external",
+  "function withdraw(uint256 amount) external",
+  "function save() external",
+  "function claimSavings() external",
+  // Read — savings
+  "function deposits(address user) view returns (uint256)",
+  "function totalPrincipal() view returns (uint256)",
+  "function pendingSavings(address user) view returns (uint256)",
+  "function totalSavings() view returns (uint256)",
+  // Read — streak
+  "function streakDay(address user) view returns (uint8)",
+  "function lastSaveDay(address user) view returns (uint256)",
+  "function welcomeBonusClaimed(address user) view returns (bool)",
+  "function WELCOME_STREAK() view returns (uint256)",
+  "function welcomeBonus() view returns (uint256)",
+  // Read — chances
+  "function effectiveChances(address user) view returns (uint256)",
+  "function totalEffectiveChances() view returns (uint256)",
+  // Read — raffle
+  "function currentPrizePool() view returns (uint256)",
+  "function depositorCount() view returns (uint256)",
+  // Read — referral
+  "function referralCodeFor(address user) view returns (string)",
+  "function activeReferrals(address user) view returns (uint256)",
+  "function referredBy(address user) view returns (address)",
+  // Read — config
+  "function emergencyMode() view returns (bool)",
+  // Events
+  "event Deposited(address indexed user, uint256 amount)",
+  "event Withdrawn(address indexed user, uint256 amount)",
+  "event Saved(address indexed user, uint8 streakDay)",
+  "event WelcomeBonusClaimed(address indexed user, uint256 amount)",
+  "event RaffleExecuted(address indexed winner, uint256 prize, uint256 fee)",
+  "event SavingsClaimed(address indexed user, uint256 amount)",
+];</div>
+
+  <div class="section-title">Ejemplo de uso</div>
+  <div class="code-block" id="code-example"><button class="copy-btn" onclick="copyCode('code-example')">Copy</button>import { ethers } from "ethers";
+
+const CONTRACT = "0x0D18f6e8f8A22ED9D1259205a5eB236c62df8Fe6";
+const USDT     = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
+
+const provider = new ethers.JsonRpcProvider("https://forno.celo.org");
+const wallet   = new ethers.Wallet(PRIVATE_KEY, provider);
+
+const zorrito = new ethers.Contract(CONTRACT, ZORRITO_V2_ABI, wallet);
+const usdt    = new ethers.Contract(USDT, ["function approve(address,uint256) returns(bool)"], wallet);
+
+// 1. Aprobar USDT
+await usdt.approve(CONTRACT, ethers.MaxUint256);
+
+// 2. Depositar 10 USDT (sin referido)
+await zorrito.deposit(10_000_000n, "0x00000000");
+
+// 3. Ahorrar hoy
+await zorrito.save();
+
+// 4. Leer estado
+const dep     = await zorrito.deposits(wallet.address);
+const streak  = await zorrito.streakDay(wallet.address);
+const chances = await zorrito.effectiveChances(wallet.address);
+console.log({ dep, streak, chances });</div>
+
+  <script>
+    function copyCode(id) {
+      const btn  = document.querySelector("#" + id + " .copy-btn");
+      const text = document.getElementById(id).innerText.replace(/^Copy\n?/, "");
+      navigator.clipboard.writeText(text.trim()).then(() => {
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = "Copy", 1500);
+      });
+    }
+  </script>
+
+  </div>
+  </div>
+
+</body>
+</html>

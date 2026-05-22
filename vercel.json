@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/spawn.js":  { "maxDuration": 60 },
+    "api/tick.js":   { "maxDuration": 60 },
+    "api/status.js": { "maxDuration": 30 }
+  }
+}

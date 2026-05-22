@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Términos de Servicio — Zorrito V2</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .legal-wrap { padding:32px 20px 0; }
+    .legal-wrap h1 { font-size:1.8rem; font-weight:800; margin-bottom:6px; }
+    .effective { color:var(--muted); font-size:0.85rem; margin-bottom:32px; }
+    .legal-wrap h2 { font-size:0.85rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--muted); margin-top:32px; margin-bottom:10px; }
+    .legal-wrap p { color:#444; line-height:1.75; margin-bottom:14px; font-size:0.93rem; }
+    .legal-wrap ul { color:#444; line-height:1.75; font-size:0.93rem; padding-left:20px; margin-bottom:14px; }
+    .legal-wrap ul li { margin-bottom:6px; }
+    .legal-wrap strong { color:var(--text); }
+    .risk-box { background:#fff8f0; border:1px solid #f5a623; border-radius:12px;
+      padding:16px 20px; margin:20px 0; }
+    .risk-box p { margin-bottom:0; color:#7a4a00; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span> <span style="font-size:0.65em;opacity:0.8;">V2</span></span>
+    </div>
+    <p class="header-tagline">Ahorrá USDT. Ganá un premio semanal.</p>
+    <div class="nav-links">
+      <a href="docs.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📖 Docs</a>
+      <a href="stats.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📊 Stats</a>
+      <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+    </div>
+  </header>
+
+  <div style="display:flex;justify-content:center;width:100%;">
+  <div style="width:100%;max-width:620px;padding:0 20px;box-sizing:border-box;">
+
+  <div class="legal-wrap">
+    <h1>📋 Términos de Servicio</h1>
+    <p class="effective">Efectivo: Mayo 2026 · Zorrito V2</p>
+
+    <div class="risk-box">
+      <p><strong>⚠️ Aviso importante:</strong> Zorrito V2 es un protocolo experimental de ahorro en DeFi. Usalo bajo tu propio riesgo. El rendimiento pasado no garantiza rendimiento futuro. El principal depositado siempre puede retirarse, pero el rendimiento depende de Aave V3.</p>
+    </div>
+
+    <h2>1. Qué es Zorrito V2</h2>
+    <p>Zorrito V2 es una plataforma de ahorro descentralizada construida sobre Aave V3 en la red Celo. Los usuarios depositan USDT, el cual es suministrado a Aave para generar rendimiento. Ese rendimiento se distribuye de dos formas:</p>
+    <ul>
+      <li><strong>Savings rewards</strong>: distribuidos proporcionalmente entre todos los depositantes mediante programas de incentivos de Celo (Merit, Masiv).</li>
+      <li><strong>Premio semanal</strong>: el rendimiento base de Aave acumulado durante la semana se otorga a un ahorrador elegido aleatoriamente cada lunes.</li>
+    </ul>
+
+    <h2>2. Elegibilidad</h2>
+    <p>Para usar Zorrito V2 debés:</p>
+    <ul>
+      <li>Tener al menos 18 años o la mayoría de edad en tu jurisdicción</li>
+      <li>No residir en jurisdicciones donde el uso de protocolos DeFi esté prohibido</li>
+      <li>Controlar la wallet con la que interactuás</li>
+    </ul>
+
+    <h2>3. Depósitos y Retiros</h2>
+    <ul>
+      <li>Depósito mínimo: <strong>0.25 USDT</strong></li>
+      <li>No existe lock-up ni penalidad por retiro anticipado</li>
+      <li>Los retiros están sujetos a la liquidez disponible en Aave V3</li>
+      <li>El contrato no es upgradeable: la lógica es inmutable una vez deployado</li>
+    </ul>
+
+    <h2>4. Premio Semanal</h2>
+    <p>El premio semanal es el rendimiento base de Aave acumulado durante la semana, distribuido a un ahorrador activo cada lunes a las 10:05 UTC. El mecanismo de selección utiliza un árbol de Fenwick + acumulador de entropía on-chain, verificable en CeloScan.</p>
+    <ul>
+      <li>La probabilidad de ganar es proporcional a las chances efectivas del usuario (depósito × streak × bono de referidos)</li>
+      <li>El 10% del premio se retiene como fee de plataforma; el ganador recibe el 90% restante</li>
+      <li>Zorrito no garantiza ningún monto mínimo de premio</li>
+      <li>Retirar el depósito antes del sorteo elimina las chances de esa semana</li>
+    </ul>
+
+    <h2>5. Savings Rewards</h2>
+    <p>Los savings rewards provienen de programas de incentivos externos (Merit, Masiv) y se distribuyen diariamente en proporción al depósito de cada usuario. Zorrito retiene un 15% como fee de plataforma sobre los rewards distribuidos.</p>
+    <ul>
+      <li>Los rewards dependen de la continuidad de los programas externos — Zorrito no los garantiza</li>
+      <li>Los rewards se acumulan automáticamente y pueden reclamarse en cualquier momento</li>
+    </ul>
+
+    <h2>6. Streak Semanal</h2>
+    <p>Cada día que el usuario llama a <code>save()</code> dentro de la semana (lunes a domingo UTC), su streak aumenta en 1 (máximo 7). El streak resetea cada lunes a las 00:00 UTC. El streak es un multiplicador de las chances en el sorteo semanal; no afecta el principal ni los savings rewards.</p>
+
+    <h2>7. Programa de Referidos</h2>
+    <ul>
+      <li>Al depositar, el contrato genera automáticamente un código de referido único (bytes4) para cada dirección</li>
+      <li>El código puede ser usado por otras personas al depositar, pasándolo como parámetro <code>refCode</code></li>
+      <li>El referente recibe un <strong>+10% de bonus sobre sus chances efectivas</strong> por cada referido activo (con depósito &gt; 0)</li>
+      <li>Para que el bono de referido cuente, el referente debe tener al menos 1 USDT depositado</li>
+      <li>Si el referido retira la totalidad de su depósito, el bono deja de contar automáticamente</li>
+      <li>El sistema anti-sybil está integrado on-chain: cada wallet solo puede tener un referente</li>
+    </ul>
+
+    <h2>8. Bonus de Bienvenida</h2>
+    <ul>
+      <li>La primera vez que un usuario completa <strong>5 días consecutivos</strong> de ahorro (streak day = 5), recibe automáticamente <strong>0.5 USDT</strong> directamente en su wallet</li>
+      <li>El bonus se entrega una única vez por dirección, sin posibilidad de repetición</li>
+      <li>El bonus es financiado por la wallet de incentivos del proyecto, no por el rendimiento de Aave</li>
+      <li>Si la wallet de incentivos no tiene fondos suficientes, el bonus se omite silenciosamente — el <code>save()</code> no falla</li>
+    </ul>
+
+    <h2>9. Riesgos</h2>
+    <ul>
+      <li><strong>Riesgo de protocolo</strong>: Aave V3 podría sufrir bugs o exploits. El principal estaría en riesgo en ese escenario.</li>
+      <li><strong>Riesgo de smart contract</strong>: el contrato de Zorrito V2 fue auditado internamente pero no por una firma de auditoría externa al momento del deploy.</li>
+      <li><strong>Riesgo de liquidez</strong>: en condiciones extremas, Aave podría no tener liquidez suficiente para procesar retiros inmediatamente.</li>
+      <li><strong>Riesgo regulatorio</strong>: el marco legal para protocolos DeFi varía por jurisdicción y puede cambiar.</li>
+    </ul>
+
+    <h2>10. Modo de Emergencia</h2>
+    <p>El owner del contrato puede activar el modo de emergencia, que bloquea nuevos depósitos y permite que todos los usuarios retiren su principal directamente. En caso de migración a una nueva versión, <code>emergencyReturn()</code> devuelve el principal sin requerir acción del usuario.</p>
+
+    <h2>11. Sin Garantías</h2>
+    <p>Zorrito V2 se provee "tal cual" (<em>as-is</em>). No garantizamos rendimientos, disponibilidad continua del protocolo, ni que el contrato esté libre de bugs. El uso es voluntario y bajo responsabilidad del usuario.</p>
+
+    <h2>12. Contacto</h2>
+    <p>Para consultas o reportes de seguridad: <a href="mailto:hola@zorrito.app" style="color:var(--orange);">hola@zorrito.app</a></p>
+  </div>
+
+  </div>
+  </div>
+
+</body>
+</html>

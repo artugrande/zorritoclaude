@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zorrito — Building on Celo</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- PostHog analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: true,
+    });
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .build-wrap {
+      width: 100%;
+      max-width: 660px;
+    }
+    .build-wrap h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .build-wrap h1 span { color: var(--green); }
+    .build-wrap .tagline {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 32px;
+    }
+    .build-wrap h2 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      margin-top: 40px;
+    }
+
+    /* ── Copy button ── */
+    .copy-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 36px;
+      gap: 12px;
+    }
+    .copy-bar-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .copy-bar-text strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 0.9rem; }
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: var(--font);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .15s;
+      flex-shrink: 0;
+    }
+    .copy-btn:hover { opacity: 0.85; }
+    .copy-btn.copied { background: var(--orange); }
+
+    /* ── Module cards ── */
+    .module {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .module-header:hover { background: rgba(253,132,14,0.04); }
+    .module-icon {
+      font-size: 1.4rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26,153,96,0.1);
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .module-meta { flex: 1; min-width: 0; }
+    .module-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--green);
+      margin-bottom: 2px;
+    }
+    .module-title { font-weight: 700; font-size: 0.95rem; }
+    .module-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .module-chevron {
+      color: var(--muted);
+      transition: transform .2s;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .module.open .module-chevron { transform: rotate(180deg); }
+
+    .module-body {
+      display: none;
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .module.open .module-body { display: block; }
+
+    /* ── Steps inside modules ── */
+    .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: var(--orange);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.8rem;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-body { flex: 1; min-width: 0; }
+    .step-body strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .step-body p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 8px;
+    }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: var(--green);
+      white-space: pre;
+      overflow-x: auto;
+      margin: 6px 0 10px;
+      line-height: 1.6;
+    }
+    .code-comment { color: var(--muted); }
+
+    /* ── Tip boxes ── */
+    .tip {
+      display: flex;
+      gap: 10px;
+      background: rgba(26,153,96,0.07);
+      border: 1px solid rgba(26,153,96,0.2);
+      border-radius: 9px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      font-size: 0.83rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .tip-icon { flex-shrink: 0; font-size: 1rem; }
+    .warn {
+      background: rgba(253,132,14,0.07);
+      border-color: rgba(253,132,14,0.25);
+    }
+
+    /* ── Tag pills ── */
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 5px;
+    }
+    .tag-green { background: rgba(26,153,96,0.12); color: var(--green); }
+    .tag-orange { background: rgba(253,132,14,0.12); color: var(--orange); }
+    .tag-blue   { background: rgba(99,102,241,0.12); color: #6366f1; }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 32px;
+    }
+    .toc-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+    .toc a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc a:last-child { border-bottom: none; }
+    .toc a:hover { color: var(--green); }
+    .toc-n { font-size: 0.7rem; color: var(--muted); font-weight: 600; width: 18px; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+    .back-link:hover { opacity: 0.8; }
+
+    /* match header to content */
+    .docs-page header { max-width: 660px; }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;position:relative;">
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span id="lang-label">🌐 EN</span>
+          <svg class="lang-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+          <button onclick="pickLang('en')">🌐 EN</button>
+          <button onclick="pickLang('es')">🌐 ES</button>
+          <button onclick="pickLang('pt')">🌐 PT</button>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="stats.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📊 Stats</a>
+        <a href="docs.html"  style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">📄 Docs</a>
+        <a href="agent.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-weight:600;">🤖 Agent</a>
+        <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+      </div>
+      <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="Menu">☰</button>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <a href="stats.html">📊 Stats</a>
+        <a href="docs.html">📄 Docs</a>
+        <a href="agent.html">🤖 Agent</a>
+        <a href="index.html" class="nav-app">← App</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="build-wrap">
+
+    <a href="index.html" class="back-link" data-i18n="build-back">← Back to App</a>
+
+    <h1>Building on <span>Celo</span></h1>
+    <p class="tagline" data-i18n="build-tagline">A hands-on workshop: build a production MiniPay app from scratch using Claude, Vercel, and the Celo stack.</p>
+
+    <!-- ── Copy bar ── -->
+    <div class="copy-bar">
+      <div class="copy-bar-text">
+        <strong data-i18n="build-copy-strong">📋 Copy workshop as Markdown</strong>
+        <span data-i18n="build-copy-desc">Paste directly into Claude to get a guided build session.</span>
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyMarkdown()" data-i18n="build-copy-btn">
+        <span>⎘</span> Copy for Claude
+      </button>
+    </div>
+
+    <!-- ── Table of contents ── -->
+    <div class="toc">
+      <div class="toc-title" data-i18n="build-toc-title">Workshop modules</div>
+      <a href="#mod0" onclick="openModule('mod0')"><span class="toc-n">00</span> Celopedia — AI-native Celo ecosystem intelligence</a>
+      <a href="#mod1" onclick="openModule('mod1')"><span class="toc-n">01</span> Setting up Claude with Celo Skills</a>
+      <a href="#mod2" onclick="openModule('mod2')"><span class="toc-n">02</span> Smart contract security with Pashov</a>
+      <a href="#mod3" onclick="openModule('mod3')"><span class="toc-n">03</span> GitHub + Vercel for automatic deployments</a>
+      <a href="#mod4" onclick="openModule('mod4')"><span class="toc-n">04</span> Integrating MiniPay hooks</a>
+      <a href="#mod5" onclick="openModule('mod5')"><span class="toc-n">05</span> Agents with x402 + MCP + Vercel</a>
+      <a href="#mod6" onclick="openModule('mod6')"><span class="toc-n">06</span> Building an on-chain dashboard + The Graph</a>
+      <a href="#mod7" onclick="openModule('mod7')"><span class="toc-n">07</span> Tracking off-chain data with PostHog</a>
+      <a href="#mod8" onclick="openModule('mod8')"><span class="toc-n">08</span> Scaling a public dashboard without exploding your API</a>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 0 — Celopedia -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module open" id="mod0">
+      <div class="module-header" onclick="toggleModule('mod0')">
+        <div class="module-icon">🧠</div>
+        <div class="module-meta">
+          <div class="module-num">Module 00</div>
+          <div class="module-title">Celopedia — AI-native Celo ecosystem intelligence</div>
+          <div class="module-sub">verified contracts · live grants · MiniPay checklist · DeFi protocols · one install</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip" style="background:rgba(26,153,96,0.1);border-color:rgba(26,153,96,0.3);">
+          <span class="tip-icon">🌐</span>
+          <span><strong>What is Celopedia?</strong> An AI skill that gives Claude (and any compatible coding agent) deep, real-time knowledge of the entire Celo ecosystem — verified contract addresses, live grant programs, MiniPay submission requirements, DeFi protocol docs, and security patterns — all queryable in natural language, right inside your editor. No more tab-switching. No more copy-pasting addresses from block explorers. Just ask.</span>
+        </div>
+
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong>Install Celopedia in one command</strong>
+              <p>Run this from your project root. It installs the skill for Claude Code, Cursor, and 12 other AI agents simultaneously.</p>
+              <div class="code-block">npx skills add celo-org/celopedia-skills
+<span class="code-comment"># Installs to Claude Code, Cursor, Cline, Codex, and more</span>
+<span class="code-comment"># No API key needed — all data is free</span></div>
+              <div class="tip"><span class="tip-icon">💡</span> <span>Once installed, just ask Claude things like <em>"What is the verified USDT address on Celo?"</em> or <em>"What grants can I apply to right now?"</em> — Celopedia answers instantly with live data.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong>150+ verified contract addresses — never guess again</strong>
+              <p>Wrong contract addresses mean lost funds. Celopedia ships with Celo's canonical verified addresses for every major protocol, updated from official docs. Ask Claude directly instead of searching Celoscan:</p>
+              <div class="code-block"><span class="code-comment"># Ask Claude (with Celopedia installed):</span>
+"What is the Aave V3 Pool address on Celo mainnet?"
+→ 0x3E59A31363E2ad014dcbc521C4a0d5757d9f3402
+
+"What USDT adapter do I use for fee abstraction on Celo?"
+→ 0x0e2a3e05bc9a16f5292a6170456a710cb89c6f72  (adapter, not the token)
+
+"What is the USDC address on Celo?"
+→ 0xceba9300f2b948710d2653dd7b07f33a8b32118c</div>
+              <div class="tip warn"><span class="tip-icon">⚠️</span> <span>Fee abstraction (CIP-64) uses <strong>adapter</strong> addresses for USDC/USDT — not the token addresses. Using the wrong one silently fails. Celopedia always gives you the right one.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong>Live grant matching — find funding before you build</strong>
+              <p>Celopedia fetches active grant programs from <code>celopg.eco</code> in real time and matches your project to the right ones. Amounts, deadlines, and eligibility criteria — all current, not cached docs from 6 months ago.</p>
+              <div class="code-block"><span class="code-comment"># Ask Claude:</span>
+"I'm building a no-loss savings game on Celo for MiniPay users.
+What grants can I apply to right now, and what's the pitch?"
+
+→ Celopedia fetches live programs, matches your profile,
+  and drafts the funding angle for each one.</div>
+              <div class="tip"><span class="tip-icon">💡</span> <span>Celopedia knows about Proof of Ship, Prezenti, Celo Builder Fund, Divvi, GoodBuilders, and 20+ other programs — including which ones are closing soon.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong>MiniPay submission checklist — built in</strong>
+              <p>Getting listed in MiniPay (14M+ wallets) requires passing a strict technical and UX review. Celopedia has the complete official requirements embedded: copy rules, UI constraints, contract verification standards, and country-level targeting notes.</p>
+              <div class="code-block"><span class="code-comment"># Ask Claude:</span>
+"Review my app.js for MiniPay compliance issues."
+
+→ Celopedia checks for:
+  ✅ Zero-click connect (no wallet button when isMiniPay)
+  ✅ No personal_sign / eth_signTypedData
+  ✅ Banned copy: "gas" → "network fee", "crypto" → "stablecoin"
+  ✅ Only USDT / USDC / USDm — no CELO shown to users
+  ✅ Low-balance redirect to minipay.opera.com/add_cash
+  ✅ SVG/WebP assets only (no PNG)
+  ✅ PageSpeed 90+ on mobile</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <strong>DeFi protocol reference — Aave, Uniswap, Morpho and more</strong>
+              <p>Celopedia includes integration guides for every major DeFi protocol deployed on Celo. Correct ABIs, pool addresses, token decimals, and Celo-specific gotchas — all in one place.</p>
+              <div class="code-block"><span class="code-comment"># Protocols covered by Celopedia:</span>
+- Aave V3     → Pool, aTokens, getReserveData, supplyCap encoding
+- Uniswap V3  → Swap routing, pool addresses, fee tiers
+- Morpho Blue → Isolated markets, permissionless creation
+- Mento       → USDm/EURm/BRLm minting, SortedOracles
+- Superfluid  → Streaming payments
+- x402        → AI agent micropayments (HTTP 402)
+- stCELO      → Liquid staking, exchange rate gotchas</div>
+              <div class="tip"><span class="tip-icon">💡</span> <span>Celopedia also flags Celo-specific security risks: aToken ratio drift, CIP-64 fee abstraction accounting, CELO token duality, and L2 epoch boundary effects — things a generic Solidity auditor will miss.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <strong>Ecosystem intelligence — 6,300+ products, real-time</strong>
+              <p>Before building a feature, ask Celopedia if it already exists. It queries The Grid — a live index of 6,300+ crypto products — and tells you what's deployed on Celo, what exists on other chains but not on Celo, and where the gaps are.</p>
+              <div class="code-block"><span class="code-comment"># Ask Claude:</span>
+"Is there a no-loss lottery on Celo already?"
+"What yield products are live in MiniPay today?"
+"What DeFi protocols exist on other EVM chains but not on Celo?"
+
+→ Celopedia queries The Grid in real time and gives you
+  a competitive landscape in seconds, not hours.</div>
+              <div class="tip"><span class="tip-icon">💡</span> <span>Zorrito was built using Celopedia — it's how we confirmed there were no direct competitors on Celo and identified which grants to apply to on day one.</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Why it matters summary -->
+        <div style="margin-top:24px;padding:18px 20px;background:rgba(26,153,96,0.07);border:1px solid rgba(26,153,96,0.2);border-radius:12px;">
+          <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);margin-bottom:10px;">Why Celopedia changes how you build on Celo</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="font-size:0.82rem;color:var(--text);line-height:1.6;display:flex;gap:8px;"><span>✅</span><span>Never look up a contract address in a browser again</span></div>
+            <div style="font-size:0.82rem;color:var(--text);line-height:1.6;display:flex;gap:8px;"><span>✅</span><span>Know which grants exist before you finish your MVP</span></div>
+            <div style="font-size:0.82rem;color:var(--text);line-height:1.6;display:flex;gap:8px;"><span>✅</span><span>Catch MiniPay blockers before submitting for review</span></div>
+            <div style="font-size:0.82rem;color:var(--text);line-height:1.6;display:flex;gap:8px;"><span>✅</span><span>Avoid Celo-specific bugs that generic tools miss</span></div>
+            <div style="font-size:0.82rem;color:var(--text);line-height:1.6;display:flex;gap:8px;"><span>✅</span><span>Validate your idea against 6,300+ live products</span></div>
+            <div style="font-size:0.82rem;color:var(--text);line-height:1.6;display:flex;gap:8px;"><span>✅</span><span>Works in Claude Code, Cursor, Cline, Codex, and more</span></div>
+          </div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(26,153,96,0.2);">
+            <a href="https://celopedia.celo.org" target="_blank" rel="noopener" style="color:var(--green);font-weight:700;font-size:0.85rem;text-decoration:none;">celopedia.celo.org →</a>
+            <span style="color:var(--muted);font-size:0.82rem;margin-left:16px;">Install: <code style="font-size:0.8rem;">npx skills add celo-org/celopedia-skills</code></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 1 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module open" id="mod1">
+      <div class="module-header" onclick="toggleModule('mod1')">
+        <div class="module-icon">🤖</div>
+        <div class="module-meta">
+          <div class="module-num">Module 01</div>
+          <div class="module-title" data-i18n="build-m1-title">Setting up Claude with Celo Skills</div>
+          <div class="module-sub" data-i18n="build-m1-sub">Claude Code CLI · MCP servers · project context</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m1-tip">Claude Code is Anthropic's terminal-based AI agent. With the right MCP servers it can read your contracts, call RPC nodes, deploy to Vercel and push to GitHub — all in one session.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m1-s1-title">Install Claude Code</strong>
+              <p data-i18n="build-m1-s1-desc">Install globally via npm, then authenticate with your Anthropic account.</p>
+              <div class="code-block">npm install -g @anthropic-ai/claude-code
+claude  <span class="code-comment"># opens interactive session</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m1-s2-title">Add project-specific context to CLAUDE.md</strong>
+              <p data-i18n-html="build-m1-s2-desc">Create a <code>CLAUDE.md</code> at the root of your project. Claude reads this on every session — focus it on <em>your</em> contract addresses and conventions. Protocol addresses (USDT, USDC, Aave, etc.) are handled automatically by Celopedia (Module 00) — no need to hardcode them here.</p>
+              <div class="code-block"><span class="code-comment"># CLAUDE.md — project-specific context only</span>
+## Network
+- Chain: Celo Mainnet (chainId 42220)
+- RPC: https://forno.celo.org
+- Explorer: https://celoscan.io
+
+## My Contracts
+- MyContract: 0xYOUR_CONTRACT_ADDRESS
+<span class="code-comment"># Protocol addresses (USDT, USDC, Aave, etc.) → ask Celopedia</span>
+
+## Stack
+- Frontend: vanilla JS, deployed on Vercel (static)
+- Backend:  Node.js serverless functions (api/*.js)
+- Wallet:   MiniPay first, then WalletConnect fallback</div>
+              <div class="tip"><span class="tip-icon">💡</span> <span>With Celopedia installed (Module 00), you can ask <em>"What's the Aave V3 Pool address on Celo?"</em> at any time — verified, correct, no copy-paste from block explorers.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m1-s3-title">Connect the Celo MCP server</strong>
+              <p data-i18n="build-m1-s3-desc">MCP (Model Context Protocol) servers extend Claude with new tools. The Celo MCP gives Claude direct RPC access — it can read balances, simulate txs, and decode events without leaving the conversation.</p>
+              <div class="code-block"><span class="code-comment"># Add to ~/.claude/mcp_servers.json</span>
+{
+  "mcpServers": {
+    "celo": {
+      "command": "npx",
+      "args": ["-y", "@celo/mcp-server"],
+      "env": {
+        "CELO_RPC": "https://forno.celo.org"
+      }
+    }
+  }
+}</div>
+              <div class="tip warn"><span class="tip-icon">⚠️</span> <span data-i18n="build-m1-warn">Never put private keys in mcp_servers.json. Use env vars loaded from your shell profile instead.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m1-s4-title">Set your starting prompt</strong>
+              <p data-i18n="build-m1-s4-desc">Paste this at the start of every Claude session to give it full project context:</p>
+              <div class="code-block">You are helping me build a MiniPay mini-app on Celo.
+Stack: Solidity (contract already deployed), vanilla JS frontend,
+Node.js Vercel serverless functions, ethers.js v6.
+RPC: https://forno.celo.org | ChainId: 42220
+Always use ethers.js v6 syntax (no .connect() on provider directly,
+use new ethers.JsonRpcProvider()). Ask before adding dependencies.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 2 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod2">
+      <div class="module-header" onclick="toggleModule('mod2')">
+        <div class="module-icon">🔐</div>
+        <div class="module-meta">
+          <div class="module-num">Module 02</div>
+          <div class="module-title" data-i18n="build-m2-title">Smart contract security with Pashov</div>
+          <div class="module-sub" data-i18n="build-m2-sub">Automated audit · Slither · Claude-assisted review</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m2-tip">Never deploy without an automated audit pass. Pashov Audit Group publishes open-source security tools — and Claude can run them and explain every finding.</span></div>
+        <div class="tip"><span class="tip-icon">🧠</span> <span><strong>Two audit layers:</strong> Slither + Pashov cover generic Solidity risks (reentrancy, overflow, access control). Celopedia (Module 00) adds the Celo-specific layer on top — aToken ratio drift, CIP-64 fee abstraction accounting, CELO token duality, and L2 epoch effects. Run both.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m2-s1-title">Install Slither (static analyser)</strong>
+              <p data-i18n="build-m2-s1-desc">Slither is the industry-standard Solidity static analyser used by Pashov and major audit firms.</p>
+              <div class="code-block">pip3 install slither-analyzer
+<span class="code-comment"># Then ask Claude:</span>
+"Run slither on contracts/MyContract.sol and explain every HIGH and
+MEDIUM finding. Suggest a fix for each one."</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m2-s2-title">Run the Pashov audit checklist with Claude</strong>
+              <p data-i18n="build-m2-s2-desc">Paste this prompt directly into Claude Code — it will read your contract and walk through the Pashov checklist:</p>
+              <div class="code-block">Read contracts/MyContract.sol and audit it against the Pashov
+security checklist:
+1. Reentrancy (CEI pattern, ReentrancyGuard)
+2. Integer overflow / underflow (Solidity 0.8+ built-in, SafeMath)
+3. Access control (onlyOwner, roles, constructor ownership)
+4. Front-running / MEV exposure
+5. Oracle manipulation
+6. Unchecked external calls
+7. Centralization risks
+8. Event emissions for all state changes
+For each item: PASS / FAIL / N/A with explanation.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m2-s3-title">Generate a unit test suite</strong>
+              <p data-i18n="build-m2-s3-desc">After the audit, ask Claude to generate Hardhat tests that cover every vulnerability it found:</p>
+              <div class="code-block">"Based on the audit findings, write a full Hardhat test suite in
+TypeScript that covers: the happy path, reentrancy attack attempt,
+unauthorized access, and edge cases around deposit/withdrawal math.
+Use Celo fork (chainId 42220) via hardhat.config.ts."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 3 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod3">
+      <div class="module-header" onclick="toggleModule('mod3')">
+        <div class="module-icon">🚀</div>
+        <div class="module-meta">
+          <div class="module-num">Module 03</div>
+          <div class="module-title" data-i18n="build-m3-title">GitHub + Vercel for automatic deployments</div>
+          <div class="module-sub" data-i18n="build-m3-sub">CI/CD · env vars · preview deployments</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m3-tip">Connect Vercel to GitHub once — every push to main auto-deploys. Every PR gets a preview URL. Claude can push, check build logs, and fix errors in one loop.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m3-s1-title">Project structure for Vercel</strong>
+              <p data-i18n-html="build-m3-s1-desc">Vercel serves <code>frontend/</code> as static files and <code>api/*.js</code> as serverless functions. No framework needed.</p>
+              <div class="code-block">my-app/
+├── api/
+│   ├── deposit.js      <span class="code-comment"># POST → interact with contract</span>
+│   └── stats.js        <span class="code-comment"># GET  → read on-chain data</span>
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+└── vercel.json</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m3-s2-title">vercel.json — routes + crons</strong>
+              <div class="code-block">{
+  "builds": [
+    { "src": "api/*.js",    "use": "@vercel/node"   },
+    { "src": "frontend/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "api/$1.js"       },
+    { "src": "/(.*)",     "dest": "frontend/$1"     }
+  ],
+  "crons": [
+    { "path": "/api/daily-job", "schedule": "0 2 * * *" }
+  ],
+  "functions": {
+    "api/daily-job.js": { "maxDuration": 60 }
+  }
+}</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m3-s3-title">Store secrets in Vercel env vars</strong>
+              <p data-i18n="build-m3-s3-desc">Never hardcode private keys. Add them in Vercel dashboard → Settings → Environment Variables, then access in code:</p>
+              <div class="code-block"><span class="code-comment">// api/any-function.js</span>
+const privateKey = process.env.MASTER_PRIVATE_KEY;
+const rpcUrl     = process.env.CELO_RPC || "https://forno.celo.org";
+const wallet     = new ethers.Wallet(privateKey, new ethers.JsonRpcProvider(rpcUrl));</div>
+              <div class="tip warn"><span class="tip-icon">⚠️</span> <span data-i18n-html="build-m3-warn">Variables prefixed <code>NEXT_PUBLIC_</code> or listed in <code>env</code> in vercel.json are exposed to the browser. Keep private keys server-only.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m3-s4-title">Let Claude handle the deploy loop</strong>
+              <p data-i18n="build-m3-s4-desc">Once GitHub is connected, tell Claude:</p>
+              <div class="code-block">"Deploy to production with: npx vercel deploy --prod --yes
+If the build fails, read the error and fix it, then redeploy."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 4 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod4">
+      <div class="module-header" onclick="toggleModule('mod4')">
+        <div class="module-icon">📱</div>
+        <div class="module-meta">
+          <div class="module-num">Module 04</div>
+          <div class="module-title" data-i18n="build-m4-title">Integrating MiniPay hooks</div>
+          <div class="module-sub" data-i18n="build-m4-sub">wallet detection · gasless UX · cUSD payments</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n-html="build-m4-tip">MiniPay injects <code>window.ethereum</code> with extra metadata. Detect it first and show a stripped-down UI — no wallet connect modal, no gas warnings.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m4-s1-title">Detect MiniPay reliably</strong>
+              <div class="code-block"><span class="code-comment">// Works in MiniPay browser AND regular browsers</span>
+function isMiniPay() {
+  return !!(window.ethereum?.isMiniPay);
+}
+
+async function connectWallet() {
+  if (isMiniPay()) {
+    <span class="code-comment">// MiniPay auto-provides the account — no modal needed</span>
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    return accounts[0];
+  }
+  <span class="code-comment">// Fallback: WalletConnect or injected</span>
+  return await connectViaWalletConnect();
+}</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m4-s2-title">Switch to Celo network automatically</strong>
+              <div class="code-block">const CELO_CHAIN = {
+  chainId: '0xA4EC', <span class="code-comment">// 42220</span>
+  chainName: 'Celo',
+  rpcUrls: ['https://forno.celo.org'],
+  nativeCurrency: { name: 'CELO', symbol: 'CELO', decimals: 18 },
+  blockExplorerUrls: ['https://celoscan.io'],
+};
+
+async function ensureCeloNetwork() {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: CELO_CHAIN.chainId }],
+    });
+  } catch (err) {
+    if (err.code === 4902) { <span class="code-comment">// chain not added</span>
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [CELO_CHAIN],
+      });
+    }
+  }
+}</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m4-s3-title">Use USDT approval + transfer pattern</strong>
+              <p data-i18n="build-m4-s3-desc">MiniPay users expect a simple "Approve + Deposit" two-step. Always check allowance first to avoid a redundant approval tx.</p>
+              <div class="code-block">const USDT = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+
+async function deposit(amountUSDT) {
+  const amount = ethers.parseUnits(amountUSDT.toString(), 6); <span class="code-comment">// USDT = 6 decimals</span>
+  const allowance = await USDT.allowance(userAddress, CONTRACT_ADDRESS);
+
+  if (allowance < amount) {
+    const approveTx = await USDT.approve(CONTRACT_ADDRESS, amount);
+    await approveTx.wait();
+  }
+
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  const tx = await contract.deposit(amount);
+  await tx.wait();
+}</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m4-s4-title">MiniPay-specific UX rules</strong>
+              <p data-i18n="build-m4-s4-desc">Essential code-level rules while building:</p>
+              <div class="tip"><span class="tip-icon">✅</span>
+                <span data-i18n-html="build-m4-rules-tip">• Show amounts in USD, not raw wei<br>• Never show a seed phrase or private key UI<br>• Use <code>font-size: 16px</code> minimum — MiniPay zooms in otherwise<br>• Test on a real Android device, not just desktop Chrome</span>
+              </div>
+              <div class="tip"><span class="tip-icon">🧠</span> <span>The full MiniPay submission checklist — copy rules, asset formats, PageSpeed targets, country targeting — is covered by Celopedia in <a href="#mod0" onclick="openModule('mod0')" style="color:var(--green);font-weight:600;">Module 00</a>. Ask Claude to run a compliance review before submitting.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 5 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod5">
+      <div class="module-header" onclick="toggleModule('mod5')">
+        <div class="module-icon">⚡</div>
+        <div class="module-meta">
+          <div class="module-num">Module 05</div>
+          <div class="module-title" data-i18n="build-m5-title">Agents with x402 + MCP + Vercel</div>
+          <div class="module-sub" data-i18n="build-m5-sub">on-chain automation · MCP server · x402 payments · cron jobs</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n-html="build-m5-tip">Build a single autonomous agent like <a href="agent.html" style="color:var(--green);">zorrito.app/agent.html</a> — a serverless function that runs daily on Vercel, interacts with your contract, exposes MCP tools, and optionally charges AI callers via x402.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m5-s1-title">Agent wallet — one private key, stored in Vercel env</strong>
+              <p data-i18n="build-m5-s1-desc">Your agent is just a wallet — store the private key as a Vercel environment variable and load it at runtime.</p>
+              <div class="code-block"><span class="code-comment">// api/agent.js — load agent wallet</span>
+const { ethers } = require("ethers");
+
+const provider = new ethers.JsonRpcProvider(
+  process.env.CELO_RPC || "https://forno.celo.org"
+);
+const agent = new ethers.Wallet(process.env.AGENT_PRIVATE_KEY, provider);
+
+module.exports = async (req, res) => {
+  <span class="code-comment">// Agent logic: deposit, feed, withdraw — whatever your contract needs</span>
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, agent);
+  const tx = await contract.feed(agent.address);
+  res.json({ ok: true, txHash: tx.hash });
+};</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m5-s2-title">Schedule with Vercel cron</strong>
+              <p data-i18n-html="build-m5-s2-desc">One cron entry in <code>vercel.json</code> hits your agent endpoint daily — no server, no DevOps, free on Vercel hobby plan.</p>
+              <div class="code-block"><span class="code-comment">// vercel.json</span>
+{
+  "crons": [
+    { "path": "/api/agent", "schedule": "50 5 * * *" }
+  ],
+  "functions": {
+    "api/agent.js": { "maxDuration": 60 }
+  }
+}</div>
+              <div class="tip warn"><span class="tip-icon">⚠️</span> <span data-i18n="build-m5-warn">Pick a time before your contract's daily deadline. If your feed window closes at 06:00 UTC, schedule the cron at 05:50 UTC — not midnight.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m5-s3-title">Expose an MCP server so Claude can control the agent</strong>
+              <p data-i18n-html="build-m5-s3-desc">Add a <code>/api/mcp</code> endpoint using the MCP SDK. Claude Desktop, Cursor, and any MCP-compatible client can then call your contract in natural language.</p>
+              <div class="code-block"><span class="code-comment">// api/mcp.js</span>
+const { McpServer } = require("@modelcontextprotocol/sdk/server/mcp.js");
+const { StreamableHTTPServerTransport } = require("@modelcontextprotocol/sdk/server/streamableHttp.js");
+
+const server = new McpServer({ name: "my-zorrito-agent", version: "1.0.0" });
+
+server.tool("get_fox_status", "Read fox state for a wallet", {
+  wallet: { type: "string", description: "Wallet address" }
+}, async ({ wallet }) => {
+  const status = await contract.getFoxStatus(wallet);
+  return { content: [{ type: "text", text: JSON.stringify(status) }] };
+});
+
+server.tool("feed_fox", "Feed the fox for today (costs 1 USDT)", {}, async () => {
+  const tx = await contract.feed(agent.address);
+  await tx.wait();
+  return { content: [{ type: "text", text: `Fed! tx: ${tx.hash}` }] };
+});
+
+module.exports = async (req, res) => {
+  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on("close", () => transport.close());
+  await server.connect(transport);
+  await transport.handleRequest(req, res, req.body);
+};</div>
+              <p data-i18n="build-m5-s3-desc2">Add to Claude Desktop by pointing to your endpoint:</p>
+              <div class="code-block">{
+  "mcpServers": {
+    "my-app": { "url": "https://your-app.vercel.app/api/mcp" }
+  }
+}</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m5-s4-title">Fire-and-forget for cron efficiency</strong>
+              <p data-i18n-html="build-m5-s4-desc">Don't <code>await tx.wait()</code> inside crons unless you need the receipt. Submit the tx and return — Celo's sequencing guarantees ordering.</p>
+              <div class="code-block"><span class="code-comment">// ✅ fast — submit and return within the 60s cron window</span>
+const tx = await contract.feed(agent.address);
+res.json({ ok: true, txHash: tx.hash, status: "submitted" });
+
+<span class="code-comment">// ❌ slow — awaiting confirmation blocks for ~5s and can timeout</span>
+await tx.wait();</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <strong data-i18n="build-m5-s5-title">x402 payment gate — charge AI agents per API call</strong>
+              <p data-i18n="build-m5-s5-desc">Wrap any endpoint with x402 so other AI agents pay USDC on Celo to call your API. No API keys, no subscriptions — pure on-chain micropayments.</p>
+              <div class="code-block">const { withPaymentRequired } = require("x402-next"); <span class="code-comment">// or x402-express</span>
+
+module.exports = withPaymentRequired(
+  async (req, res) => {
+    <span class="code-comment">// Only runs after payment is verified on-chain</span>
+    res.json({ ok: true, data: await getPremiumData() });
+  },
+  {
+    amount:   "0.01",               <span class="code-comment">// $0.01 USDC per call</span>
+    currency: "USDC",
+    network:  "celo",
+    receiver: process.env.PAYMENT_ADDRESS,
+  }
+);</div>
+              <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m5-s5-tip">x402 turns your Vercel function into a monetized AI service. Claude agents, LangChain bots, and any HTTP client that supports EIP-402 can call it autonomously without human approval.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 6 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod6">
+      <div class="module-header" onclick="toggleModule('mod6')">
+        <div class="module-icon">📊</div>
+        <div class="module-meta">
+          <div class="module-num">Module 06</div>
+          <div class="module-title" data-i18n="build-m6-title">Building an on-chain dashboard</div>
+          <div class="module-sub" data-i18n="build-m6-sub">ethers.js · event logs · live stats · The Graph subgraph</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m6-tip">Start with direct RPC calls — fast to build and free to run. When you need historical data, time-series charts, or leaderboards at scale, add a subgraph on The Graph. Zorrito uses both: RPC for live state, The Graph for the scalable analytics dashboard.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m6-s1-title">Batch RPC calls with Promise.all</strong>
+              <p data-i18n="build-m6-s1-desc">Read multiple contract values in parallel — don't await them sequentially:</p>
+              <div class="code-block">const [poolSize, totalUsers, apy, myBalance] = await Promise.all([
+  contract.getTotalDeposited(),
+  contract.getUniqueDepositors(),
+  aavePool.getReserveData(USDT_ADDRESS),
+  contract.getUserDeposit(userAddress),
+]);</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m6-s2-title">Read historical events efficiently</strong>
+              <p data-i18n-html="build-m6-s2-desc">Use <code>queryFilter</code> with block ranges. Celo has ~5s block time so 30 days ≈ 518,400 blocks. Stay under 2,000 blocks per query or use a public indexer endpoint.</p>
+              <div class="code-block">const filter = contract.filters.Deposited();  <span class="code-comment">// your event</span>
+const toBlock   = await provider.getBlockNumber();
+const fromBlock = toBlock - 518400; <span class="code-comment">// ~30 days on Celo</span>
+
+const events = await contract.queryFilter(filter, fromBlock, toBlock);
+
+const stats = events.reduce((acc, e) => {
+  acc.totalVolume += Number(ethers.formatUnits(e.args.amount, 6));
+  acc.uniqueUsers.add(e.args.user);
+  return acc;
+}, { totalVolume: 0, uniqueUsers: new Set() });</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m6-s3-title">Cache the result in a serverless function</strong>
+              <p data-i18n-html="build-m6-s3-desc">Add a <code>Cache-Control</code> header so Vercel's CDN caches the response and you don't hit the RPC 100× per page load:</p>
+              <div class="code-block"><span class="code-comment">// api/stats.js</span>
+module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  const data = await fetchOnChainData();
+  return res.json({ ok: true, ...data });
+};</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m6-s4-title">Minimal dashboard HTML pattern</strong>
+              <div class="code-block"><span class="code-comment">// frontend/app.js — fetch and render</span>
+async function loadStats() {
+  const res  = await fetch("/api/stats?t=" + Date.now());
+  const data = await res.json();
+
+  document.getElementById("pool").textContent =
+    "$" + Number(data.poolSize).toFixed(2);
+  document.getElementById("users").textContent =
+    data.uniqueUsers.toLocaleString();
+}
+
+loadStats();
+setInterval(loadStats, 30_000); <span class="code-comment">// refresh every 30s</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <strong>Scale with The Graph — subgraph for complex queries</strong>
+              <p>Once your dashboard needs time-series charts, lifetime totals, or leaderboards, deploy a subgraph. The Graph indexes your contract events into a GraphQL API — queries are O(1) regardless of how many transactions exist. <span class="tag tag-blue">free on Studio</span></p>
+
+              <div class="tip">
+                <span class="tip-icon">💡</span>
+                <span><strong>Why The Graph?</strong> Contract view functions only return current state. The Graph keeps the full history: every deposit ever made, daily volume per day, unique users per week — all pre-aggregated and queryable in milliseconds.</span>
+              </div>
+
+              <strong style="display:block;font-size:0.82rem;margin:14px 0 4px;">① Define your schema</strong>
+              <div class="code-block"><span class="code-comment"># schema.graphql — one entity per aggregation you need</span>
+type GlobalStats @entity {
+  id: ID!                         <span class="code-comment"># always "global"</span>
+  totalTxCount:       BigInt!
+  totalDepositedUSDT: BigDecimal! <span class="code-comment"># lifetime gross, not net</span>
+  totalDepositors:    Int!
+  activeDepositors:   Int!
+}
+type DayStat @entity {
+  id:            ID!              <span class="code-comment"># "YYYY-MM-DD"</span>
+  date:          String!
+  txCount:       Int!
+  depositVolume: BigDecimal!
+  uniqueUsers:   Int!
+}</div>
+
+              <strong style="display:block;font-size:0.82rem;margin:14px 0 4px;">② Map events to entities (AssemblyScript)</strong>
+              <div class="code-block"><span class="code-comment">// src/mappings.ts</span>
+export function handleDeposited(event: Deposited): void {
+  let global = getOrCreateGlobal();
+  let amount = normaliseUsdt(event.params.amount);
+
+  global.totalDepositedUSDT = global.totalDepositedUSDT.plus(amount);
+  global.totalTxCount = global.totalTxCount + 1;
+  global.save();
+
+  let day = getOrCreateDayStat(getDayId(event.block.timestamp));
+  day.depositVolume = day.depositVolume.plus(amount);
+  day.txCount = day.txCount + 1;
+  day.save();
+}</div>
+
+              <strong style="display:block;font-size:0.82rem;margin:14px 0 4px;">③ Deploy to Graph Studio, query from Vercel</strong>
+              <div class="code-block"><span class="code-comment">// api/graph-stats.js</span>
+const ENDPOINT =
+  "https://api.studio.thegraph.com/query/YOUR_ID/your-app/v0.0.1";
+
+module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+  const r = await fetch(ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: `{
+      globalStats(id: "global") {
+        totalTxCount totalDepositedUSDT
+        totalDepositors activeDepositors
+      }
+      dayStats(first: 30, orderBy: date, orderDirection: desc) {
+        date txCount depositVolume uniqueUsers
+      }
+    }` }),
+  });
+  const { data } = await r.json();
+  res.json({ ok: true, source: "the-graph", ...data });
+};</div>
+
+              <div class="tip warn"><span class="tip-icon">⚠️</span>
+                <span><strong>AssemblyScript gotchas:</strong> Use <code>.toI32()</code> not <code>as i32</code>. Use <code>BigDecimal.fromString("0")</code> not <code>BigDecimal.zero()</code>. Avoid <code>parseInt</code> — it doesn't exist. Renaming an entity changes the collection query name, so redeploy as a new version.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 7 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod7">
+      <div class="module-header" onclick="toggleModule('mod7')">
+        <div class="module-icon">📈</div>
+        <div class="module-meta">
+          <div class="module-num">Module 07</div>
+          <div class="module-title" data-i18n="build-m7-title">Tracking off-chain data with PostHog</div>
+          <div class="module-sub" data-i18n="build-m7-sub">pageviews · funnels · wallet analytics · privacy-first</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m7-tip">PostHog is open-source, self-hostable, and has a generous free tier. Use it to understand your real users: where they come from, how many connect their wallet, and your deposit conversion rate.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m7-s1-title">Add the PostHog snippet to every HTML page</strong>
+              <p data-i18n-html="build-m7-s1-desc">Use the <strong>project API key</strong> (starts with <code>phc_</code>) — not the personal API key (<code>phx_</code>). Wrong key = silent failure, all zeros in dashboard.</p>
+              <div class="code-block">&lt;script&gt;
+  !function(t,e){/* PostHog snippet — copy from app.posthog.com */}
+  posthog.init('phc_YOUR_PROJECT_KEY', {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'always',   <span class="code-comment">// track anonymous + identified</span>
+    autocapture: true,           <span class="code-comment">// automatic click/form tracking</span>
+  });
+&lt;/script&gt;</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m7-s2-title">Capture custom wallet events</strong>
+              <div class="code-block"><span class="code-comment">// After wallet connects:</span>
+posthog.identify(userAddress);          <span class="code-comment">// tie future events to this wallet</span>
+posthog.capture('wallet_connected', {
+  wallet_type: isMiniPay() ? 'minipay' : 'walletconnect',
+});
+
+<span class="code-comment">// After deposit:</span>
+posthog.capture('deposit_completed', { amount_usdt: amount });
+
+<span class="code-comment">// After withdraw:</span>
+posthog.capture('withdraw_completed', { amount_usdt: amount });</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m7-s3-title">Proxy the API server-side (keep keys safe)</strong>
+              <p data-i18n-html="build-m7-s3-desc">Never expose your PostHog personal API key (<code>phx_</code>) to the browser. Create a serverless proxy that runs HogQL queries server-side:</p>
+              <div class="code-block"><span class="code-comment">// api/analytics.js</span>
+module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "s-maxage=300");
+  const r = await fetch(
+    `https://us.i.posthog.com/api/projects/${process.env.PH_PROJECT_ID}/query/`,
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.PH_API_KEY}`, <span class="code-comment">// phx_ key</span>
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: {
+          kind: "HogQLQuery",
+          query: `SELECT countDistinctIf(distinct_id, event = '$pageview') as visitors,
+                         countDistinctIf(distinct_id, event = 'wallet_connected') as connected
+                  FROM events WHERE timestamp >= now() - interval 30 day`
+        }
+      })
+    }
+  );
+  const data = await r.json();
+  res.json({ ok: true, results: data.results });
+};</div>
+              <div class="tip warn"><span class="tip-icon">⚠️</span> <span data-i18n-html="build-m7-warn">Use <code>countDistinctIf()</code> in HogQL, NOT <code>count(distinct CASE WHEN ...)</code> — the CASE WHEN syntax fails silently in PostHog's ClickHouse backend.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m7-s4-title">Run the PostHog wizard for zero-config setup</strong>
+              <div class="code-block">npx -y @posthog/wizard@latest
+<span class="code-comment"># Auto-detects your framework and injects the snippet</span>
+<span class="code-comment"># Works with Next.js, Vite, vanilla HTML</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MODULE 8 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="module" id="mod8">
+      <div class="module-header" onclick="toggleModule('mod8')">
+        <div class="module-icon">🛡️</div>
+        <div class="module-meta">
+          <div class="module-num">Module 08</div>
+          <div class="module-title" data-i18n="build-m8-title">Scaling a public dashboard without exploding your API</div>
+          <div class="module-sub" data-i18n="build-m8-sub">CDN cache · CORS · anti-abuse · 2-min refresh</div>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+      <div class="module-body">
+        <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m8-tip">The stats dashboard at zorrito.app/stats.html handles 10,000 simultaneous users while sending The Graph just one query every 2 minutes — not 10,000. The trick is layered: CDN cache absorbs the volume, CORS blocks unauthorized callers, and the browser never talks to The Graph directly.</span></div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong data-i18n="build-m8-s1-title">Never expose The Graph (or any data source) directly to the browser</strong>
+              <p data-i18n="build-m8-s1-desc">The browser calls your Vercel API. Your API calls The Graph. The Graph URL lives in an env var — it never appears in client code.</p>
+              <div class="code-block"><span class="code-comment">// ❌ wrong — The Graph URL visible to anyone who opens DevTools</span>
+fetch("https://api.studio.thegraph.com/query/.../zorrito/v0.0.2", { ... })
+
+<span class="code-comment">// ✅ right — browser calls your own API, The Graph stays private</span>
+fetch("/api/graph-stats")</div>
+              <div class="tip warn"><span class="tip-icon">⚠️</span> <span data-i18n="build-m8-s1-warn">If you expose the subgraph URL directly, anyone can run unlimited queries against it — bypassing your cache entirely and exhausting your free-tier quota.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong data-i18n="build-m8-s2-title">CDN cache with stale-while-revalidate</strong>
+              <p data-i18n="build-m8-s2-desc">Two headers turn Vercel's global CDN into a shared cache. 10,000 users requesting the same endpoint simultaneously receive the cached response — The Graph only gets queried when the cache expires.</p>
+              <div class="code-block"><span class="code-comment">// api/graph-stats.js</span>
+res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=240");
+<span class="code-comment">// s-maxage=120    → CDN caches for 2 minutes (shared by all users)</span>
+<span class="code-comment">// stale-while-    → after 2 min, CDN serves the old response instantly</span>
+<span class="code-comment">// revalidate=240    while fetching the fresh one in the background</span></div>
+              <p data-i18n="build-m8-s2-desc2" style="margin-top:8px;">The math: 10,000 users × 1 req/2min = The Graph receives <strong>1 query per 2 minutes</strong> globally — not 10,000.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <strong data-i18n="build-m8-s3-title">Restrict CORS to your own domain</strong>
+              <p data-i18n="build-m8-s3-desc">Setting <code>Access-Control-Allow-Origin: *</code> lets any website call your API from a browser. Restrict it so only your frontend can make cross-origin requests.</p>
+              <div class="code-block"><span class="code-comment">// api/graph-stats.js</span>
+const ALLOWED_ORIGINS = [
+  "https://zorrito.app",
+  "https://www.zorrito.app",
+];
+
+const origin = req.headers.origin;
+if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+  return res.status(403).json({ ok: false, error: "Forbidden" });
+}
+if (origin) res.setHeader("Access-Control-Allow-Origin", origin);
+<span class="code-comment">// Note: same-origin requests don't send an origin header — those always pass</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <strong data-i18n="build-m8-s4-title">Block cache-busting attacks</strong>
+              <p data-i18n="build-m8-s4-desc">Vercel's CDN caches by exact URL. A bot adding <code>?t=1234</code> generates a unique URL on every request — each one hits The Graph directly, bypassing the cache entirely.</p>
+              <div class="code-block"><span class="code-comment">// api/graph-stats.js — redirect any request with query params</span>
+if (Object.keys(req.query).length > 0) {
+  res.setHeader("Cache-Control", "no-store");
+  return res.redirect(307, "/api/graph-stats");
+}</div>
+              <div class="tip"><span class="tip-icon">💡</span> <span data-i18n="build-m8-s4-tip">307 (Temporary Redirect) tells the browser to reuse the method (GET) and follow the redirect to the canonical cacheable URL. The browser caches this redirect too, so repeat offenders get stopped earlier.</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <strong data-i18n="build-m8-s5-title">Frontend polling with live countdown</strong>
+              <p data-i18n="build-m8-s5-desc">Poll the API every 2 minutes. The <code>stale-while-revalidate</code> header means the user always gets an instant response — no loading spinner, no perceived latency. A live countdown shows when the data was last refreshed.</p>
+              <div class="code-block"><span class="code-comment">// frontend/stats.js</span>
+const POLL_INTERVAL = 120_000; <span class="code-comment">// 2 minutes</span>
+let lastUpdated = null;
+
+async function loadStats() {
+  const res  = await fetch("/api/graph-stats");
+  const data = await res.json();
+  lastUpdated = Date.now();
+
+  renderDashboard(data);
+}
+
+function startCountdown() {
+  const el = document.getElementById("last-updated");
+  setInterval(() => {
+    if (!lastUpdated) return;
+    const s = Math.floor((Date.now() - lastUpdated) / 1000);
+    el.textContent = s < 60 ? `Updated ${s}s ago` : `Updated ${Math.floor(s/60)}m ago`;
+  }, 1000);
+}
+
+loadStats();
+setInterval(loadStats, POLL_INTERVAL);
+startCountdown();</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Footer spacer ── -->
+    <div style="height:60px;"></div>
+
+  </div><!-- /build-wrap -->
+
+  <!-- ── Hidden markdown content for copy ── -->
+  <div id="workshop-markdown" style="display:none;">
+# Building on Celo — Workshop Guide
+> A hands-on guide: build a production MiniPay app from scratch using Claude, Vercel, and the Celo stack.
+
+---
+
+## Module 00 — Celopedia: AI-native Celo ecosystem intelligence
+
+Install Celopedia first. It gives Claude verified contract addresses, live grant data, MiniPay submission requirements, DeFi protocol references, and Celo-specific security patterns — all queryable in natural language.
+
+```bash
+npx skills add celo-org/celopedia-skills
+# Works with Claude Code, Cursor, Cline, Codex, and 10+ more agents
+```
+
+### Why Celopedia changes how you build on Celo
+
+- **150+ verified contract addresses** — ask Claude instead of searching Celoscan. Wrong addresses = lost funds.
+- **Live grant matching** — fetches active programs from celopg.eco in real time. Proof of Ship, Prezenti, Builder Fund, Divvi, and 20+ more.
+- **MiniPay checklist built-in** — the full official submission requirements: copy rules, UI constraints, asset format (WebP/SVG only), PageSpeed targets, country-level targeting.
+- **DeFi protocol reference** — Aave V3, Uniswap V3/V4, Morpho Blue, Mento, x402, stCELO — correct ABIs, pool addresses, and Celo-specific gotchas.
+- **Ecosystem search** — query 6,300+ products via The Grid to validate your idea before building.
+- **Celo-specific security patterns** — aToken ratio drift, CIP-64 fee abstraction accounting, CELO token duality, L2 epoch effects.
+
+### Example prompts (after installing Celopedia)
+
+```
+"What is the Aave V3 Pool address on Celo mainnet?"
+"What USDT adapter do I use for fee abstraction?"
+"What grants can I apply to right now for my MiniPay app?"
+"Review my app.js for MiniPay compliance issues."
+"Is there a no-loss lottery already live on Celo?"
+```
+
+> Learn more: celopedia.celo.org
+
+---
+
+## Module 01 — Setting up Claude with Celo Skills
+
+Claude Code is Anthropic's terminal-based AI agent. With the right MCP servers it can read your contracts, call RPC nodes, deploy to Vercel and push to GitHub — all in one session.
+
+### Step 1 — Install Claude Code
+```bash
+npm install -g @anthropic-ai/claude-code
+claude  # opens interactive session
+```
+
+### Step 2 — Add project-specific context to CLAUDE.md
+Create a `CLAUDE.md` at the root of your project. Claude reads this on every session. Keep it focused on YOUR contract addresses — protocol addresses (USDT, USDC, Aave, etc.) are handled automatically by Celopedia (Module 00).
+```markdown
+# CLAUDE.md — project-specific context only
+## Network
+- Chain: Celo Mainnet (chainId 42220)
+- RPC: https://forno.celo.org
+- Explorer: https://celoscan.io
+
+## My Contracts
+- MyContract: 0xYOUR_CONTRACT_ADDRESS
+# Protocol addresses (USDT, USDC, Aave, etc.) → ask Celopedia
+
+## Stack
+- Frontend: vanilla JS, deployed on Vercel (static)
+- Backend:  Node.js serverless functions (api/*.js)
+- Wallet:   MiniPay first, then WalletConnect fallback
+```
+
+### Step 3 — Connect the Celo MCP server
+```json
+// ~/.claude/mcp_servers.json
+{
+  "mcpServers": {
+    "celo": {
+      "command": "npx",
+      "args": ["-y", "@celo/mcp-server"],
+      "env": { "CELO_RPC": "https://forno.celo.org" }
+    }
+  }
+}
+```
+> ⚠️ Never put private keys in mcp_servers.json.
+
+### Step 4 — Starting prompt for every Claude session
+```
+You are helping me build a MiniPay mini-app on Celo.
+Stack: Solidity (contract already deployed), vanilla JS frontend,
+Node.js Vercel serverless functions, ethers.js v6.
+RPC: https://forno.celo.org | ChainId: 42220
+Always use ethers.js v6 syntax (no .connect() on provider directly,
+use new ethers.JsonRpcProvider()). Ask before adding dependencies.
+```
+
+---
+
+## Module 02 — Smart contract security with Pashov
+
+Never deploy without an automated audit pass.
+
+### Step 1 — Install Slither
+```bash
+pip3 install slither-analyzer
+# Then ask Claude:
+# "Run slither on contracts/MyContract.sol and explain every HIGH and
+#  MEDIUM finding. Suggest a fix for each one."
+```
+
+### Step 2 — Pashov audit checklist prompt
+Paste into Claude Code:
+```
+Read contracts/MyContract.sol and audit it against the Pashov security checklist:
+1. Reentrancy (CEI pattern, ReentrancyGuard)
+2. Integer overflow / underflow (Solidity 0.8+ built-in, SafeMath)
+3. Access control (onlyOwner, roles, constructor ownership)
+4. Front-running / MEV exposure
+5. Oracle manipulation
+6. Unchecked external calls
+7. Centralization risks
+8. Event emissions for all state changes
+For each item: PASS / FAIL / N/A with explanation.
+```
+
+### Step 3 — Generate a test suite
+```
+Based on the audit findings, write a full Hardhat test suite in TypeScript
+that covers: the happy path, reentrancy attack attempt, unauthorized access,
+and edge cases around deposit/withdrawal math.
+Use Celo fork (chainId 42220) via hardhat.config.ts.
+```
+
+---
+
+## Module 03 — GitHub + Vercel for automatic deployments
+
+### Step 1 — Project structure
+```
+my-app/
+├── api/
+│   ├── deposit.js      # POST → interact with contract
+│   └── stats.js        # GET  → read on-chain data
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+└── vercel.json
+```
+
+### Step 2 — vercel.json
+```json
+{
+  "builds": [
+    { "src": "api/*.js",    "use": "@vercel/node"   },
+    { "src": "frontend/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "api/$1.js"   },
+    { "src": "/(.*)",     "dest": "frontend/$1" }
+  ],
+  "crons": [
+    { "path": "/api/daily-job", "schedule": "0 2 * * *" }
+  ],
+  "functions": {
+    "api/daily-job.js": { "maxDuration": 60 }
+  }
+}
+```
+
+### Step 3 — Env vars in serverless functions
+```js
+const privateKey = process.env.MASTER_PRIVATE_KEY;
+const rpcUrl     = process.env.CELO_RPC || "https://forno.celo.org";
+const wallet     = new ethers.Wallet(privateKey, new ethers.JsonRpcProvider(rpcUrl));
+```
+
+### Step 4 — Deploy loop with Claude
+```
+Deploy to production: npx vercel deploy --prod --yes
+If the build fails, read the error and fix it, then redeploy.
+```
+
+---
+
+## Module 04 — Integrating MiniPay hooks
+
+### Step 1 — Detect MiniPay
+```js
+function isMiniPay() {
+  return !!(window.ethereum?.isMiniPay);
+}
+
+async function connectWallet() {
+  if (isMiniPay()) {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    return accounts[0];
+  }
+  return await connectViaWalletConnect();
+}
+```
+
+### Step 2 — Switch to Celo network
+```js
+const CELO_CHAIN = {
+  chainId: '0xA4EC',
+  chainName: 'Celo',
+  rpcUrls: ['https://forno.celo.org'],
+  nativeCurrency: { name: 'CELO', symbol: 'CELO', decimals: 18 },
+  blockExplorerUrls: ['https://celoscan.io'],
+};
+
+async function ensureCeloNetwork() {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: CELO_CHAIN.chainId }],
+    });
+  } catch (err) {
+    if (err.code === 4902) {
+      await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [CELO_CHAIN] });
+    }
+  }
+}
+```
+
+### Step 3 — Approve + deposit pattern
+```js
+async function deposit(amountUSDT) {
+  const amount    = ethers.parseUnits(amountUSDT.toString(), 6);
+  const allowance = await USDT.allowance(userAddress, CONTRACT_ADDRESS);
+
+  if (allowance < amount) {
+    const approveTx = await USDT.approve(CONTRACT_ADDRESS, amount);
+    await approveTx.wait();
+  }
+
+  const tx = await contract.deposit(amount);
+  await tx.wait();
+}
+```
+
+### Step 4 — MiniPay UX rules
+- Show amounts in USD, not raw wei
+- Never show a seed phrase or private key UI
+- Fit the app in a single scrollable page (no nested modals)
+- Use font-size: 16px minimum
+- Test on a real Android device
+
+---
+
+## Module 05 — Agents with x402 + MCP + Vercel
+
+### Step 1 — Agent wallet (one private key in Vercel env)
+```js
+// api/agent.js
+const { ethers } = require("ethers");
+const provider = new ethers.JsonRpcProvider(process.env.CELO_RPC || "https://forno.celo.org");
+const agent = new ethers.Wallet(process.env.AGENT_PRIVATE_KEY, provider);
+
+module.exports = async (req, res) => {
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, agent);
+  const tx = await contract.feed(agent.address);
+  res.json({ ok: true, txHash: tx.hash });
+};
+```
+
+### Step 2 — Schedule with Vercel cron
+```json
+{
+  "crons": [
+    { "path": "/api/agent", "schedule": "50 5 * * *" }
+  ],
+  "functions": {
+    "api/agent.js": { "maxDuration": 60 }
+  }
+}
+```
+> ⚠️ Schedule before your contract's daily deadline, not at midnight.
+
+### Step 3 — MCP server so Claude can control the agent
+```js
+// api/mcp.js
+const { McpServer } = require("@modelcontextprotocol/sdk/server/mcp.js");
+const { StreamableHTTPServerTransport } = require("@modelcontextprotocol/sdk/server/streamableHttp.js");
+
+const server = new McpServer({ name: "my-app-agent", version: "1.0.0" });
+
+server.tool("get_fox_status", "Read fox state for a wallet", {
+  wallet: { type: "string" }
+}, async ({ wallet }) => {
+  const status = await contract.getFoxStatus(wallet);
+  return { content: [{ type: "text", text: JSON.stringify(status) }] };
+});
+
+server.tool("feed_fox", "Feed the fox (costs 1 USDT)", {}, async () => {
+  const tx = await contract.feed(agent.address);
+  await tx.wait();
+  return { content: [{ type: "text", text: `Fed! tx: ${tx.hash}` }] };
+});
+
+module.exports = async (req, res) => {
+  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on("close", () => transport.close());
+  await server.connect(transport);
+  await transport.handleRequest(req, res, req.body);
+};
+```
+
+Connect to Claude Desktop:
+```json
+{
+  "mcpServers": {
+    "my-app": { "url": "https://your-app.vercel.app/api/mcp" }
+  }
+}
+```
+
+### Step 4 — Fire-and-forget for cron efficiency
+```js
+// ✅ fast — submit and return within the 60s cron window
+const tx = await contract.feed(agent.address);
+res.json({ ok: true, txHash: tx.hash, status: "submitted" });
+
+// ❌ slow — awaiting confirmation blocks for ~5s and can timeout
+await tx.wait();
+```
+
+### Step 5 — x402 payment gate
+```js
+const { withPaymentRequired } = require("x402-next");
+
+module.exports = withPaymentRequired(
+  async (req, res) => { res.json({ ok: true, data: await getPremiumData() }); },
+  {
+    amount:   "0.01",
+    currency: "USDC",
+    network:  "celo",
+    receiver: process.env.PAYMENT_ADDRESS,
+  }
+);
+```
+> x402 turns your endpoint into a monetized AI service — Claude agents pay USDC on Celo per call, no API keys needed.
+
+---
+
+## Module 06 — Building an on-chain dashboard + The Graph
+
+Start with direct RPC calls — fast to build and free to run. When you need historical data, time-series charts, or leaderboards at scale, add a subgraph on The Graph.
+
+### Step 1 — Batch RPC calls
+```js
+const [poolSize, totalUsers, myBalance] = await Promise.all([
+  contract.getTotalDeposited(),
+  contract.getUniqueDepositors(),
+  contract.getUserDeposit(userAddress),
+]);
+```
+
+### Step 2 — Read historical events
+```js
+const toBlock   = await provider.getBlockNumber();
+const fromBlock = toBlock - 518400; // ~30 days on Celo
+
+const events = await contract.queryFilter(
+  contract.filters.Deposited(),
+  fromBlock, toBlock
+);
+```
+
+### Step 3 — Cache in serverless function
+```js
+module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.json({ ok: true, ...(await fetchOnChainData()) });
+};
+```
+
+### Step 4 — Frontend auto-refresh
+```js
+async function loadStats() {
+  const data = await fetch("/api/stats?t=" + Date.now()).then(r => r.json());
+  document.getElementById("pool").textContent = "$" + Number(data.poolSize).toFixed(2);
+}
+loadStats();
+setInterval(loadStats, 30_000);
+```
+
+### Step 5 — Scale with The Graph subgraph
+
+Contract view functions only return current state. The Graph indexes every event into a GraphQL API — O(1) queries for lifetime totals, daily time-series, and leaderboards no matter how many transactions exist. Graph Studio is free.
+
+**① Define your schema**
+```graphql
+# schema.graphql
+type GlobalStats @entity {
+  id: ID!                         # always "global"
+  totalTxCount:       BigInt!
+  totalDepositedUSDT: BigDecimal! # lifetime gross, not net balance
+  totalDepositors:    Int!
+  activeDepositors:   Int!
+}
+type DayStat @entity {
+  id:            ID!              # "YYYY-MM-DD"
+  date:          String!
+  txCount:       Int!
+  depositVolume: BigDecimal!
+  uniqueUsers:   Int!
+}
+```
+
+**② Map events in AssemblyScript**
+```typescript
+// src/mappings.ts
+export function handleDeposited(event: Deposited): void {
+  let global = getOrCreateGlobal();
+  let amount = normaliseUsdt(event.params.amount); // divide by 1_000_000
+
+  global.totalDepositedUSDT = global.totalDepositedUSDT.plus(amount);
+  global.totalTxCount       = global.totalTxCount + 1;
+  global.save();
+
+  let day = getOrCreateDayStat(getDayId(event.block.timestamp));
+  day.depositVolume = day.depositVolume.plus(amount);
+  day.txCount       = day.txCount + 1;
+  day.save();
+}
+```
+
+**③ Deploy to Graph Studio, query from Vercel**
+```js
+// api/graph-stats.js
+const ENDPOINT = "https://api.studio.thegraph.com/query/YOUR_ID/your-app/v0.0.1";
+
+module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+  const r = await fetch(ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: `{
+      globalStats(id: "global") {
+        totalTxCount totalDepositedUSDT totalDepositors activeDepositors
+      }
+      dayStats(first: 30, orderBy: date, orderDirection: desc) {
+        date txCount depositVolume uniqueUsers
+      }
+    }` }),
+  });
+  const { data } = await r.json();
+  res.json({ ok: true, source: "the-graph", ...data });
+};
+```
+
+> ⚠️ AssemblyScript gotchas: Use `.toI32()` not `as i32`. Use `BigDecimal.fromString("0")` not `BigDecimal.zero()`. Avoid `parseInt` — it doesn't exist. Renaming an entity changes the collection query name, so redeploy as a new version.
+
+---
+
+## Module 07 — Tracking off-chain data with PostHog
+
+### Step 1 — Add PostHog snippet (use phc_ key, NOT phx_)
+```html
+&lt;script&gt;
+  posthog.init('phc_YOUR_PROJECT_KEY', {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'always',
+    autocapture: true,
+  });
+&lt;/script&gt;
+```
+
+### Step 2 — Custom wallet events
+```js
+posthog.identify(userAddress);
+posthog.capture('wallet_connected', { wallet_type: isMiniPay() ? 'minipay' : 'walletconnect' });
+posthog.capture('deposit_completed', { amount_usdt: amount });
+posthog.capture('withdraw_completed', { amount_usdt: amount });
+```
+
+### Step 3 — Server-side proxy for HogQL queries
+```js
+// api/analytics.js
+module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "s-maxage=300");
+  const r = await fetch(
+    `https://us.i.posthog.com/api/projects/${process.env.PH_PROJECT_ID}/query/`,
+    {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${process.env.PH_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: {
+          kind: "HogQLQuery",
+          // ✅ Use countDistinctIf — CASE WHEN fails silently in HogQL
+          query: `SELECT countDistinctIf(distinct_id, event = '$pageview') as visitors,
+                         countDistinctIf(distinct_id, event = 'wallet_connected') as connected
+                  FROM events WHERE timestamp >= now() - interval 30 day`
+        }
+      })
+    }
+  );
+  res.json({ ok: true, results: (await r.json()).results });
+};
+```
+
+### Step 4 — Zero-config setup wizard
+```bash
+npx -y @posthog/wizard@latest
+```
+
+---
+
+*Built with ❤️ on Celo · Powered by Claude*
+  </div>
+
+  <script>
+    // ── Nav hamburger ──────────────────────────────────────
+    function toggleNavMenu() {
+      document.getElementById("nav-dropdown").classList.toggle("open");
+    }
+    document.addEventListener("click", (e) => {
+      document.getElementById("lang-menu")?.classList.remove("open");
+      if (!e.target.closest(".nav-hamburger") && !e.target.closest(".nav-dropdown")) {
+        document.getElementById("nav-dropdown")?.classList.remove("open");
+      }
+    });
+
+    // ── Lang picker ────────────────────────────────────────
+    function toggleLangMenu(e) {
+      e.stopPropagation();
+      document.getElementById('lang-menu').classList.toggle('open');
+    }
+    function pickLang(lang) {
+      document.getElementById('lang-menu').classList.remove('open');
+      zorritoSetLang(lang);
+      const labels = { en: '🌐 EN', es: '🌐 ES', pt: '🌐 PT' };
+      document.getElementById('lang-label').textContent = labels[lang] || '🌐 EN';
+    }
+    (function() {
+      const lang = localStorage.getItem('zorrito-lang') || 'en';
+      const labels = { en: '🌐 EN', es: '🌐 ES', pt: '🌐 PT' };
+      const el = document.getElementById('lang-label');
+      if (el) el.textContent = labels[lang] || '🌐 EN';
+    })();
+
+    // ── Module accordion ──────────────────────────────────
+    function toggleModule(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("open");
+    }
+    function openModule(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("open");
+    }
+
+    // ── Copy markdown ─────────────────────────────────────
+    function copyMarkdown() {
+      const md  = document.getElementById("workshop-markdown").innerText.trim();
+      const btn = document.getElementById("copy-btn");
+      navigator.clipboard.writeText(md).then(() => {
+        btn.classList.add("copied");
+        btn.innerHTML = "<span>✓</span> Copied!";
+        if (window.posthog) posthog.capture("workshop_copied");
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.innerHTML = "<span>⎘</span> Copy for Claude";
+        }, 2200);
+      }).catch(() => {
+        const ta = document.createElement("textarea");
+        ta.value = md;
+        ta.style.position = "fixed";
+        ta.style.opacity  = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        btn.classList.add("copied");
+        btn.innerHTML = "<span>✓</span> Copied!";
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.innerHTML = "<span>⎘</span> Copy for Claude";
+        }, 2200);
+      });
+    }
+  </script>
+
+  <script src="lang.js"></script>
+
+</body>
+</html>

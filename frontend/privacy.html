@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zorrito — Privacy Policy</title>
+  <link rel="icon" type="image/png" href="assets/zorritofinallogo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture identify reset alias set_config startSessionRecording stopSessionRecording".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_vtyrC2nLsMwDwXCZq2t8qes7N7CQXSLH7n2xGSQsizjB', { api_host: 'https://us.i.posthog.com', person_profiles: 'always', autocapture: true });
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Match header width to content */
+    .docs-page header { max-width: 680px; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    .back-link:hover { opacity: 0.8; }
+
+    .legal-wrap {
+      width: 100%;
+      max-width: 680px;
+      padding-bottom: 60px;
+    }
+    .legal-wrap h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    .legal-wrap .effective {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 36px;
+    }
+    .legal-wrap h2 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 36px;
+      margin-bottom: 10px;
+    }
+    .legal-wrap p {
+      color: #444;
+      line-height: 1.75;
+      margin-bottom: 14px;
+      font-size: 0.93rem;
+    }
+    .legal-wrap strong { color: var(--text); }
+    .legal-wrap ul {
+      color: #444;
+      line-height: 1.75;
+      font-size: 0.93rem;
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .legal-wrap ul li { margin-bottom: 6px; }
+    .legal-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+    }
+    .legal-wrap table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-weight: 700;
+      color: var(--text);
+    }
+    .legal-wrap table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      color: #444;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body class="docs-page">
+
+  <header>
+    <div class="logo">
+      <img src="assets/zorritofinallogo.png" alt="Zorrito" class="logo-fox" />
+      <span>Zorr<span>ito</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;position:relative;">
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span id="lang-label">🌐 EN</span>
+          <svg class="lang-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="lang-menu" id="lang-menu">
+          <button onclick="pickLang('en')">🌐 EN</button>
+          <button onclick="pickLang('es')">🌐 ES</button>
+          <button onclick="pickLang('pt')">🌐 PT</button>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" style="font-size:0.8rem;color:var(--green);text-decoration:none;padding:6px 12px;border:1px solid rgba(26,153,96,0.3);border-radius:8px;font-weight:700;">← App</a>
+      </div>
+      <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="Menu">☰</button>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <a href="index.html" class="nav-app">← App</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="legal-wrap">
+
+    <a href="index.html" class="back-link">← Back to App</a>
+
+    <h1 data-i18n="privacy-title">Privacy Policy</h1>
+    <p class="effective" data-i18n="privacy-effective">Last updated: April 2026</p>
+
+    <p data-i18n-html="privacy-intro">Zorrito is built on public blockchain infrastructure. By design, <strong>we collect as little personal data as possible</strong>. This policy explains what data we do and don't collect, and how it is used.</p>
+
+    <h2 data-i18n="privacy-s1-h">1. What We Don't Collect</h2>
+    <p data-i18n="privacy-s1-p1">Zorrito does not collect, store, or process:</p>
+    <ul>
+      <li data-i18n="privacy-s1-li1">Your name, email address, phone number, or any identity document</li>
+      <li data-i18n="privacy-s1-li2">Passwords — wallet authentication is handled entirely by your wallet provider</li>
+      <li data-i18n="privacy-s1-li3">Payment card or bank account information</li>
+      <li data-i18n="privacy-s1-li4">Your IP address (beyond what is inherent in standard web requests to our CDN)</li>
+      <li data-i18n="privacy-s1-li5">Location data beyond what your browser exposes by default</li>
+    </ul>
+
+    <h2 data-i18n="privacy-s2-h">2. What We Collect</h2>
+    <table>
+      <tr>
+        <th>Data</th>
+        <th>Purpose</th>
+        <th>Stored by</th>
+      </tr>
+      <tr>
+        <td>Wallet address (public)</td>
+        <td>Display your fox, streak, deposit, and leaderboard position</td>
+        <td>Celo blockchain (public)</td>
+      </tr>
+      <tr>
+        <td>On-chain transaction data</td>
+        <td>Deposits, feeds, withdrawals — permanent public record</td>
+        <td>Celo blockchain (public)</td>
+      </tr>
+      <tr>
+        <td>Anonymous usage events</td>
+        <td>Product analytics: page views, wallet connects, deposits, feeds</td>
+        <td>PostHog (EU servers)</td>
+      </tr>
+      <tr>
+        <td>Language preference</td>
+        <td>Remember your selected language (EN/ES/PT)</td>
+        <td>Your browser's localStorage</td>
+      </tr>
+    </table>
+
+    <h2 data-i18n="privacy-s3-h">3. Blockchain Data Is Public</h2>
+    <p data-i18n="privacy-s3-p1">All transactions on the Celo blockchain — including deposits, feeds, and withdrawals — are permanently and publicly visible on-chain. Anyone can query your wallet address and see your full interaction history with the Zorrito contracts. This is an inherent property of public blockchains and is outside our control.</p>
+    <p data-i18n="privacy-s3-p2">We do not link your wallet address to any personal identity, and we do not attempt to de-anonymize users.</p>
+
+    <h2 data-i18n="privacy-s4-h">4. Analytics — PostHog</h2>
+    <p data-i18n-html="privacy-s4-p1">We use <strong>PostHog</strong> for product analytics. PostHog collects anonymous behavioral data: which pages you visit, which buttons you click, and which wallet type you use. No personal information is transmitted. Data is processed on PostHog's EU servers. You can learn more at <a href="https://posthog.com/privacy" target="_blank" rel="noopener" style="color:var(--green);">posthog.com/privacy</a>.</p>
+    <p data-i18n="privacy-s4-p2">We do not use Google Analytics, Meta Pixel, or any advertising trackers.</p>
+
+    <h2 data-i18n="privacy-s5-h">5. Third-Party Services</h2>
+    <p data-i18n="privacy-s5-p1">Zorrito integrates with the following third-party services. Each has its own privacy policy:</p>
+    <ul>
+      <li data-i18n-html="privacy-s5-li1"><strong>Aave V3</strong> — holds deposited USDT and generates yield on Celo</li>
+      <li data-i18n-html="privacy-s5-li2"><strong>The Graph</strong> — indexes on-chain events for the public dashboard</li>
+      <li data-i18n-html="privacy-s5-li3"><strong>WalletConnect / Reown</strong> — enables wallet connections via QR code or deep link</li>
+      <li data-i18n-html="privacy-s5-li4"><strong>MiniPay / Lemon</strong> — wallet providers with their own data practices</li>
+      <li data-i18n-html="privacy-s5-li5"><strong>Vercel</strong> — hosts the site; standard server logs may be retained briefly</li>
+    </ul>
+    <p data-i18n="privacy-s5-p2">We are not responsible for the data practices of any third-party service.</p>
+
+    <h2 data-i18n="privacy-s6-h">6. Cookies and Local Storage</h2>
+    <p data-i18n-html="privacy-s6-p1">We use <strong>localStorage</strong> (not cookies) to remember your language preference. No tracking cookies are set by Zorrito. PostHog may set a session cookie to associate analytics events within a session; this contains no personally identifiable information.</p>
+
+    <h2 data-i18n="privacy-s7-h">7. Data Retention</h2>
+    <p data-i18n="privacy-s7-p1">On-chain data is permanent by nature. Anonymous analytics events are retained by PostHog according to their retention policy. Language preferences stored in localStorage persist until you clear your browser data. We do not maintain any server-side database of user information.</p>
+
+    <h2 data-i18n="privacy-s8-h">8. Your Rights</h2>
+    <p data-i18n="privacy-s8-p1">Because we do not collect personally identifiable information, most data subject rights (access, correction, deletion) do not apply in the traditional sense. If you have a question about data associated with your wallet address or analytics events, contact us via the official Zorrito channels and we will do our best to assist.</p>
+    <p data-i18n="privacy-s8-p2">To opt out of PostHog analytics, you can use a browser ad-blocker or disable JavaScript for this site.</p>
+
+    <h2 data-i18n="privacy-s9-h">9. Children</h2>
+    <p data-i18n="privacy-s9-p1">Zorrito is not directed at children under 18. We do not knowingly collect any information from minors. If you believe a minor has interacted with the Protocol, please contact us.</p>
+
+    <h2 data-i18n="privacy-s10-h">10. Changes to This Policy</h2>
+    <p data-i18n="privacy-s10-p1">We may update this Privacy Policy from time to time. The "Last updated" date at the top reflects the most recent revision. Continued use of the site after changes are posted constitutes acceptance of the updated policy.</p>
+
+    <h2 data-i18n="privacy-s11-h">11. Contact</h2>
+    <p data-i18n-html="privacy-s11-p1">For privacy-related questions, reach the dev team directly on Telegram: <a href="https://t.me/+6nOubL70I5UwZmFk" target="_blank" rel="noopener" style="color:var(--green);font-weight:600;">t.me/+6nOubL70I5UwZmFk</a></p>
+
+  </div>
+
+  <footer>
+    <span>Zorrito — No-loss lottery on Celo.</span>
+    &nbsp;·&nbsp;
+    <a href="terms.html" style="color:var(--green);text-decoration:none;">Terms</a>
+    &nbsp;·&nbsp;
+    <a href="privacy.html" style="color:var(--green);text-decoration:none;">Privacy</a>
+    &nbsp;·&nbsp;
+    <a href="index.html" style="color:var(--green);text-decoration:none;">← App</a>
+  </footer>
+
+  <script src="lang.js"></script>
+  <script>
+    function toggleLangMenu(e) {
+      e.stopPropagation();
+      document.getElementById('lang-menu').classList.toggle('open');
+    }
+    function pickLang(lang) {
+      zorritoSetLang(lang);
+      document.getElementById('lang-label').textContent = lang === 'en' ? '🌐 EN' : lang === 'es' ? '🌐 ES' : '🌐 PT';
+      document.getElementById('lang-menu').classList.remove('open');
+      localStorage.setItem('zorrito-lang', lang);
+    }
+    document.addEventListener('click', () => document.getElementById('lang-menu')?.classList.remove('open'));
+    function toggleNavMenu() {
+      document.getElementById('nav-dropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-hamburger') && !e.target.closest('.nav-dropdown')) {
+        document.getElementById('nav-dropdown')?.classList.remove('open');
+      }
+    });
+    const saved = localStorage.getItem('zorrito-lang');
+    if (saved) pickLang(saved);
+  </script>
+</body>
+</html>
