@@ -706,7 +706,7 @@ Use Celo fork (chainId 42220) via hardhat.config.ts."</div>
               <strong data-i18n="build-m3-s3-title">Store secrets in Vercel env vars</strong>
               <p data-i18n="build-m3-s3-desc">Never hardcode private keys. Add them in Vercel dashboard → Settings → Environment Variables, then access in code:</p>
               <div class="code-block"><span class="code-comment">// api/any-function.js</span>
-const privateKey = process.env.MASTER_PRIVATE_KEY;
+const privateKey = process.env.PRIVATE_KEY;
 const rpcUrl     = process.env.CELO_RPC || "https://forno.celo.org";
 const wallet     = new ethers.Wallet(privateKey, new ethers.JsonRpcProvider(rpcUrl));</div>
               <div class="tip warn"><span class="tip-icon">⚠️</span> <span data-i18n-html="build-m3-warn">Variables prefixed <code>NEXT_PUBLIC_</code> or listed in <code>env</code> in vercel.json are exposed to the browser. Keep private keys server-only.</span></div>
@@ -1516,7 +1516,7 @@ my-app/
 
 ### Step 3 — Env vars in serverless functions
 ```js
-const privateKey = process.env.MASTER_PRIVATE_KEY;
+const privateKey = process.env.PRIVATE_KEY;
 const rpcUrl     = process.env.CELO_RPC || "https://forno.celo.org";
 const wallet     = new ethers.Wallet(privateKey, new ethers.JsonRpcProvider(rpcUrl));
 ```
