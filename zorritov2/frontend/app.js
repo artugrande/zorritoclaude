@@ -1,8 +1,9 @@
 // zorritov2/frontend/app.js
 // ── Imports via CDN (no build step) ──────────────────────────────────────────
-import { createAppKit }  from "https://esm.sh/@reown/appkit@1.8.19?bundle";
-import { EthersAdapter } from "https://esm.sh/@reown/appkit-adapter-ethers@1.8.19?bundle";
-import { celo }          from "https://esm.sh/@reown/appkit@1.8.19/networks?bundle";
+// ethers is needed eagerly for read-only home data (stats, winners, APY).
+// The Reown AppKit wallet stack is the heaviest dependency and is loaded
+// lazily (see ensureModal) — only when a non-MiniPay user opens the connect
+// modal. MiniPay connects via window.ethereum and never needs Reown.
 import { ethers }        from "https://esm.sh/ethers@6.11.1?bundle";
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -15,6 +16,11 @@ const MIN_DEPOSIT       = 250_000n; // 0.25 USDT (6 decimals)
 const PLATFORM_WALLET   = "0x19eC1797000F434EB2fd622E642BeF80234425cb";
 const FOX_COST          = 250_000n; // 0.25 USDT (6 decimals) — matches MIN_DEPOSIT
 const RPC               = "https://forno.celo.org";
+// Pinned block to scan RaffleExecuted events from. MUST be an absolute block
+// number, NOT a relative -N offset: Celo runs at ~1s/block post-L2, so a
+// relative window (e.g. -50000) only covers ~14h and drops older prizes.
+// 67700000 is just before the first raffle (V2 deployed ~2026-05-22).
+const RAFFLE_SCAN_FROM_BLOCK = 67700000;
 
 // ── ABIs ──────────────────────────────────────────────────────────────────────
 const ZORRITO_V2_ABI = [
@@ -65,25 +71,56 @@ let zorrito  = null; // read-only contract
 let zorritoW = null; // write contract (with signer)
 let usdtW    = null; // USDT contract (with signer)
 
-// ── Reown AppKit setup ────────────────────────────────────────────────────────
-const ethersAdapter = new EthersAdapter();
-const modal = createAppKit({
-  adapters: [ethersAdapter],
-  networks: [celo],
-  projectId: REOWN_PROJECT_ID,
-  metadata: {
-    name: "Zorrito V2",
-    description: "Ahorrá USDT. Ganá un premio semanal.",
-    url: window.location.origin,
-    icons: ["https://www.zorrito.app/assets/zorritofinallogo.png"],
-  },
-  features: { analytics: false, email: false, socials: false },
-  themeMode: "dark",
-  themeVariables: { "--w3m-accent": "#FD840E", "--w3m-border-radius-master": "14px" },
-});
+// ── Reown AppKit — lazy-loaded ────────────────────────────────────────────────
+// Loaded on demand the first time a non-MiniPay user opens the connect modal,
+// keeping the heavy wallet bundle off the initial home load.
+let modal = null;
+let _modalPromise = null;
+async function ensureModal() {
+  if (modal) return modal;
+  if (_modalPromise) return _modalPromise;
+  _modalPromise = (async () => {
+    const [{ createAppKit }, { EthersAdapter }, { celo }] = await Promise.all([
+      import("https://esm.sh/@reown/appkit@1.8.19?bundle"),
+      import("https://esm.sh/@reown/appkit-adapter-ethers@1.8.19?bundle"),
+      import("https://esm.sh/@reown/appkit@1.8.19/networks?bundle"),
+    ]);
+    const ethersAdapter = new EthersAdapter();
+    modal = createAppKit({
+      adapters: [ethersAdapter],
+      networks: [celo],
+      projectId: REOWN_PROJECT_ID,
+      metadata: {
+        name: "Zorrito V2",
+        description: "Ahorrá USDT. Ganá un premio semanal.",
+        url: window.location.origin,
+        icons: ["https://www.zorrito.app/assets/zorritofinallogo.png"],
+      },
+      features: { analytics: false, email: false, socials: false },
+      themeMode: "dark",
+      themeVariables: { "--w3m-accent": "#FD840E", "--w3m-border-radius-master": "14px" },
+    });
+    window.modal = modal;
 
-// Expose modal for any global references
-window.modal = modal;
+    // Wire account subscription once the modal exists. For a returning desktop
+    // user with a persisted Reown session, this fires right after first
+    // ensureModal() (i.e. on their first connect click) and restores state.
+    modal.subscribeAccount(async (account) => {
+      if (isMiniPay()) return; // MiniPay handles its own connection
+      if (account.isConnected && account.address) {
+        const walletProvider = modal.getWalletProvider();
+        provider = new ethers.BrowserProvider(walletProvider);
+        signer   = await provider.getSigner();
+        userAddr = account.address;
+        onConnected();
+      } else {
+        onDisconnected();
+      }
+    });
+    return modal;
+  })();
+  return _modalPromise;
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -214,34 +251,42 @@ async function loadMeritAPR() {
   } catch { /* fail silently — merit bonus is supplemental info */ }
 }
 
-async function loadWinnerHistory(contract) {
+async function loadWinnerHistory() {
+  const listEl = $("winner-list");
+  if (!listEl) return;
   try {
-    const filter = contract.filters.RaffleExecuted();
-    const events = await contract.queryFilter(filter, -50000);
-    const listEl = $("winner-list");
-    if (!listEl) return;
-    if (events.length === 0) {
+    // Read winners from the indexer-backed stats API. Direct eth_getLogs on a
+    // public RPC no longer returns wide ranges reliably for this contract, so
+    // the winner list is served from /api/graph-stats (Blockscout indexer).
+    const res  = await fetch("/api/graph-stats");
+    const data = await res.json();
+    const winners = Array.isArray(data.winners) ? data.winners : [];
+
+    if (winners.length === 0) {
       listEl.innerHTML = `<p class="empty-state">Aún no hay premios registrados</p>`;
       return;
     }
+
     listEl.innerHTML = "";
-    const rpc = new ethers.JsonRpcProvider(RPC);
-    for (const ev of events.reverse().slice(0, 5)) {
-      const block  = await rpc.getBlock(ev.blockNumber).catch(() => null);
-      const date   = block ? new Date(block.timestamp * 1000).toLocaleDateString("es-AR") : "—";
-      const item   = document.createElement("div");
+    for (const w of winners) {          // already sorted newest-first by the API
+      const date  = w.timestamp ? new Date(w.timestamp * 1000).toLocaleDateString("es-AR") : "—";
+      const prize = Number(w.prize) || 0;
+      const item  = document.createElement("div");
       item.className = "winner-item";
       item.innerHTML = `
         <span class="winner-addr">
-          <a href="https://celoscan.io/address/${ev.args.winner}" target="_blank" rel="noopener"
-             style="color:var(--muted);text-decoration:none;">${fmtAddr(ev.args.winner)}</a>
+          <a href="https://celoscan.io/address/${w.winner}" target="_blank" rel="noopener"
+             style="color:var(--muted);text-decoration:none;">${fmtAddr(w.winner)}</a>
           <span style="font-size:0.72rem;color:var(--muted);display:block;">${date}</span>
         </span>
-        <span class="winner-prize">+$${fmt6(ev.args.prize)} USDT</span>`;
+        <span class="winner-prize">+$${prize.toFixed(prize > 0 && prize < 0.01 ? 4 : 2)} USDT</span>`;
       listEl.appendChild(item);
     }
   } catch (e) {
     console.warn("[winnerHistory]", e.message);
+    if (!listEl.children.length) {
+      listEl.innerHTML = `<p class="empty-state">Aún no hay premios registrados</p>`;
+    }
   }
 }
 
@@ -284,18 +329,7 @@ async function tryMiniPayConnect() {
 }
 
 // ── Wallet connection ─────────────────────────────────────────────────────────
-modal.subscribeAccount(async (account) => {
-  if (isMiniPay()) return; // MiniPay handles its own connection — don't interfere
-  if (account.isConnected && account.address) {
-    const walletProvider = modal.getWalletProvider();
-    provider = new ethers.BrowserProvider(walletProvider);
-    signer   = await provider.getSigner();
-    userAddr = account.address;
-    onConnected();
-  } else {
-    onDisconnected();
-  }
-});
+// (Reown account subscription is wired inside ensureModal() — lazy-loaded.)
 
 function updateConnectBtn(connected, addr) {
   const btn   = $("btn-connect");
@@ -1461,11 +1495,13 @@ async function startSelfVerification() {
   // Event delegation on document so the listener survives header re-renders
   // (nav-shared.js can replace #btn-connect after app.js loads — direct binding
   // would be lost; delegation looks up the current button on every click).
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", async (e) => {
     const btn = e.target.closest("#btn-connect");
     if (!btn) return;
-    if (userAddr) { modal.open({ view: "Account" }); }
-    else          { modal.open(); }
+    // First click pays the one-time cost of loading the Reown bundle.
+    const m = await ensureModal();
+    if (userAddr) { m.open({ view: "Account" }); }
+    else          { m.open(); }
   });
 
   const btnDeposit  = $("btn-deposit");
