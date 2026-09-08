@@ -11,8 +11,7 @@ const FONT = 'Calibri';
 const BODY = 20; // 10 pt, en medios puntos
 
 const SOURCES = [
-  { md: 'cv-arturo-grande-es.md', base: 'CV_Arturo_Grande_ES' },
-  { md: 'cv-arturo-grande-en.md', base: 'CV_Arturo_Grande_EN' },
+  { md: 'cv-arturo-grande-en.md', base: 'CV_Arturo_Grande' },
 ];
 
 // --- Parser: markdown acotado -> lista de tokens --------------------------
@@ -124,10 +123,10 @@ function toHtml(tokens, lang) {
 <title>CV Arturo Grande</title>
 <style>
   @page { size: Letter; margin: 0.5in 0.6in; }
-  body { font-family: Calibri, Carlito, Arial, sans-serif; font-size: 10pt; line-height: 1.22; color: #000; max-width: 7.3in; margin: 0.5in auto; }
+  body { font-family: Calibri, Carlito, Arial, sans-serif; font-size: 10pt; line-height: 1.18; color: #000; max-width: 7.3in; margin: 0.5in auto; }
   h1 { font-size: 15pt; text-align: center; margin: 0 0 2pt; letter-spacing: .5px; }
   .contact { text-align: center; font-size: 9pt; margin: 0 0 6pt; }
-  h2 { font-size: 11pt; margin: 7pt 0 3pt; padding-bottom: 1pt; border-bottom: 1px solid #000; }
+  h2 { font-size: 11pt; margin: 6pt 0 3pt; padding-bottom: 1pt; border-bottom: 1px solid #000; }
   p { margin: 4pt 0 2pt; }
   p.date { font-style: italic; font-size: 9pt; margin: 0 0 2pt; }
   ul { margin: 0 0 2pt; padding-left: 15pt; }
@@ -148,7 +147,7 @@ ${body.join('\n')}
   for (const { md, base } of SOURCES) {
     const tokens = parse(path.join(__dirname, md));
     fs.writeFileSync(path.join(outDir, `${base}.docx`), await Packer.toBuffer(toDocx(tokens)));
-    fs.writeFileSync(path.join(outDir, `${base}.html`), toHtml(tokens, md.includes('-en') ? 'en' : 'es'));
+    fs.writeFileSync(path.join(outDir, `${base}.html`), toHtml(tokens, 'en'));
     console.log('->', `dist/${base}.docx`, `dist/${base}.html`);
   }
 })();
