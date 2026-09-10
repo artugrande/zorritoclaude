@@ -29,6 +29,9 @@
 
   <link rel="icon" type="image/png" href="assets/zorritofinallogo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
@@ -254,6 +257,7 @@
       api_host: 'https://us.i.posthog.com',
       person_profiles: 'always',
       autocapture: true,
+      capture_performance: { web_vitals: true },
     });
   </script>
 </head>
@@ -398,7 +402,9 @@
       <div class="empty-state" data-i18n="stats-no-raffles">No raffles have been executed yet.</div>
     </div>
 
-    <div class="stat-grid cols2" style="margin-top:14px;">
+    <!-- Hidden until we have meaningful values (V2 launched 22-May; needs more raffles).
+         Re-enable by removing the `hidden` attribute. -->
+    <div class="stat-grid cols2" style="margin-top:14px;" hidden>
       <div class="stat-card">
         <div class="stat-card-label" data-i18n="stats-platform-fee">Platform Fee Earned</div>
         <div class="stat-card-value skel" id="s-platform-fee">$0.00</div>
@@ -423,6 +429,58 @@
       <div class="stat-card"><div class="stat-card-label" data-i18n="stats-visitors-30d">Visitors 30d</div><div class="stat-card-value skel" id="ph-v30d">—</div><div class="stat-card-sub" data-i18n="stats-unique">unique</div></div>
       <div class="stat-card"><div class="stat-card-label" data-i18n="stats-sessions-30d">Sessions 30d</div><div class="stat-card-value skel" id="ph-sessions">—</div><div class="stat-card-sub" data-i18n="stats-total">total</div></div>
       <div class="stat-card"><div class="stat-card-label" data-i18n="stats-avg-duration">Avg Duration</div><div class="stat-card-value skel" id="ph-duration">—</div><div class="stat-card-sub" data-i18n="stats-per-session">per session</div></div>
+    </div>
+
+    <!-- ── Core Web Vitals (page performance, real users, p75) ── -->
+    <h2 style="margin-top:28px;">
+      <span data-i18n="stats-perf-title">⚡ Page Performance</span>
+      <span class="section-badge badge-offchain" data-i18n="stats-badge-cwv">Core Web Vitals · Percentil 75</span>
+    </h2>
+    <p class="data-note" data-i18n="stats-perf-note">📊 Real-user load speed (75th percentile, last 24h). Green = good per Google's Core Web Vitals thresholds.</p>
+
+    <!-- Overall 0–100 performance score (Lighthouse-style, weighted from the 4 vitals) -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin:4px 0 18px;flex-wrap:wrap;">
+      <div style="position:relative;width:104px;height:104px;flex:0 0 auto;">
+        <svg width="104" height="104" viewBox="0 0 104 104" aria-hidden="true">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="9"/>
+          <circle id="cwv-score-ring" cx="52" cy="52" r="46" fill="none" stroke="#16a34a" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"
+                  transform="rotate(-90 52 52)" style="transition:stroke-dashoffset .7s ease, stroke .3s;"/>
+        </svg>
+        <div id="cwv-score-num" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.85rem;font-weight:800;color:var(--muted);">—</div>
+      </div>
+      <div style="min-width:140px;">
+        <div style="font-weight:800;font-size:1rem;" data-i18n="stats-perf-score">Performance Score</div>
+        <div id="cwv-score-label" style="font-size:0.82rem;color:var(--muted);margin-top:2px;">—</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;" data-i18n="stats-perf-score-sub">Weighted from LCP · INP · CLS · FCP</div>
+      </div>
+    </div>
+
+    <div class="analytics-kpi">
+      <div class="stat-card">
+        <div class="stat-card-label">LCP</div>
+        <div class="stat-card-value skel" id="cwv-lcp">—</div>
+        <div id="cwv-lcp-score" style="font-size:0.8rem;font-weight:800;color:var(--muted);margin:1px 0 2px;">—</div>
+        <div class="stat-card-sub" data-i18n="stats-cwv-lcp">Largest Contentful Paint</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">INP</div>
+        <div class="stat-card-value skel" id="cwv-inp">—</div>
+        <div id="cwv-inp-score" style="font-size:0.8rem;font-weight:800;color:var(--muted);margin:1px 0 2px;">—</div>
+        <div class="stat-card-sub" data-i18n="stats-cwv-inp">Interaction to Next Paint</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">CLS</div>
+        <div class="stat-card-value skel" id="cwv-cls">—</div>
+        <div id="cwv-cls-score" style="font-size:0.8rem;font-weight:800;color:var(--muted);margin:1px 0 2px;">—</div>
+        <div class="stat-card-sub" data-i18n="stats-cwv-cls">Cumulative Layout Shift</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">FCP</div>
+        <div class="stat-card-value skel" id="cwv-fcp">—</div>
+        <div id="cwv-fcp-score" style="font-size:0.8rem;font-weight:800;color:var(--muted);margin:1px 0 2px;">—</div>
+        <div class="stat-card-sub" data-i18n="stats-cwv-fcp">First Contentful Paint</div>
+      </div>
     </div>
 
     <div class="chart-section" style="margin-bottom:10px;">
@@ -919,6 +977,109 @@
         ).join("");
       }
     }
+    // Core Web Vitals rendering — colors per Google's good/needs-improvement/poor
+    // thresholds. LCP/INP/FCP arrive in ms, CLS is unitless.
+    function renderWebVitals(wv) {
+      const GOOD = "#16a34a", MEH = "#d97706", POOR = "#dc2626";
+      const grade = (v, good, poor) => v == null ? "var(--muted)" : v <= good ? GOOD : v <= poor ? MEH : POOR;
+      const set = (id, val, color) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove("skel");
+        el.textContent = val;
+        el.style.color = color;
+      };
+
+      if (!wv || !wv.samples) {
+        ["cwv-lcp","cwv-inp","cwv-cls","cwv-fcp"].forEach(id => set(id, "—", "var(--muted)"));
+        renderPerfScore(null);
+        return;
+      }
+      // LCP: good ≤2.5s, poor >4s
+      set("cwv-lcp", wv.lcp != null ? (wv.lcp/1000).toFixed(2) + "s" : "—", grade(wv.lcp, 2500, 4000));
+      // INP: good ≤200ms, poor >500ms
+      set("cwv-inp", wv.inp != null ? Math.round(wv.inp) + "ms" : "—", grade(wv.inp, 200, 500));
+      // CLS: good ≤0.1, poor >0.25
+      set("cwv-cls", wv.cls != null ? wv.cls.toFixed(3) : "—", grade(wv.cls, 0.1, 0.25));
+      // FCP: good ≤1.8s, poor >3s
+      set("cwv-fcp", wv.fcp != null ? (wv.fcp/1000).toFixed(2) + "s" : "—", grade(wv.fcp, 1800, 3000));
+
+      renderPerfScore(wv);
+    }
+
+    // Overall 0–100 score: per-metric piecewise mapping (good→90, poor→50,
+    // anchored on Google thresholds) then a Lighthouse-style weighted blend.
+    function renderPerfScore(wv) {
+      const ring = document.getElementById("cwv-score-ring");
+      const num  = document.getElementById("cwv-score-num");
+      const lbl  = document.getElementById("cwv-score-label");
+      if (!ring || !num) return;
+      const CIRC = 289; // 2πr, r=46
+
+      const scoreMetric = (v, good, poor) => {
+        if (v == null) return null;
+        if (v <= good) return 100 - (v / good) * 10;            // 100 → 90
+        if (v <= poor) return 90 - ((v - good) / (poor - good)) * 40; // 90 → 50
+        const ext = poor + (poor - good) * 2;
+        return Math.max(0, 50 - ((v - poor) / (ext - poor)) * 50);   // 50 → 0
+      };
+
+      const GOOD = "#16a34a", MEH = "#d97706", POOR = "#dc2626";
+      const colorFor = s => s == null ? "var(--muted)" : s >= 90 ? GOOD : s >= 50 ? MEH : POOR;
+      // Per-category score chip (0–100 individual score for this metric).
+      const setChip = (id, s) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = s == null ? "—" : Math.round(s) + "%";
+        el.style.color = colorFor(s);
+      };
+
+      if (!wv || !wv.samples) {
+        num.textContent = "—"; num.style.color = "var(--muted)";
+        ring.style.strokeDashoffset = CIRC; ring.style.stroke = "var(--muted)";
+        if (lbl) lbl.textContent = "—";
+        ["cwv-lcp-score","cwv-inp-score","cwv-cls-score","cwv-fcp-score"].forEach(id => setChip(id, null));
+        return;
+      }
+
+      const sLcp = scoreMetric(wv.lcp, 2500, 4000);
+      const sInp = scoreMetric(wv.inp, 200, 500);
+      const sCls = scoreMetric(wv.cls, 0.1, 0.25);
+      const sFcp = scoreMetric(wv.fcp, 1800, 3000);
+      setChip("cwv-lcp-score", sLcp);
+      setChip("cwv-inp-score", sInp);
+      setChip("cwv-cls-score", sCls);
+      setChip("cwv-fcp-score", sFcp);
+
+      const parts = [
+        { s: sLcp, w: 0.30 },
+        { s: sInp, w: 0.30 },
+        { s: sCls, w: 0.25 },
+        { s: sFcp, w: 0.15 },
+      ].filter(p => p.s != null);
+      if (!parts.length) { renderPerfScore(null); return; }
+      const wsum = parts.reduce((a, p) => a + p.w, 0);
+      const score = Math.round(parts.reduce((a, p) => a + p.s * p.w, 0) / wsum);
+
+      const color = score >= 90 ? GOOD : score >= 50 ? MEH : POOR;
+      num.textContent = String(score);
+      num.style.color = color;
+      ring.style.stroke = color;
+      ring.style.strokeDashoffset = CIRC * (1 - score / 100);
+
+      if (lbl) {
+        const lang = (function () { try { return localStorage.getItem("zorrito-lang") || "es"; } catch (_) { return "es"; } })();
+        const words = {
+          good: { en: "Good", es: "Bueno", pt: "Bom" },
+          meh:  { en: "Needs improvement", es: "Mejorable", pt: "Precisa melhorar" },
+          poor: { en: "Poor", es: "Deficiente", pt: "Ruim" },
+        };
+        const k = score >= 90 ? "good" : score >= 50 ? "meh" : "poor";
+        lbl.textContent = (words[k][lang] || words[k].en) + " · " + score + "/100";
+        lbl.style.color = color;
+      }
+    }
+
     async function loadAnalytics() {
       try {
         const res = await fetch("/api/analytics?t=" + Date.now());
@@ -935,6 +1096,8 @@
         setSkel("ph-v30d",     (d.visitors.last_30d.unique || 0).toLocaleString());
         setSkel("ph-sessions", (d.sessions.count            || 0).toLocaleString());
         setSkel("ph-duration", fmtDuration(d.sessions.avg_duration_sec));
+
+        renderWebVitals(d.webVitals);
 
         if (d.dailyChart?.length > 0) renderVisitorsChart(d.dailyChart);
 

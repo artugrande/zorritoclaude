@@ -1,5 +1,6 @@
-/* ── Google Font ──────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+/* ── Google Font ──────────────────────────────────────────────────────────────
+   Loaded via <link> in each page's <head> (NOT @import) so it fetches in
+   parallel with this stylesheet instead of chaining behind it. ────────────── */
 
 /* ── Reset & Base ─────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -96,6 +97,11 @@ body {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-8px); }
 }
+
+/* Reserve the header's footprint (≈67px + 24px margin) so that when nav-shared.js
+   (deferred) injects the header after first paint, content below doesn't shift
+   down — keeps CLS under 0.1 on slow connections. */
+#zv2-header { min-height: 91px; }
 
 /* ── Header — Glassmorphism ───────────────── */
 header {

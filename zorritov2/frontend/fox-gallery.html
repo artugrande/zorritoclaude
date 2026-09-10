@@ -6,6 +6,9 @@
   <title>Galería de Zorros — Zorrito V2</title>
   <link rel="icon" type="image/png" href="assets/zorritofinallogo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
   <style>
     .gallery-hero { text-align:center; padding:28px 20px 16px; }
@@ -29,6 +32,7 @@
       api_host: 'https://us.i.posthog.com',
       person_profiles: 'always',
       autocapture: true,
+      capture_performance: { web_vitals: true },
     });
   </script>
 </head>

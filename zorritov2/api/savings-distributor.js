@@ -26,6 +26,7 @@ const {
   USDT_ADDRESS,
   AUSDT_ADDRESS,
 } = require("./_lib/contract");
+const { recordCron } = require("./_lib/cron-tracker");
 
 const DEFAULT_MERKL_DISTRIBUTOR = "0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae";
 const CHAIN_ID = 42220;
@@ -126,18 +127,22 @@ module.exports = async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: "Unauthorized" });
 
   const ts = new Date().toISOString();
+  const respond = async (status, payload) => {
+    await recordCron("savings-distributor", { httpStatus: status, ...payload });
+    return res.status(status).json(payload);
+  };
 
   try {
     const { zorrito, keeperWallet, usdt, contractAddress } = getContracts();
 
     const emergency = await zorrito.emergencyMode();
     if (emergency) {
-      return res.status(200).json({ ts, action: "skipped", reason: "Emergency mode active" });
+      return respond(200, { ts, action: "skipped", reason: "Emergency mode active" });
     }
 
     const totalPrincipal = await zorrito.totalPrincipal();
     if (totalPrincipal === 0n) {
-      return res.status(200).json({
+      return respond(200, {
         ts,
         action: "skipped",
         reason: "No depositors — Merit campaigns score by aUSDT holdings, so nothing to claim yet",
@@ -210,7 +215,7 @@ module.exports = async (req, res) => {
       result.reason       = "No new USDT to distribute";
       result.usdtBalance  = (Number(usdtBalance)  / 1e6).toFixed(6) + " USDT";
       result.totalSavings = (Number(totalSavings) / 1e6).toFixed(6) + " USDT";
-      return res.status(200).json(result);
+      return respond(200, result);
     }
 
     // ── Step 4: Distribute to all depositors ─────────────────────────────────
@@ -223,10 +228,10 @@ module.exports = async (req, res) => {
     result.txHash      = receipt.hash;
     result.explorer    = `https://celoscan.io/tx/${receipt.hash}`;
 
-    return res.status(200).json(result);
+    return respond(200, result);
 
   } catch (err) {
     console.error("[savings-distributor] Error:", err);
-    return res.status(500).json({ ts, error: err.reason || err.message });
+    return respond(500, { ts, error: err.reason || err.message });
   }
 };

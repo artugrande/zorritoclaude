@@ -11,6 +11,7 @@
  */
 
 const { getContracts, checkAuth } = require("./_lib/contract");
+const { recordCron }              = require("./_lib/cron-tracker");
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,37 +20,40 @@ module.exports = async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: "Unauthorized" });
 
   const ts = new Date().toISOString();
+  const respond = async (status, payload) => {
+    await recordCron("raffle-commit", { httpStatus: status, ...payload });
+    return res.status(status).json({ ts, ...payload });
+  };
 
   try {
     const { zorrito, keeperWallet, contractAddress } = getContracts();
 
     const emergency = await zorrito.emergencyMode();
     if (emergency) {
-      return res.status(200).json({ ts, action: "skipped", reason: "Emergency mode active" });
+      return respond(200, { action: "skipped", reason: "Emergency mode active" });
     }
 
     const alreadyCommitted = await zorrito.raffleCommitted();
     if (alreadyCommitted) {
-      return res.status(200).json({ ts, action: "skipped", reason: "Raffle already committed" });
+      return respond(200, { action: "skipped", reason: "Raffle already committed" });
     }
 
     const total = await zorrito.totalPrincipal();
     if (total === 0n) {
-      return res.status(200).json({ ts, action: "skipped", reason: "No depositors" });
+      return respond(200, { action: "skipped", reason: "No depositors" });
     }
 
     // Guard: contract requires _fenwickTotal() > 0. This is normally === totalPrincipal > 0
     // but can be 0 if emergencyReturn was partially run (depositors registered but deposits=0).
     const totalChances = await zorrito.totalEffectiveChances();
     if (totalChances === 0n) {
-      return res.status(200).json({ ts, action: "skipped", reason: "No active chances (all depositors withdrew)" });
+      return respond(200, { action: "skipped", reason: "No active chances (all depositors withdrew)" });
     }
 
     const tx      = await zorrito.commitRaffle();
     const receipt = await tx.wait();
 
-    return res.status(200).json({
-      ts,
+    return respond(200, {
       action:   "committed",
       txHash:   receipt.hash,
       explorer: `https://celoscan.io/tx/${receipt.hash}`,
@@ -59,6 +63,6 @@ module.exports = async (req, res) => {
 
   } catch (err) {
     console.error("[raffle-commit] Error:", err.message);
-    return res.status(500).json({ ts, error: err.reason || err.message });
+    return respond(500, { error: err.reason || err.message });
   }
 };

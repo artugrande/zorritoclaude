@@ -112,6 +112,17 @@
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- Preconnect to origins used early on the home so the browser opens TCP+TLS
+       in parallel with parsing instead of after the first request. -->
+  <link rel="preconnect" href="https://esm.sh" crossorigin>
+  <link rel="preconnect" href="https://forno.celo.org">
+  <link rel="preconnect" href="https://us.i.posthog.com">
+  <link rel="preconnect" href="https://us-assets.i.posthog.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.socket.io">
+  <!-- Preload the hero logo (the LCP element) so it starts downloading immediately. -->
+  <link rel="preload" as="image" href="assets/zorritofinallogo.png" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
   <style>
     /* ── V2 extras ── */
@@ -371,14 +382,51 @@
       api_host: 'https://us.i.posthog.com',
       person_profiles: 'always',
       autocapture: true,
+      capture_performance: { web_vitals: true },
     });
   </script>
 </head>
 <body>
 
+  <!-- ── V2 wind-down: show ONLY this notice on a white page ── -->
+  <style>
+    html, body { background: #ffffff !important; }
+    /* hide every other top-level element on the home */
+    body > *:not(#v2-notice):not(script):not(style) { display: none !important; }
+    #v2-notice {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 22px; background: #ffffff; padding: 24px; text-align: center;
+      font-family: "Baloo 2", system-ui, -apple-system, sans-serif;
+    }
+    #v2-notice img { width: 150px; height: 150px; object-fit: contain;
+      filter: drop-shadow(0 10px 26px rgba(253,132,14,0.35)); }
+    #v2-notice .card { max-width: 560px; padding: 32px 36px; border: 2px solid #FD840E;
+      background: #fff; border-radius: 22px; box-shadow: 0 18px 44px rgba(0,0,0,0.10); }
+    #v2-notice h1 { font-size: 1.7rem; font-weight: 800; color: #FD840E; margin: 0; }
+    #v2-notice p { font-size: 1.02rem; color: #6B5744; margin: 12px 0 0; line-height: 1.5; }
+    #v2-notice .v2-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+    #v2-notice .v2-links a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+      font-weight: 700; font-size: 0.98rem; padding: 11px 20px; border-radius: 999px; transition: transform .15s; }
+    #v2-notice .v2-links a:hover { transform: translateY(-2px); }
+    #v2-notice .v2-links .primary { background: #FD840E; color: #fff; box-shadow: 0 8px 20px rgba(253,132,14,0.35); }
+    #v2-notice .v2-links .ghost { background: #fff; color: #2A1B10; border: 2px solid #FD840E; }
+  </style>
+  <div id="v2-notice">
+    <img src="assets/zorritofinallogo.png" alt="Zorrito" />
+    <div class="card">
+      <h1>🦊 Zorrito V2 has wrapped up</h1>
+      <p>Thanks for saving with us. All deposits were returned to their wallets, in full, on-chain. <strong>V3 is on the way.</strong></p>
+      <div class="v2-links">
+        <a class="primary" href="docs.html">📖 Read the docs</a>
+        <a class="ghost" href="https://github.com/artugrande/zorritoclaude" target="_blank" rel="noopener">⭐ Open-source repo</a>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Hero Logo ── -->
   <div class="hero-brand">
-    <img src="assets/zorritofinallogo.png" alt="Zorrito V2" class="hero-logo" />
+    <img src="assets/zorritofinallogo.png" alt="Zorrito V2" class="hero-logo" width="168" height="168" fetchpriority="high" />
   </div>
 
   <!-- ── Header (mounted by nav-shared.js) ── -->
@@ -816,10 +864,15 @@
     </div>
   </div>
 
-  <!-- Socket.io for Self.xyz WebSocket relay -->
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <!-- Scripts deferred & ordered so they run AFTER first paint (off the critical
+       render path → faster LCP/FCP) but still in dependency order:
+       lang.js (defines window.ZORRITO_T) → nav-shared.js (applies i18n) →
+       app.js (renders, reads ZORRITO_T). Deferred scripts execute in document
+       order after parsing, so this ordering is guaranteed.
+       socket.io only used lazily during Self.xyz verification. -->
+  <script defer src="lang.js?v=20260521r"></script>
+  <script defer src="nav-shared.js?v=20260521r"></script>
+  <script defer src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script type="module" src="app.js?v=20260521r"></script>
-  <script src="lang.js?v=20260521r"></script>
-  <script src="nav-shared.js?v=20260521r"></script>
 </body>
 </html>

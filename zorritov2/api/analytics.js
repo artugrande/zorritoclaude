@@ -25,6 +25,7 @@ function placeholder(reason) {
     devices: [],
     walletTypes: [],
     referrers: [],
+    webVitals: { lcp: null, inp: null, cls: null, fcp: null, samples: 0 },
   };
 }
 
@@ -54,6 +55,7 @@ module.exports = async (req, res) => {
     const [
       visitors7d, visitors30d, pageviewsDaily, countryBreakdown,
       deviceBreakdown, walletTypeBreakdown, funnelRaw, referrerBreakdown, sessionStats,
+      webVitalsRaw,
     ] = await Promise.allSettled([
       phQuery(hogql(`
         SELECT count(distinct person_id) as unique_visitors, count() as total_pageviews
@@ -120,6 +122,19 @@ module.exports = async (req, res) => {
           GROUP BY properties.$session_id
         )
       `)),
+      // Core Web Vitals — p75 (Google's grading percentile) over last 24h, so
+      // the score reflects recent (post-optimization) traffic instead of lagging
+      // a 7-day window. posthog-js emits one '$web_vitals' event per page.
+      phQuery(hogql(`
+        SELECT
+          quantile(0.75)(toFloat(properties.$web_vitals_LCP_value)) as lcp_p75,
+          quantile(0.75)(toFloat(properties.$web_vitals_INP_value)) as inp_p75,
+          quantile(0.75)(toFloat(properties.$web_vitals_CLS_value)) as cls_p75,
+          quantile(0.75)(toFloat(properties.$web_vitals_FCP_value)) as fcp_p75,
+          count() as samples
+        FROM events
+        WHERE event = '$web_vitals' AND timestamp >= now() - interval 1 day
+      `)),
     ]);
 
     const safe = (s, f = null) => s.status === "fulfilled" ? s.value : f;
@@ -137,6 +152,10 @@ module.exports = async (req, res) => {
     const referrers  = rows(referrerBreakdown).map(r => ({ domain: r[0], visitors: r[1] }));
     const sr         = row0(sessionStats);
     const sessions   = sr ? { count: sr[0] || 0, avg_duration_sec: sr[1] || 0 } : { count: 0, avg_duration_sec: 0 };
+    const wv         = row0(webVitalsRaw);
+    const webVitals  = wv
+      ? { lcp: wv[0], inp: wv[1], cls: wv[2], fcp: wv[3], samples: wv[4] || 0 }
+      : { lcp: null, inp: null, cls: null, fcp: null, samples: 0 };
 
     return res.status(200).json({
       ok: true,
@@ -145,7 +164,7 @@ module.exports = async (req, res) => {
         last_7d:  { unique: v7?.[0]  || 0, pageviews: v7?.[1]  || 0 },
         last_30d: { unique: v30?.[0] || 0, pageviews: v30?.[1] || 0 },
       },
-      sessions, funnel, dailyChart, countries, devices, walletTypes, referrers,
+      sessions, funnel, dailyChart, countries, devices, walletTypes, referrers, webVitals,
     });
   } catch (err) {
     console.error("Analytics error:", err);

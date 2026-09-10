@@ -18,6 +18,7 @@
 
 const { ethers } = require("ethers");
 const { checkAuth, USDT_ADDRESS } = require("./_lib/contract");
+const { recordCron } = require("./_lib/cron-tracker");
 
 let kv = null;
 try { kv = require("@vercel/kv").kv; } catch { /* optional */ }
@@ -59,11 +60,15 @@ module.exports = async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: "Unauthorized" });
 
   const ts = new Date().toISOString();
+  const respond = async (status, payload) => {
+    await recordCron("demo-agent-tick", { httpStatus: status, ...payload });
+    return res.status(status).json(payload);
+  };
 
   try {
     const pk = (process.env.AGENT_PRIVATE_KEY || "").trim();
-    if (!pk)    return res.status(500).json({ error: "AGENT_PRIVATE_KEY not set" });
-    if (!CONTRACT) return res.status(500).json({ error: "V2_CONTRACT_ADDRESS not set" });
+    if (!pk)    return respond(500, { ts, error: "AGENT_PRIVATE_KEY not set" });
+    if (!CONTRACT) return respond(500, { ts, error: "V2_CONTRACT_ADDRESS not set" });
 
     const provider = new ethers.JsonRpcProvider(
       RPC, { chainId: 42220, name: "celo" }, { staticNetwork: true }
@@ -74,7 +79,7 @@ module.exports = async (req, res) => {
     const agent   = wallet.address;
 
     const emergency = await zorrito.emergencyMode();
-    if (emergency) return res.status(200).json({ ts, action: "skipped", reason: "Emergency mode" });
+    if (emergency) return respond(200, { ts, action: "skipped", reason: "Emergency mode" });
 
     const [usdtBal, allow, dep, lastSave, celoBal] = await Promise.all([
       usdt.balanceOf(agent),
@@ -84,8 +89,53 @@ module.exports = async (req, res) => {
       provider.getBalance(agent),
     ]);
 
-    if (celoBal === 0n) {
-      return res.status(200).json({ ts, action: "skipped", reason: "No CELO for gas", agent });
+    // ── Auto top-up: if agent CELO < 0.15, have the keeper refill to ~0.55.
+    // gasLimit 500_000 * 200 gwei base fee × 3 (maxFee buffer) = 0.3 CELO upfront.
+    // 0.15 threshold leaves no safe margin, so we refill before attempting tx.
+    let topupCeloHash = null;
+    const TOPUP_THRESHOLD = ethers.parseEther("0.15");
+    const TOPUP_AMOUNT    = ethers.parseEther("0.5");
+    let workingCeloBal = celoBal;
+    if (celoBal < TOPUP_THRESHOLD) {
+      const keeperPk = (process.env.KEEPER_PRIVATE_KEY || "").trim();
+      if (keeperPk) {
+        try {
+          const keeperWallet = new ethers.Wallet(
+            keeperPk.startsWith("0x") ? keeperPk : `0x${keeperPk}`,
+            provider
+          );
+          const tx = await keeperWallet.sendTransaction({
+            to: agent,
+            value: TOPUP_AMOUNT,
+            type: 0,
+            gasLimit: 30_000,
+          });
+          await tx.wait();
+          topupCeloHash = tx.hash;
+          workingCeloBal = celoBal + TOPUP_AMOUNT;
+        } catch (e) {
+          return respond(500, {
+            ts,
+            action: "topup_failed",
+            reason: "Keeper failed to top up agent CELO",
+            error: e.reason || e.message,
+            agent,
+            celoBal: ethers.formatEther(celoBal),
+          });
+        }
+      } else {
+        return respond(200, {
+          ts,
+          action: "skipped",
+          reason: "Agent CELO low and KEEPER_PRIVATE_KEY not set for auto top-up",
+          agent,
+          celoBal: ethers.formatEther(celoBal),
+        });
+      }
+    }
+
+    if (workingCeloBal === 0n) {
+      return respond(200, { ts, action: "skipped", reason: "No CELO for gas", agent });
     }
 
     const todayUtc = BigInt(Math.floor(Date.now() / 86400000));
@@ -98,7 +148,7 @@ module.exports = async (req, res) => {
         const tx = await zorrito.withdraw(dep, { type: 0, gasLimit: 350_000 });
         const r  = await tx.wait();
         await setCycle({ depositCount: 0, lastHarvestTs: Date.now() });
-        return res.status(200).json({
+        return respond(200, {
           ts,
           action: "harvest_withdraw",
           agent,
@@ -109,13 +159,13 @@ module.exports = async (req, res) => {
       }
       // Edge case: counter says 7 but deposits already 0 → just reset
       await setCycle({ depositCount: 0 });
-      return res.status(200).json({ ts, action: "cycle_reset", agent });
+      return respond(200, { ts, action: "cycle_reset", agent });
     }
 
     // ── Already acted today → skip ─────────────────────────────────────────
     // Use the on-chain savedToday as the marker (set on deposit-first-time and save)
     if (savedToday && cycle.depositCount > 0) {
-      return res.status(200).json({
+      return respond(200, {
         ts,
         action: "skipped",
         reason: "Already acted today",
@@ -126,7 +176,7 @@ module.exports = async (req, res) => {
 
     // ── Normal cycle day: deposit + save ───────────────────────────────────
     if (usdtBal < MIN_DEPOSIT) {
-      return res.status(200).json({
+      return respond(200, {
         ts, action: "skipped",
         reason: "Insufficient USDT balance for daily deposit",
         agent,
@@ -135,6 +185,7 @@ module.exports = async (req, res) => {
     }
 
     const result = { ts, agent, txs: [] };
+    if (topupCeloHash) result.txs.push({ step: "celo_topup", hash: topupCeloHash });
 
     // Approve once (max) if needed — tight gasLimit, simple ERC-20 approve
     if (allow < MIN_DEPOSIT) {
@@ -145,7 +196,9 @@ module.exports = async (req, res) => {
 
     // Deposit 0.25 USDT — V2 NEW fuses streak extension into deposit().
     // No separate save() call needed: each deposit IS the daily streak action.
-    const depTx = await zorrito.deposit(MIN_DEPOSIT, "0x00000000", { type: 0, gasLimit: 1_200_000 });
+    // Tight gasLimit: actual deposit uses ~250k gas; 500k gives 2× margin.
+    // Lower limit reduces upfront CELO reservation (limit × maxFeePerGas).
+    const depTx = await zorrito.deposit(MIN_DEPOSIT, "0x00000000", { type: 0, gasLimit: 500_000 });
     const depR  = await depTx.wait();
     result.txs.push({ step: "deposit", hash: depR.hash });
 
@@ -156,7 +209,7 @@ module.exports = async (req, res) => {
     const newStreak = Number(await zorrito.streakDay(agent));
     const newDep    = await zorrito.deposits(agent);
 
-    return res.status(200).json({
+    return respond(200, {
       ts,
       action:        "daily_deposit",
       agent,
@@ -171,6 +224,6 @@ module.exports = async (req, res) => {
 
   } catch (err) {
     console.error("[demo-agent-tick] error:", err);
-    return res.status(500).json({ ts, error: err.reason || err.message });
+    return respond(500, { ts, error: err.reason || err.message });
   }
 };
