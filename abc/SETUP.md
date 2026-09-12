@@ -21,10 +21,25 @@ rm -rf /tmp/sds
 ## Toolchain
 
 ```bash
-rustup target add wasm32v1-none      # target de compilación Soroban
-cargo install --locked stellar-cli   # CLI (compila ~10 min)
-npm install @stellar/stellar-sdk     # cliente TS v14
+rustup target add wasm32v1-none   # target de compilación Soroban
+npm install @stellar/stellar-sdk  # cliente TS v14
 ```
+
+Para el CLI, **usá el binario precompilado, no `cargo install`**: compilar desde
+crates.io falla en un build script de `libdbus-sys` salvo que tengas
+`libdbus-1-dev` instalado, y aun así tarda ~10 minutos.
+
+```bash
+V=28.0.0
+curl -sSL -o cli.tgz "https://github.com/stellar/stellar-cli/releases/download/v${V}/stellar-cli-${V}-x86_64-unknown-linux-gnu.tar.gz"
+tar xzf cli.tgz && sudo install -m755 stellar /usr/local/bin/stellar
+stellar --version
+```
+
+En macOS: `brew install stellar-cli`.
+
+Verificado end-to-end sin red: `stellar contract init`, `stellar contract build`
+(compila a WASM) y `cargo test` funcionan los tres offline.
 
 ## MCP
 
