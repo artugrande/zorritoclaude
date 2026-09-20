@@ -24,16 +24,11 @@ from dataclasses import dataclass, field
 
 import anthropic
 
-from .llm import NO_CLIENT, make_client
+from .llm import NO_CLIENT, LLMConfig
 from .tools import TERMINAL_TOOLS, TOOL_SCHEMAS, ToolContext, ToolOutcome, execute
 
 log = logging.getLogger(__name__)
 
-# Sonnet 5 by default: this is a perception-action loop where a second of extra
-# latency is a second of the rover sitting still, and the reasoning per step is
-# modest. Set model: claude-opus-5 in config for missions that need deeper
-# planning and can afford the round trip.
-DEFAULT_MODEL = "claude-sonnet-5"
 MAX_IMAGES_IN_CONTEXT = 5
 
 # Sent when the model replies in prose instead of acting. Matched back by exact
@@ -107,20 +102,14 @@ class AgentState:
 class AgentSession:
     """One autonomous mission, start to finish."""
 
-    def __init__(
-        self,
-        ctx: ToolContext,
-        *,
-        api_key: str | None = None,
-        model: str = DEFAULT_MODEL,
-        max_steps: int = 60,
-    ) -> None:
+    def __init__(self, ctx: ToolContext, *, llm: LLMConfig | None = None) -> None:
         self.ctx = ctx
-        self.model = model
-        self.max_steps = max_steps
+        self.llm = llm or LLMConfig()
+        self.model = self.llm.model
+        self.max_steps = self.llm.max_steps
         self.state = AgentState()
 
-        self._client = make_client(api_key)
+        self._client = self.llm.client()
         self._messages: list[dict] = []
         self._may_act = asyncio.Event()
         self._may_act.set()

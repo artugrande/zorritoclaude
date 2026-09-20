@@ -24,19 +24,16 @@ from enum import Enum
 
 import anthropic
 
-from .agent import DEFAULT_MODEL, AgentSession
+from .agent import AgentSession
 from .events import EventBus
 from .intent import Intent, IntentRouter
-from .llm import make_client
+from .llm import LLMConfig
 from .mission import MissionLog
 from .rover import Rover
 from .semantic_map import Move, SemanticMap
 from .tools import ToolContext
 
 log = logging.getLogger(__name__)
-
-DESCRIBE_MODEL = "claude-sonnet-5"
-
 
 class Mode(str, Enum):
     MANUAL = "manual"
@@ -57,21 +54,17 @@ class Arbiter:
         missions: MissionLog,
         bus: EventBus,
         *,
-        api_key: str | None = None,
-        model: str = DEFAULT_MODEL,
-        max_steps: int = 60,
+        llm: LLMConfig | None = None,
     ) -> None:
         self.rover = rover
         self.smap = smap
         self.missions = missions
         self.bus = bus
-        self.model = model
-        self.max_steps = max_steps
-        self._api_key = api_key
+        self.llm = llm or LLMConfig()
 
         self.mode = Mode.MANUAL
-        self.router = IntentRouter(api_key=api_key)
-        self._client = make_client(api_key)
+        self.router = IntentRouter(self.llm)
+        self._client = self.llm.client()
 
         self.ctx = ToolContext(rover=rover, smap=smap, missions=missions, bus=bus)
         self.agent: AgentSession | None = None
@@ -205,9 +198,7 @@ class Arbiter:
             await self.abort_mission("superseded by a new mission")
 
         await self.rover.release_onboard_autonomy()
-        self.agent = AgentSession(
-            self.ctx, api_key=self._api_key, model=self.model, max_steps=self.max_steps
-        )
+        self.agent = AgentSession(self.ctx, llm=self.llm)
         self.mode = Mode.AUTO
         self.bus.publish("mode", mode=self.mode.value, reason="mission started")
         self._agent_task = asyncio.create_task(self.agent.run(goal), name="agent-mission")
@@ -305,7 +296,7 @@ class Arbiter:
             )
         try:
             response = await self._client.messages.create(
-                model=DESCRIBE_MODEL,
+                model=self.llm.describe_model,
                 max_tokens=300,
                 messages=[{"role": "user", "content": content}],
             )

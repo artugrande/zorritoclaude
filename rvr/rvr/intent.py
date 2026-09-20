@@ -23,11 +23,9 @@ from dataclasses import dataclass, field
 
 import anthropic
 
-from .llm import NO_CLIENT, make_client
+from .llm import NO_CLIENT, LLMConfig
 
 log = logging.getLogger(__name__)
-
-FAST_MODEL = "claude-haiku-4-5-20251001"
 
 # Deliberately blunt and deliberately multilingual. False positives cost a
 # needless stop; false negatives cost a collision.
@@ -123,9 +121,10 @@ def looks_like_stop(text: str) -> bool:
 
 
 class IntentRouter:
-    def __init__(self, *, api_key: str | None = None, model: str = FAST_MODEL) -> None:
-        self.model = model
-        self._client = make_client(api_key)
+    def __init__(self, llm: LLMConfig | None = None) -> None:
+        self.llm = llm or LLMConfig()
+        self.model = self.llm.fast_model
+        self._client = self.llm.client()
 
     async def route(self, text: str) -> Intent:
         text = (text or "").strip()

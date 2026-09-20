@@ -18,7 +18,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--host", help="rover address (overrides the config file)")
     parser.add_argument("--bind-host", help="address for the control UI")
     parser.add_argument("--bind-port", type=int, help="port for the control UI")
-    parser.add_argument("--model", help="Anthropic model for the agent loop")
+    parser.add_argument("--model", help="model id for the agent loop")
+    parser.add_argument(
+        "--base-url",
+        help="Anthropic-compatible endpoint, e.g. https://ai-gateway.vercel.sh",
+    )
     parser.add_argument(
         "--mock",
         action="store_true",
@@ -33,6 +37,7 @@ def main(argv: list[str] | None = None) -> int:
         bind_host=args.bind_host,
         bind_port=args.bind_port,
         model=args.model,
+        base_url=args.base_url,
         mock=args.mock or None,
         log_level=args.log_level,
     )
@@ -43,15 +48,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     logging.getLogger("aiohttp.access").setLevel(logging.WARNING)
 
-    if not config.mock and not config.api_key:
-        import os
+    if not config.api_key:
+        print(
+            "No API key set (ANTHROPIC_API_KEY or AI_GATEWAY_API_KEY). Manual "
+            "driving will work; voice commands and autonomy will not.",
+            file=sys.stderr,
+        )
 
-        if not os.environ.get("ANTHROPIC_API_KEY"):
-            print(
-                "ANTHROPIC_API_KEY is not set. Manual driving will work; voice "
-                "commands and autonomy will not.",
-                file=sys.stderr,
-            )
+    # A gateway rejects an unprefixed model id with a confusing 404 on the first
+    # mission. Better to say so now than twenty minutes into a drive.
+    for problem in config.llm().check_models():
+        print(f"WARNING: {problem}", file=sys.stderr)
 
     with contextlib.suppress(KeyboardInterrupt):
         asyncio.run(serve(config))

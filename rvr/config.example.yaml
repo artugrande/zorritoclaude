@@ -20,7 +20,24 @@ bind_port: 8080
 # claude-sonnet-5 keeps the perceive-decide-act loop tight. claude-opus-5 plans
 # better and costs a slower loop; worth it for genuinely open-ended missions.
 model: claude-sonnet-5
-max_steps: 60
+fast_model: claude-haiku-4-5        # routes one spoken command -- speed over depth
+describe_model: claude-sonnet-5     # writes a place description from its keyframes
+max_steps: 60                       # hard ceiling on one autonomous mission
+
+# Any Anthropic-compatible endpoint works. Leave unset to call Anthropic directly.
+#
+# Via Vercel AI Gateway (needs a Vercel account; it bills you for tokens the
+# same way -- it is a router, not free access). Gateways namespace models by
+# provider, so ALL THREE model ids above need an `anthropic/` prefix:
+#
+#   base_url: https://ai-gateway.vercel.sh
+#   model: anthropic/claude-sonnet-5
+#   fast_model: anthropic/claude-haiku-4-5
+#   describe_model: anthropic/claude-sonnet-5
+#
+# Then export AI_GATEWAY_API_KEY instead of ANTHROPIC_API_KEY.
+# Startup warns if base_url looks like a gateway and a model id lacks a prefix.
+# base_url:
 
 data_dir: data
 log_level: INFO

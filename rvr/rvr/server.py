@@ -282,10 +282,7 @@ async def build(config: Config) -> tuple[ControlServer, Rover, Arbiter]:
         camera = CameraLink(config.rover_host, config.camera_port)
 
     rover = Rover(link, camera, config.safety)
-    arbiter = Arbiter(
-        rover, smap, missions, bus,
-        api_key=config.api_key, model=config.model, max_steps=config.max_steps,
-    )
+    arbiter = Arbiter(rover, smap, missions, bus, llm=config.llm())
     return ControlServer(config, arbiter, rover, bus), rover, arbiter
 
 

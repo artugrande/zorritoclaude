@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from . import protocol as p
-from .agent import DEFAULT_MODEL
+from .llm import DEFAULT_DESCRIBE_MODEL, DEFAULT_FAST_MODEL, DEFAULT_MODEL, LLMConfig
 from .rover import SafetyLimits
 
 
@@ -25,8 +25,15 @@ class Config:
     bind_port: int = 8080
 
     model: str = DEFAULT_MODEL
+    fast_model: str = DEFAULT_FAST_MODEL
+    describe_model: str = DEFAULT_DESCRIBE_MODEL
     max_steps: int = 60
     api_key: str | None = None
+
+    base_url: str | None = None
+    """Point at any Anthropic-compatible endpoint instead of Anthropic directly
+    (e.g. https://ai-gateway.vercel.sh). Gateways namespace model ids by
+    provider, so set the model fields to 'anthropic/claude-sonnet-5' style too."""
 
     mock: bool = False
     data_dir: str = "data"
@@ -45,21 +52,39 @@ class Config:
 
         safety_data = data.pop("safety", None) or {}
 
-        env_map = {
+        # RVR_* variables are unambiguous intent for this app, so they override
+        # the config file.
+        overrides_env = {
             "rover_host": "RVR_HOST",
             "bind_host": "RVR_BIND_HOST",
             "bind_port": "RVR_BIND_PORT",
             "model": "RVR_MODEL",
+            "fast_model": "RVR_FAST_MODEL",
+            "describe_model": "RVR_DESCRIBE_MODEL",
+            "base_url": "RVR_BASE_URL",
             "log_level": "RVR_LOG_LEVEL",
             "data_dir": "RVR_DATA_DIR",
         }
-        for key, env in env_map.items():
+        for key, env in overrides_env.items():
             if os.environ.get(env):
                 data[key] = os.environ[env]
 
-        # ANTHROPIC_API_KEY is read by the SDK itself if we leave this None.
-        if os.environ.get("ANTHROPIC_API_KEY"):
-            data.setdefault("api_key", os.environ["ANTHROPIC_API_KEY"])
+        # Shared third-party variables are only FALLBACKS. They are often set
+        # ambiently by a shell profile or a host environment, and silently
+        # overriding a value the user wrote in config.yaml with one of those is
+        # a genuinely baffling bug to chase.
+        fallback_env = {
+            "base_url": ("ANTHROPIC_BASE_URL",),
+            # AI_GATEWAY_API_KEY is what Vercel names its key; accept both.
+            "api_key": ("ANTHROPIC_API_KEY", "AI_GATEWAY_API_KEY"),
+        }
+        for key, names in fallback_env.items():
+            if data.get(key):
+                continue
+            for env in names:
+                if os.environ.get(env):
+                    data[key] = os.environ[env]
+                    break
 
         data.update({k: v for k, v in overrides.items() if v is not None})
 
@@ -73,6 +98,16 @@ class Config:
             **{k: v for k, v in safety_data.items() if k in SafetyLimits.__dataclass_fields__}
         )
         return cls(safety=limits, **kwargs)
+
+    def llm(self) -> LLMConfig:
+        return LLMConfig(
+            api_key=self.api_key,
+            base_url=self.base_url,
+            model=self.model,
+            fast_model=self.fast_model,
+            describe_model=self.describe_model,
+            max_steps=self.max_steps,
+        )
 
     def as_dict(self) -> dict:
         data = asdict(self)

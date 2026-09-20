@@ -87,6 +87,36 @@ export ANTHROPIC_API_KEY=sk-ant-...      # add to ~/.zshrc to make it stick
 ./run.sh
 ```
 
+<details>
+<summary><b>Using a gateway instead (Vercel AI Gateway, a corporate proxy)</b></summary>
+
+Any endpoint that speaks the Anthropic Messages API works — set `base_url`. Note
+that a gateway is a *router*, not free access: it still needs its own account and
+still bills you per token.
+
+Gateways namespace models by provider, so **all three** model ids need an
+`anthropic/` prefix. Forgetting one fails with a confusing 404 on the first
+mission, so startup warns about it up front.
+
+```yaml
+# config.yaml
+base_url: https://ai-gateway.vercel.sh
+model: anthropic/claude-sonnet-5
+fast_model: anthropic/claude-haiku-4-5
+describe_model: anthropic/claude-sonnet-5
+```
+
+```bash
+export AI_GATEWAY_API_KEY=vck_...        # ANTHROPIC_API_KEY also works
+./run.sh
+```
+
+`ANTHROPIC_BASE_URL` is honoured as a *fallback* only — a value you wrote in
+`config.yaml` wins over it, since that variable is often set ambiently by a shell
+profile. Use `RVR_BASE_URL` if you do want an env var to override the file.
+
+</details>
+
 The simulator renders a small navigable world through a raycaster, drifts its
 heading the way a chassis with no encoders actually drifts, and speaks the real
 wire protocol. Everything above the transport layer runs against it.
