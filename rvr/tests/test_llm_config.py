@@ -154,3 +154,50 @@ def test_agent_and_router_inherit_the_endpoint(tmp_path):
     assert arbiter.router.model == "anthropic/claude-haiku-4-5"
     assert "ai-gateway.vercel.sh" in str(arbiter.router._client.base_url)
     assert "ai-gateway.vercel.sh" in str(arbiter._client.base_url)
+
+
+def test_state_reports_whether_autonomy_is_actually_available(tmp_path, monkeypatch):
+    """A mic button that looks fine and silently does nothing is the worst
+    possible way to communicate a missing key."""
+    from rvr.arbiter import Arbiter
+    from rvr.events import EventBus
+    from rvr.mission import MissionLog
+    from rvr.mock import build_mock
+    from rvr.rover import Rover
+    from rvr.semantic_map import SemanticMap
+
+    def build(llm):
+        _world, link, camera = build_mock()
+        return Arbiter(
+            Rover(link, camera), SemanticMap(tmp_path), MissionLog(tmp_path), EventBus(), llm=llm
+        )
+
+    with_key = build(LLMConfig(api_key="k")).state()
+    assert with_key["llm_available"] is True
+    assert with_key["llm_endpoint"] == "api.anthropic.com"
+
+    for var in (
+        "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "AI_GATEWAY_API_KEY",
+        "ANTHROPIC_PROFILE", "ANTHROPIC_IDENTITY_TOKEN", "ANTHROPIC_IDENTITY_TOKEN_FILE",
+    ):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setattr("rvr.llm._PROFILE_DIR", tmp_path / "nope")
+    assert build(LLMConfig()).state()["llm_available"] is False
+
+
+def test_gateway_endpoint_is_reported_in_state(tmp_path):
+    from rvr.arbiter import Arbiter
+    from rvr.events import EventBus
+    from rvr.mission import MissionLog
+    from rvr.mock import build_mock
+    from rvr.rover import Rover
+    from rvr.semantic_map import SemanticMap
+
+    _world, link, camera = build_mock()
+    arbiter = Arbiter(
+        Rover(link, camera), SemanticMap(tmp_path), MissionLog(tmp_path), EventBus(),
+        llm=LLMConfig(api_key="k", base_url="https://ai-gateway.vercel.sh",
+                      model="anthropic/claude-sonnet-5"),
+    )
+    assert arbiter.state()["llm_endpoint"] == "https://ai-gateway.vercel.sh"
+    assert arbiter.state()["llm_model"] == "anthropic/claude-sonnet-5"

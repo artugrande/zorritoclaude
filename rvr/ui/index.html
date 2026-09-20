@@ -110,6 +110,7 @@
   <div class="spacer"></div>
   <div class="pill"><span class="dot" id="dot-rover"></span> rover</div>
   <div class="pill"><span class="dot" id="dot-cam"></span> camera</div>
+  <div class="pill" id="llm-pill"></div>
   <div class="pill" id="agent-pill">idle</div>
   <button id="estop">STOP</button>
 </header>
@@ -243,6 +244,23 @@ function render(s) {
 
   document.querySelectorAll('.modes button').forEach(b =>
     b.dataset.active = (b.dataset.mode === s.mode));
+
+  const pill = $('llm-pill');
+  if (s.llm_available) {
+    pill.innerHTML = `<span class="dot" data-on="true"></span> ${escape(s.llm_model)}`;
+    pill.title = `via ${s.llm_endpoint}`;
+    $('mic').disabled = !SR;
+    $('utterance').placeholder = 'Say or type anything — "explore the living room and '
+      + 'tell me what looks out of place", "this is the kitchen", "go to the desk", "stop"';
+  } else {
+    pill.innerHTML = '<span class="dot"></span> no API key';
+    pill.title = 'Set ANTHROPIC_API_KEY (or AI_GATEWAY_API_KEY) and restart';
+    $('mic').disabled = true;
+    $('utterance').placeholder =
+      'Voice and autonomy need an API key — set ANTHROPIC_API_KEY and restart. Driving works without it.';
+  }
+  $('send').disabled = !s.llm_available;
+  $('teach').disabled = false;  // teaching still stores keyframes, just no written description
 
   const a = s.agent;
   $('agent-pill').textContent = !a || !a.running ? 'idle'

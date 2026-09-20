@@ -78,9 +78,21 @@ class Arbiter:
     def agent_running(self) -> bool:
         return self._agent_task is not None and not self._agent_task.done()
 
+    @property
+    def llm_available(self) -> bool:
+        """Whether voice commands and autonomy can work at all right now.
+
+        Surfaced in the UI because the alternative is a mic button that looks
+        fine, does nothing, and gives no reason why.
+        """
+        return self._client is not None and self.router._client is not None
+
     def state(self) -> dict:
         return {
             "mode": self.mode.value,
+            "llm_available": self.llm_available,
+            "llm_endpoint": self.llm.base_url or "api.anthropic.com",
+            "llm_model": self.llm.model,
             "rover": self.rover.state(),
             "agent": self.agent.state.as_dict() if self.agent else None,
             "agent_running": self.agent_running,
