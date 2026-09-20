@@ -1,0 +1,34 @@
+# Copy to config.yaml and edit. Environment variables override these
+# (RVR_HOST, RVR_BIND_HOST, RVR_BIND_PORT, RVR_MODEL, RVR_DATA_DIR, RVR_LOG_LEVEL).
+
+# The rover's address.
+#   192.168.4.1 -> the rover is serving its own wifi access point (GalaxyRVR).
+#                  Your machine then has NO internet, so the Claude API is
+#                  unreachable. See "The wifi problem" in the README.
+#   10.0.0.x    -> the ESP32 joined your network in station mode. This is the
+#                  setup you want; it prints its address over serial at boot and
+#                  reports it as StaIp in the websocket handshake.
+rover_host: 192.168.4.1
+ws_port: 30102       # from galaxy-rvr.h -- NOT 8765, whatever the docs say
+camera_port: 9000
+
+# Control UI. Keep this on localhost unless you have thought about the fact
+# that anyone who can reach it can drive your robot.
+bind_host: 127.0.0.1
+bind_port: 8080
+
+# claude-sonnet-5 keeps the perceive-decide-act loop tight. claude-opus-5 plans
+# better and costs a slower loop; worth it for genuinely open-ended missions.
+model: claude-sonnet-5
+max_steps: 60
+
+data_dir: data
+log_level: INFO
+
+safety:
+  stop_distance_cm: 18.0     # forward motion refused closer than this
+  slow_distance_cm: 40.0     # forward power scaled down inside this
+  max_drive_ms: 3000         # longest a single command may hold the motors
+  battery_min_v: 6.4         # refuse to drive below this (2S pack, sags under load)
+  creep_speed: 35            # speed cap when telemetry has gone stale
+  command_hz: 10.0           # reflex loop rate
