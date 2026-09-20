@@ -56,26 +56,48 @@ stays valid, and the agent is parked. Hand control back and it is told it was
 moved and shown where it is now, so it re-orients instead of continuing from a
 stale belief about its own position.
 
-## Quick start
+## Running it
 
-Nothing below needs a robot. Start with the simulator.
+You need Python 3.10+ and, for the mic, Chrome or Edge. **You do not need the
+robot** — start with the simulator.
 
 ```bash
-pip install -r requirements.txt
-export ANTHROPIC_API_KEY=sk-ant-...      # optional: manual driving works without it
-python -m rvr --mock
-# open http://127.0.0.1:8080
+git clone -b claude/laughing-tesla-x8oabb https://github.com/artugrande/zorritoclaude.git
+cd zorritoclaude/rvr
+./run.sh
 ```
 
-The mock renders a small navigable world through a raycaster, drifts its heading
-the way a chassis with no encoders actually drifts, and speaks the real wire
-protocol. Everything above the transport layer runs against it.
+Then open **http://127.0.0.1:8080**.
 
-Then, on real hardware:
+The first run builds a virtualenv and installs dependencies, which takes a
+minute; after that it starts immediately. On Windows, use WSL, or run the three
+commands by hand:
+
+```bat
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python -m rvr --mock
+```
+
+Driving works straight away. For voice and autonomy you need an API key from
+[console.anthropic.com](https://console.anthropic.com/settings/keys):
 
 ```bash
-cp config.example.yaml config.yaml    # set rover_host
-python -m rvr
+export ANTHROPIC_API_KEY=sk-ant-...      # add to ~/.zshrc to make it stick
+./run.sh
+```
+
+The simulator renders a small navigable world through a raycaster, drifts its
+heading the way a chassis with no encoders actually drifts, and speaks the real
+wire protocol. Everything above the transport layer runs against it.
+
+### Then, the real rover
+
+Read [the wifi section](#the-wifi-problem--read-this-before-buying-batteries)
+first — it decides whether autonomy can work at all.
+
+```bash
+./run.sh --real          # writes config.yaml the first time; set rover_host in it
 ```
 
 ### Driving
